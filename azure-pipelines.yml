@@ -20,7 +20,7 @@ steps:
     SonarCloud: 'SonarCloud'
     organization: 'jdf-revature'
     scannerMode: 'MSBuild'
-    projectKey: 'jdf.viewz'
+    projectKey: 'jdf.viewz.branch.reddev'
     extraProperties: |
         sonar.exclusions=**/wwwroot/lib/**/*
         sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/*"
