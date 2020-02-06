@@ -31,9 +31,9 @@ namespace ViewzApp.Controllers
 
             //Just to test view...
             //limit = 2
-            list.Add(new WikiHeaderVM() { Name = "Pokemon", URL = "https://lmgtfy.com/?q=pokemon" });
-            list.Add(new WikiHeaderVM() { Name = "Zelda", URL = "https://lmgtfy.com/?q=zelda" });
-            list.Add(new WikiHeaderVM() { Name = "Mario Kart", URL = "https://lmgtfy.com/?q=Mario+Kart" });
+            list.Add(new WikiHeaderVM() { Name = "Pokemon", URL = "Route1" });
+            list.Add(new WikiHeaderVM() { Name = "Zelda", URL = "Route2" });
+            list.Add(new WikiHeaderVM() { Name = "Mario Kart", URL = "Route3" });
             return View(list);
         }
 
