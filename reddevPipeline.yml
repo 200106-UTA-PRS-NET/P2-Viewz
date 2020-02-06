@@ -1,0 +1,43 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- reddev
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: 'jdf-revature'
+    scannerMode: 'MSBuild'
+    projectKey: 'jdf.viewz.branch.reddev'
+    extraProperties: |
+        sonar.exclusions=**/wwwroot/lib/**/*
+        sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/*"
+        sonar.cs.vstest.reportsPaths="$(Build.ArtifactStagingDirectory)/test/*.trx"
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'dotnet build $(buildConfiguration)'
+
+- script: dotnet test
+    --configuration $(buildConfiguration)
+    --logger trx
+    --no-build
+    --results-directory $(Build.ArtifactStagingDirectory)/test/
+    /p:CollectCoverage=true
+    /p:CoverletOutputFormat=opencover
+    /p:CoverletOutput="$(Build.ArtifactStagingDirectory)/coverage/"
+  displayName: 'Dotnet test and coverage'
+- task: SonarCloudAnalyze@1
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
