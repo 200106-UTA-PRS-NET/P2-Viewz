@@ -14,11 +14,12 @@ namespace ViewzApi.Controllers
         [HttpPost] 
         public ContentResult Post([FromForm]string MD)
         { 
-            string output = "";
+            string output;
 
             if (MD.Contains("#"))
-            { 
-                output = $"<h1>{MD}</h1>";
+            {
+                string updated = MD.Replace("#","");
+                output = $"<h1>{updated}</h1>";
             }
             else
             {
