@@ -1,10 +1,10 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- master
+- api-service
 
 pool:
   vmImage: 'windows-latest'
@@ -20,12 +20,11 @@ steps:
     SonarCloud: 'SonarCloud'
     organization: 'jdf-revature'
     scannerMode: 'MSBuild'
-    projectKey: 'jdf.viewz'
+    projectKey: 'jdf.viewz.branch.api-service'
     extraProperties: |
         sonar.exclusions=**/wwwroot/lib/**/*
         sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/*"
         sonar.cs.vstest.reportsPaths="$(Build.ArtifactStagingDirectory)/test/*.trx"
-
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
 
@@ -42,27 +41,3 @@ steps:
 - task: SonarCloudPublish@1
   inputs:
     pollingTimeoutSec: '300'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'publish'
-    publishWebProjects: false
-    arguments: '--configuration $(buildConfiguration)'
-    zipAfterPublish: true
-    projects: '**/Viewz*.csproj'
-  displayName: 'DotNet publish api and app + zip'
-
-
-- task: AzureWebApp@1
-  inputs:
-    azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
-    appType: 'webAppLinux'
-    appName: 'viewz'
-    package: '$(System.DefaultWorkingDirectory)/ViewzApp/**/*.zip'
-
-- task: AzureWebApp@1
-  inputs:
-    azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
-    appType: 'webAppLinux'
-    appName: 'viewzapi'
-    package: '$(System.DefaultWorkingDirectory)/ViewzApi/**/*.zip'
