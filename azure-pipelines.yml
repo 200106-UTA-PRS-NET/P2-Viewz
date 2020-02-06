@@ -49,7 +49,9 @@ steps:
     publishWebProjects: true
     arguments: '--configuration $(buildConfiguration)'
     zipAfterPublish: true
+    projects: 'Viewz*/*.csproj'
   displayName: 'DotNet publish + zip'
+
 
 - task: AzureWebApp@1
   inputs:
