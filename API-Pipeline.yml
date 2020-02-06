@@ -42,3 +42,19 @@ steps:
 - task: SonarCloudPublish@1
   inputs:
     pollingTimeoutSec: '300'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    arguments: '--configuration $(buildConfiguration)'
+    zipAfterPublish: true
+    projects: '**/ViewzApi.csproj'
+  displayName: 'DotNet publish api and app + zip'
+
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
+    appType: 'webAppLinux'
+    appName: 'viewzapi'
+    package: '$(System.DefaultWorkingDirectory)/ViewzApi/**/*.zip'
