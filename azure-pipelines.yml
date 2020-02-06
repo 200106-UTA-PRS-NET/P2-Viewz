@@ -49,7 +49,7 @@ steps:
     #publishWebProjects: true
     arguments: '--configuration $(buildConfiguration)'
     zipAfterPublish: true
-    projects: 'Viewz*/*.csproj'
+    projects: '**/Viewz*/*.csproj'
   displayName: 'DotNet publish + zip'
 
 
