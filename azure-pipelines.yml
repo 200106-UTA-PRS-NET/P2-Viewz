@@ -46,20 +46,11 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
-    #publishWebProjects: true
+    publishWebProjects: false
     arguments: '--configuration $(buildConfiguration)'
     zipAfterPublish: true
-    projects: '**/ViewzApp.csproj'
-  displayName: 'DotNet publish app + zip'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'publish'
-    #publishWebProjects: true
-    arguments: '--configuration $(buildConfiguration)'
-    zipAfterPublish: true
-    projects: '**/ViewzApi.csproj'
-  displayName: 'DotNet publish api + zip'
+    projects: '**/Viewz*.csproj'
+  displayName: 'DotNet publish api and app + zip'
 
 
 - task: AzureWebApp@1
