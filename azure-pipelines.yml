@@ -20,7 +20,7 @@ steps:
     SonarCloud: 'SonarCloud'
     organization: 'jdf-revature'
     scannerMode: 'MSBuild'
-    projectKey: 'jdf.viewz'
+    projectKey: 'jdf.viewz.branch.api-service'
     extraProperties: |
         sonar.exclusions=**/wwwroot/lib/**/*
         sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/*"
@@ -56,5 +56,5 @@ steps:
   inputs:
     azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
     appType: 'webAppLinux'
-    appName: 'viewzapi'
+    appName: 'viewzapicanary'
     package: '$(System.DefaultWorkingDirectory)/ViewzApi/**/*.zip'
