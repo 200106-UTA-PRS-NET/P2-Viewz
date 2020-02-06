@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- master
+- api-service
 
 pool:
   vmImage: 'windows-latest'
@@ -49,16 +49,8 @@ steps:
     publishWebProjects: false
     arguments: '--configuration $(buildConfiguration)'
     zipAfterPublish: true
-    projects: '**/Viewz*.csproj'
+    projects: '**/ViewzApi.csproj'
   displayName: 'DotNet publish api and app + zip'
-
-
-- task: AzureWebApp@1
-  inputs:
-    azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
-    appType: 'webAppLinux'
-    appName: 'viewz'
-    package: '$(System.DefaultWorkingDirectory)/ViewzApp/**/*.zip'
 
 - task: AzureWebApp@1
   inputs:
