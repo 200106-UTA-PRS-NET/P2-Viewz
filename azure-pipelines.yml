@@ -37,6 +37,7 @@ steps:
     /p:CollectCoverage=true
     /p:CoverletOutputFormat=opencover
     /p:CoverletOutput="$(Build.ArtifactStagingDirectory)/coverage/"
+  displayName: 'Dotnet test and coverage'
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
   inputs:
