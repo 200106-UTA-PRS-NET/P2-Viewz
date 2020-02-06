@@ -29,11 +29,14 @@ steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    arguments: '--configuration $(buildConfiguration) --logger trx --no-build --results-directory $(Build.ArtifactStagingDirectory)/test/ /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="$(Build.ArtifactStagingDirectory)/coverage/"'
-    testRunTitle: 'Testing'
+- script: dotnet test
+    --configuration $(buildConfiguration)
+    --logger trx
+    --no-build
+    --results-directory $(Build.ArtifactStagingDirectory)/test/
+    /p:CollectCoverage=true
+    /p:CoverletOutputFormat=opencover
+    /p:CoverletOutput="$(Build.ArtifactStagingDirectory)/coverage/"
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
   inputs:
