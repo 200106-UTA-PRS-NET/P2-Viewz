@@ -5,6 +5,7 @@
 
 trigger:
 - api-service
+pr: none
 
 pool:
   vmImage: 'windows-latest'
