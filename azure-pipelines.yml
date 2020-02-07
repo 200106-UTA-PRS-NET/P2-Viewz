@@ -5,6 +5,7 @@
 
 trigger:
 - reddev
+pr: none
 
 pool:
   vmImage: 'windows-latest'
