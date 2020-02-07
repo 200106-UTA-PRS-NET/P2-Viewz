@@ -23,7 +23,7 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'jdf.viewz.branch.reddev'
     extraProperties: |
-        sonar.exclusions=**/wwwroot/lib/**/*
+        sonar.exclusions=**/wwwroot/lib/**/*,**/DataAccess/Models/**/*
         sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/*"
         sonar.cs.vstest.reportsPaths="$(Build.ArtifactStagingDirectory)/test/*.trx"
 
