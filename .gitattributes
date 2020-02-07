@@ -1,2 +1,4 @@
 azure-pipelines.yml linguist-generated=true
 PullRequestPipeline.yml linguist-generated=true
+azure-pipelines.yml merge=ours
+PullRequestPipeline.yml merge=ours
