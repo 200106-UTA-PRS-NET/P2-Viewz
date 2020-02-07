@@ -46,6 +46,10 @@ namespace DataAccess.Models
                     .HasColumnName("content")
                     .HasColumnType("ntext");
 
+                entity.Property(e => e.HtmlContent)
+                    .HasColumnName("HTMLContent")
+                    .HasColumnType("ntext");
+
                 entity.Property(e => e.PageName).HasColumnType("ntext");
 
                 entity.Property(e => e.Url)
@@ -56,7 +60,7 @@ namespace DataAccess.Models
                     .WithMany(p => p.Page)
                     .HasForeignKey(d => d.WikiId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__page__wikiId__4D94879B");
+                    .HasConstraintName("FK__page__wikiId__4F7CD00D");
             });
 
             modelBuilder.Entity<PageDetails>(entity =>
@@ -92,8 +96,10 @@ namespace DataAccess.Models
                 entity.ToTable("wiki", "wiki");
 
                 entity.HasIndex(e => e.Url)
-                    .HasName("UQ__wiki__C5B2143169D0095F")
+                    .HasName("UQ__wiki__C5B214316D7F0DFB")
                     .IsUnique();
+
+                entity.Property(e => e.Description).HasColumnType("ntext");
 
                 entity.Property(e => e.PageName).HasColumnType("ntext");
 

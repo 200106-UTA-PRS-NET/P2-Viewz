@@ -13,6 +13,7 @@ namespace DataAccess.Models
         public int Id { get; set; }
         public string Url { get; set; }
         public string PageName { get; set; }
+        public string Description { get; set; }
 
         public virtual ICollection<Page> Page { get; set; }
     }
