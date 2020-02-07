@@ -7,12 +7,18 @@ namespace ViewzApi.Models
 {
     public class Page
     {
-        public int Id { get; set; }
+        public Page()
+        {
+            PageDetails = new HashSet<PageDetails>();
+        }
 
         public int WikiId { get; set; }
-
-        public string Name { get; set; }
-
+        public long PageId { get; set; }
+        public string Url { get; set; }
+        public string PageName { get; set; }
         public string Content { get; set; }
+
+        public virtual Wiki Wiki { get; set; }
+        public virtual ICollection<PageDetails> PageDetails { get; set; }
     }
 }

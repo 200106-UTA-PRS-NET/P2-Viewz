@@ -12,11 +12,11 @@ namespace ViewzApi.Controllers
     [ApiController]
     public class WikiController : ControllerBase
     {
-        static List<Wiki> Wikis = new List<Wiki>()
+        public static List<Wiki> Wikis = new List<Wiki>()
         {
-            new Wiki(){ Id=1, Name="Wiki 1", Content = "Content of Wiki 1",Pages=new List<Page>()},
-            new Wiki(){ Id=2, Name="Wiki 2", Content = "Content of Wiki 2",Pages=new List<Page>()},
-            new Wiki(){ Id=3, Name="Wiki 3", Content = "Content of Wiki 3",Pages=new List<Page>()}
+            new Wiki(){ Id=1, PageName="Wiki 1",Url = "url-of-wiki-1", Description="some description 1",Page=new List<Page>()},
+            new Wiki(){ Id=2, PageName="Wiki 2", Url = "url-of-wiki-2",Description="some description 2",Page=new List<Page>()},
+            new Wiki(){ Id=3, PageName="Wiki 3", Url = "url-of-wiki-3",Description="some description 3",Page=new List<Page>()}
         };
 
         // GET: api/Wiki
@@ -27,13 +27,24 @@ namespace ViewzApi.Controllers
         }
 
         // GET: api/Wiki/5
-        [HttpGet("{id}", Name = "GetWiki")] 
-
-        public ContentResult Get([FromHeader]int id)
+        [HttpGet("{url}", Name = "GetWiki")] 
+        
+        public ContentResult Get([FromRoute]string url, [FromQuery]bool Content=true)
         {
-            string output = $"<h1>Wiki ID: {Wikis[id].Id}</h1>";
-            output += $"<h3>{Wikis[id].Name}</h3>";
-            output += $"<p>{Wikis[id].Content}</p>";
+            string output;
+            if (Wikis.Exists(w => w.Url == url)) 
+            {
+                var wiki = Wikis.FirstOrDefault(w => w.Url == url);
+
+                output = $"<h1>Wiki ID: {wiki.Id}</h1>";
+                output += $"<h3>{wiki.PageName}</h3>";
+                output += $"<p>{wiki.Description}</p>";
+            } 
+            else 
+            {
+                output = "No url exists";
+            }
+            
 
             return base.Content(output, "text/html");
         }

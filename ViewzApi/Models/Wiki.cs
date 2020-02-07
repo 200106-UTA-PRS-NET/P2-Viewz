@@ -8,12 +8,16 @@ namespace ViewzApi
 {
     public class Wiki
     {
+        public Wiki()
+        {
+            Page = new HashSet<Page>();
+        }
+
         public int Id { get; set; }
+        public string Url { get; set; }
+        public string PageName { get; set; }
 
-        public string Name { get; set; }
-
-        public string Content { get; set; }
-
-        public List<Page> Pages { get; set; }
+        public string Description { get; set; }
+        public virtual ICollection<Page> Page { get; set; }
     }
 }
