@@ -12,11 +12,27 @@ namespace ViewzApi.Controllers
     [ApiController]
     public class WikiController : ControllerBase
     {
-        public static List<Wiki> Wikis = new List<Wiki>()
+        static List<Page> Pages = new List<Page>()
         {
-            new Wiki(){ Id=1, PageName="Wiki 1",Url = "url-of-wiki-1", Description="some description 1",Page=new List<Page>()},
-            new Wiki(){ Id=2, PageName="Wiki 2", Url = "url-of-wiki-2",Description="some description 2",Page=new List<Page>()},
-            new Wiki(){ Id=3, PageName="Wiki 3", Url = "url-of-wiki-3",Description="some description 3",Page=new List<Page>()}
+            new Page(){ PageId=1, WikiId=1, PageName="Page 1", Url="url-of-page-1",Content = "Content of Wiki 1 page 1", },
+            new Page(){ PageId=2, WikiId=1, PageName="Page 2", Url="url-of-page-2",Content = "Content of Wiki 1 page 2" },
+            new Page(){ PageId=3, WikiId=2, PageName="Page 1", Url="url-of-page-1",Content = "Content of Wiki 2 page 1" },
+            new Page(){ PageId=3, WikiId=3, PageName="Page 1", Url="url-of-page-1",Content = "Content of Wiki 3 page 1" }
+        };
+
+        static List<Wiki> Wikis = new List<Wiki>()
+        {
+            new Wiki(){ Id=1, PageName="Wiki 1",Url = "url-of-wiki-1", Description="some description 1",Page=new List<Page>()
+            {
+                Pages[0], Pages[1]
+            } },
+            new Wiki(){ Id=2, PageName="Wiki 2", Url = "url-of-wiki-2",Description="some description 2",Page=new List<Page>()
+            {
+                Pages[2]
+            } },
+            new Wiki(){ Id=3, PageName="Wiki 3", Url = "url-of-wiki-3",Description="some description 3",Page=new List<Page>(){
+                Pages[3]
+            } }
         };
 
         // GET: api/Wiki
@@ -36,13 +52,24 @@ namespace ViewzApi.Controllers
             {
                 var wiki = Wikis.FirstOrDefault(w => w.Url == url);
 
+
+
                 output = $"<h1>Wiki ID: {wiki.Id}</h1>";
                 output += $"<h3>{wiki.PageName}</h3>";
                 output += $"<p>{wiki.Description}</p>";
+
+                output += "<ul>";
+                //show pages
+                foreach (var p in wiki.Page)
+                {
+                    output += $"<li>{p.PageName}</li>";
+                }
+
+                output += "</ul>";
             } 
             else 
             {
-                output = "No url exists";
+                output = "No such wiki exists";
             }
             
 
