@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ViewzApp.Models;
-//using ProducerAPI
 
 namespace ViewzApp.Controllers
 {
@@ -21,21 +20,9 @@ namespace ViewzApp.Controllers
 
         public IActionResult Index()
         {
-            List<WikiHeaderVM> list = new List<WikiHeaderVM>();
-            //gathering list of info from PRODUCER API
-            //getfrompublicwikis() --returns JSON
-
-            //Parse JSON
-            // - foreach(item in JSON)
-            //          list.Add(new WikiHeaderVM(){name= , url = });
-
-            //Just to test view...
-            //limit = 2
-            list.Add(new WikiHeaderVM() { Name = "Pokemon", URL = "Route1" });
-            list.Add(new WikiHeaderVM() { Name = "Zelda", URL = "Route2" });
-            list.Add(new WikiHeaderVM() { Name = "Mario Kart", URL = "Route3" });
-            return View(list);
+            return View();
         }
+
 
         public IActionResult Privacy()
         {
@@ -44,6 +31,7 @@ namespace ViewzApp.Controllers
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
+
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }

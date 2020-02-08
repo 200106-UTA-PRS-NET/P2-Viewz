@@ -8,6 +8,6 @@ namespace ViewzApp.Models
     public class WikiHeaderVM
     {
         public string Name { get; set; }
-        public string URL { get; set; }
+        public string Route { get; set; }
     }
 }
