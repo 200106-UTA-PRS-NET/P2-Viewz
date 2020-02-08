@@ -14,7 +14,7 @@ namespace ViewzApi.Controllers
     {
         static List<Page> Pages = new List<Page>()
         {
-            new Page(){ PageId=1, WikiId=1, PageName="Page 1", Url="url-of-page-1",Content = "Content of Wiki 1 page 1", },
+            new Page(){ PageId=1, WikiId=1, PageName="Page 1", Url="url-of-page-1",Content = "Content of Wiki 1 page 1"},
             new Page(){ PageId=2, WikiId=1, PageName="Page 2", Url="url-of-page-2",Content = "Content of Wiki 1 page 2" },
             new Page(){ PageId=3, WikiId=2, PageName="Page 1", Url="url-of-page-1",Content = "Content of Wiki 2 page 1" },
             new Page(){ PageId=3, WikiId=3, PageName="Page 1", Url="url-of-page-1",Content = "Content of Wiki 3 page 1" }
@@ -43,39 +43,55 @@ namespace ViewzApi.Controllers
         }
 
         // GET: api/Wiki/5
-        [HttpGet("{url}", Name = "GetWiki")] 
-        
-        public ContentResult Get([FromRoute]string url, [FromQuery]bool Content=true)
+        //[HttpGet("{url}", Name = "GetWiki")] 
+
+        //public ContentResult Get([FromRoute]string url, [FromQuery]bool Content=true)
+        //{
+        //    string output;
+        //    if (Wikis.Exists(w => w.Url == url)) 
+        //    {
+        //        var wiki = Wikis.FirstOrDefault(w => w.Url == url);
+
+        //        output = $"<h1>Wiki ID: {wiki.Id}</h1>";
+        //        output += $"<h3>{wiki.PageName}</h3>";
+        //        output += $"<p>{wiki.Description}</p>";
+
+        //        output += "<ul>";
+        //        //show pages
+        //        foreach (var p in wiki.Page)
+        //        {
+        //            output += $"<li>{p.PageName}</li>";
+        //        }
+
+        //        output += "</ul>";
+        //    } 
+        //    else 
+        //    {
+        //        output = "No such wiki exists";
+        //    }
+
+
+        //    return base.Content(output, "text/html");
+        //}
+
+
+        [HttpGet("{url}", Name = "GetWiki")]
+
+        public Wiki Get([FromRoute]string url, [FromQuery]bool Content = true)
         {
-            string output;
-            if (Wikis.Exists(w => w.Url == url)) 
+            Wiki Wiki = new Wiki();
+
+            if (Wikis.Exists(w => w.Url == url))
             {
-                var wiki = Wikis.FirstOrDefault(w => w.Url == url);
-
-
-
-                output = $"<h1>Wiki ID: {wiki.Id}</h1>";
-                output += $"<h3>{wiki.PageName}</h3>";
-                output += $"<p>{wiki.Description}</p>";
-
-                output += "<ul>";
-                //show pages
-                foreach (var p in wiki.Page)
-                {
-                    output += $"<li>{p.PageName}</li>";
-                }
-
-                output += "</ul>";
-            } 
-            else 
-            {
-                output = "No such wiki exists";
+                Wiki = Wikis.FirstOrDefault(w => w.Url == url);
             }
-            
 
-            return base.Content(output, "text/html");
+            return Wiki;
         }
-         
+
+
+
+
         [HttpPost]
         public IActionResult Post([FromBody]Wiki wiki)
         {

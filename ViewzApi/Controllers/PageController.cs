@@ -14,7 +14,7 @@ namespace ViewzApi.Controllers
     {
         static List<Page> Pages = new List<Page>()
         {
-            new Page(){ PageId=1, WikiId=1, PageName="Page 1", Url="url-of-page-1",Content = "Content of Wiki 1 page 1", },
+            new Page(){ PageId=1, WikiId=1, PageName="Page 1", Url="url-of-page-1",Content = "Content of Wiki 1 page 1"},
             new Page(){ PageId=2, WikiId=1, PageName="Page 2", Url="url-of-page-2",Content = "Content of Wiki 1 page 2" },
             new Page(){ PageId=3, WikiId=2, PageName="Page 1", Url="url-of-page-1",Content = "Content of Wiki 2 page 1" },
             new Page(){ PageId=3, WikiId=3, PageName="Page 1", Url="url-of-page-1",Content = "Content of Wiki 3 page 1" }
@@ -39,48 +39,70 @@ namespace ViewzApi.Controllers
         {
         }
 
-        public ContentResult Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
+        //public ContentResult Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
+        //                bool details = true, bool html = true, bool content = true)
+        //{
+        //    string output = "";
+
+        //    if (Wikis.Exists(w => w.Url == WikiUrl))
+        //    {
+        //        var wiki = Wikis.FirstOrDefault(w => w.Url == WikiUrl);
+        //        var page = new Page();
+
+        //        //loop through all pages in the wiki
+        //        foreach (var p in wiki.Page) 
+        //        {
+        //            //if url matches a url from the wiki, set it to page variable
+        //            if (p.Url == PageUrl)
+        //            {
+        //                page = Pages.FirstOrDefault(p => p.Url == PageUrl);
+        //            }
+        //        }
+
+        //        //if url from page variable is not null, then output page
+        //        if (page.Url != null) 
+        //        {
+        //            output = $"<h1>Page ID: {page.PageId}</h1>";
+        //            output += $"<h3>{page.PageName}</h3>";
+        //            output += $"<p>{page.Content}</p>";
+        //        }
+        //        else
+        //        {
+        //            output = "<h3>page does not exist in wiki</h3>";
+        //        }
+
+        //    }
+        //    else
+        //    {
+        //        output = "No such url exists";
+        //    }
+
+
+        //    return base.Content(output, "text/html");
+        //}
+
+
+        public Page Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
                         bool details = true, bool html = true, bool content = true)
         {
-            string output = "";
+            var page = new Page();
 
             if (Wikis.Exists(w => w.Url == WikiUrl))
             {
                 var wiki = Wikis.FirstOrDefault(w => w.Url == WikiUrl);
-                var page = new Page();
-
+                
                 //loop through all pages in the wiki
-                foreach (var p in wiki.Page) 
+                foreach (var p in wiki.Page)
                 {
-                    //if url matches a url from the wiki, set it to page variable
                     if (p.Url == PageUrl)
                     {
-                        page = Pages.FirstOrDefault(p => p.Url == PageUrl);
+                        page = wiki.Page.FirstOrDefault(p => p.Url == PageUrl);
                     }
-                }
-
-                //if url from page variable is not null, then output page
-                if (page.Url != null) 
-                {
-                    output = $"<h1>Page ID: {page.PageId}</h1>";
-                    output += $"<h3>{page.PageName}</h3>";
-                    output += $"<p>{page.Content}</p>";
-                }
-                else
-                {
-                    output = "<h3>page does not exist in wiki</h3>";
-                }
-
-            }
-            else
-            {
-                output = "No such url exists";
+                } 
             }
 
-
-            return base.Content(output, "text/html");
+            return page;
         }
-
 
         [HttpPost]
         public IActionResult Post([FromBody]Page page)
