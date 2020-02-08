@@ -37,10 +37,7 @@ namespace ViewzApi.Controllers
 
         public PageController() 
         {
-            
         }
-
-        
 
         public ContentResult Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
                         bool details = true, bool html = true, bool content = true)
