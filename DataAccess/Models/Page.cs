@@ -7,6 +7,7 @@ namespace DataAccess.Models
     {
         public Page()
         {
+            Contents = new HashSet<Contents>();
             PageDetails = new HashSet<PageDetails>();
         }
 
@@ -14,9 +15,11 @@ namespace DataAccess.Models
         public long PageId { get; set; }
         public string Url { get; set; }
         public string PageName { get; set; }
-        public string Content { get; set; }
+        public string MdContent { get; set; }
+        public string HtmlContent { get; set; }
 
         public virtual Wiki Wiki { get; set; }
+        public virtual ICollection<Contents> Contents { get; set; }
         public virtual ICollection<PageDetails> PageDetails { get; set; }
     }
 }
