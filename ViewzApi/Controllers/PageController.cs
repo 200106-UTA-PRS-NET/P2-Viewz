@@ -40,36 +40,7 @@ namespace ViewzApi.Controllers
             
         }
 
-        //public string Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl, 
-        //                  bool details=true, bool html = true, bool content = true)
-        //{
-
-        //    return $"{WikiUrl} {PageUrl} {details} {html} {content} ";
-        //}
-
-        //public ContentResult Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
-        //                 bool details = true, bool html = true, bool content = true)
-        //{
-
-        //    string output;
-        //    if (Pages.Exists(p => p.Url == PageUrl) && Wikis.Exists(w => w.Url == WikiUrl))
-        //    {
-
-        //        var page = Pages.FirstOrDefault(p => p.Url == PageUrl);
-
-        //        output = $"<h1>Page ID: {page.PageId}</h1>";
-        //        output += $"<h3>{page.PageName}</h3>";
-        //        output += $"<p>{page.Content}</p>";
-        //    }
-        //    else
-        //    {
-        //        output = "No Url Exists";
-        //    }
-
-
-        //    return base.Content(output, "text/html");
-        //}
-
+        
 
         public ContentResult Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
                         bool details = true, bool html = true, bool content = true)
