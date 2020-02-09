@@ -21,7 +21,7 @@ steps:
     SonarCloud: 'SonarCloud'
     organization: 'jdf-revature'
     scannerMode: 'MSBuild'
-    projectKey: 'jdf.viewz.branch.api-service'
+    projectKey: 'jdf.viewz'
     extraProperties: |
         sonar.exclusions=**/wwwroot/lib/**/*,**/DataAccess/Models/**/*
         sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/*"
