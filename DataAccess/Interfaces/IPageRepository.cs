@@ -11,6 +11,6 @@ namespace DataAccess.Interfaces
         public string GetHTML(string wikiURL, string pageURL);
         // Setters
         public void SetMD(string wikiURL, string pageURL, string content);
-        public void SetHTML(string wikiURL, string pageURL, string content);
+        //public void SetHTML(string wikiURL, string pageURL, string content);
     }
 }
