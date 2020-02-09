@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XUnitTestProject1", "XUnitTestProject1\XUnitTestProject1.csproj", "{90535CB6-0BF8-4460-95BD-59690C31DBCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIAccess", "APIAccess\APIAccess.csproj", "{8D102775-E53A-449C-AFFD-9BA10E50B189}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIAccess", "APIAccess\APIAccess.csproj", "{8D102775-E53A-449C-AFFD-9BA10E50B189}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
