@@ -20,7 +20,7 @@ namespace DataAccess.Repositories
             return GetHTML(GetID(wikiURL, pageURL));
         }
 
-        string GetHTML(long pageID)
+        protected virtual string GetHTML(long pageID)
         {
             return (from contents in _db.PageHtmlContent
                     where contents.PageId == pageID
@@ -43,7 +43,7 @@ namespace DataAccess.Repositories
             return GetMD(GetID(wikiURL, pageURL));
         }
 
-        string GetMD(long pageID)
+        protected string GetMD(long pageID)
         {
             return (from contents in _db.PageMdContent
                     where contents.PageId == pageID
@@ -55,7 +55,7 @@ namespace DataAccess.Repositories
             SetHTML(GetID(wikiURL, pageURL), content);
         }
 
-        void SetHTML(long pageID, string content)
+        protected void SetHTML(long pageID, string content)
         {
             // TODO put in table split classes
             var pageHtml = (from contents in _db.PageHtmlContent
@@ -81,7 +81,7 @@ namespace DataAccess.Repositories
             SetMD(GetID(wikiURL, pageURL), content);
         }
 
-        void SetMD(long pageID, string content)
+        protected virtual void SetMD(long pageID, string content)
         {
             // TODO put in table split classes
             var pageMD = (from contents in _db.PageMdContent
@@ -100,6 +100,11 @@ namespace DataAccess.Repositories
                 });
             }
             _db.SaveChanges();
+        }
+
+        private protected void SetDetails(long pageID, IEnumerable<DataAccess.Storing.Contents> contents)
+        {
+            throw new NotImplementedException(); // TODO
         }
     }
 }
