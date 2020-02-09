@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DataAccess.Models
 {
-    public partial class ViewzDBContext : DbContext
+    public partial class ViewzDbContext : DbContext
     {
-        public ViewzDBContext()
+        public ViewzDbContext()
         {
         }
 
-        public ViewzDBContext(DbContextOptions<ViewzDBContext> options)
+        public ViewzDbContext(DbContextOptions<ViewzDbContext> options)
             : base(options)
         {
         }
@@ -34,7 +34,7 @@ namespace DataAccess.Models
             modelBuilder.Entity<Contents>(entity =>
             {
                 entity.HasKey(e => new { e.PageId, e.Id })
-                    .HasName("PK__tmp_ms_x__B790C1F771AE9A11");
+                    .HasName("PK__tmp_ms_x__B790C1F73E6B15DA");
 
                 entity.ToTable("contents", "wiki");
 
@@ -42,7 +42,7 @@ namespace DataAccess.Models
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .HasMaxLength(20)
+                    .HasMaxLength(255)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Content)
@@ -50,13 +50,11 @@ namespace DataAccess.Models
                     .HasColumnName("content")
                     .HasMaxLength(255);
 
-                entity.Property(e => e.WikiId).HasColumnName("wikiId");
-
                 entity.HasOne(d => d.Page)
                     .WithMany(p => p.Contents)
                     .HasForeignKey(d => d.PageId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__contents__pageId__5EBF139D");
+                    .HasConstraintName("FK__contents__pageId__76969D2E");
             });
 
             modelBuilder.Entity<Images>(entity =>
@@ -127,8 +125,6 @@ namespace DataAccess.Models
                     .HasColumnName("detValue")
                     .HasMaxLength(255)
                     .IsUnicode(false);
-
-                entity.Property(e => e.WikiId).HasColumnName("wikiId");
 
                 entity.HasOne(d => d.Page)
                     .WithMany(p => p.PageDetails)

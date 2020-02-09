@@ -5,7 +5,6 @@ namespace DataAccess.Models
 {
     public partial class Contents
     {
-        public int WikiId { get; set; }
         public long PageId { get; set; }
         public string Content { get; set; }
         public string Id { get; set; }
