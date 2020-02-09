@@ -6,7 +6,7 @@ using System.Text;
 namespace DataAccess.MockRepositories
 {
 
-    class MockPageRepository : IPageRepository
+    public class MockPageRepository : IPageRepository
     {
         class Page
         {
