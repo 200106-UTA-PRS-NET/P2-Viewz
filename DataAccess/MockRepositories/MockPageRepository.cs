@@ -52,5 +52,15 @@ namespace DataAccess.MockRepositories
         {
             notADatabase[wikiURL][pageURL].HTML = content;
         }
+
+        public void NewPage(string wikiURL, string pageURL, string content)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void NewPage(string wikiURL, string pageURL, string pageName, string content)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
