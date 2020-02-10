@@ -24,7 +24,7 @@ namespace DataAccess.Repositories
                 Console.WriteLine(e.ToString());
                 IHtmlAndContents result = _factory.GetResult(base.GetMD(pageID));
                 base.SetHTML(pageID, result.PageHTML);
-                base.SetDetails(pageID, result.Contents);
+                base.SetContents(pageID, result.Contents);
                 return result.PageHTML;
             }
         }

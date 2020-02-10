@@ -102,9 +102,27 @@ namespace DataAccess.Repositories
             _db.SaveChanges();
         }
 
-        private protected void SetDetails(long pageID, IEnumerable<DataAccess.Storing.Contents> contents)
+        private protected void SetContents(long pageID, IEnumerable<DataAccess.Storing.Contents> contents)
         {
             throw new NotImplementedException(); // TODO
+        }
+
+        public void NewPage(string wikiURL, string pageURL, string content)
+        {
+            NewPage(wikiURL, pageURL, pageURL, content);
+        }
+
+        public void NewPage(string wikiURL, string pageURL, string pageName, string content)
+        {
+            int wikiId = _db.Wiki.Where(o => o.Url == wikiURL).Select(o => o.Id).Single();
+            _db.Page.Add(new Models.Page()
+            {
+                WikiId = wikiId,
+                Url = pageURL,
+                PageName = pageName
+            });
+            _db.SaveChanges();
+            SetMD(wikiURL, pageURL, content);
         }
     }
 }
