@@ -8,7 +8,7 @@ namespace DataAccess.Repositories
 {
     internal class PageRepositoryStroring : PageRepositoryRetrieving
     {
-        internal PageRepositoryStroring(ViewzDbContext db, IApiConnectionFactory factory) : base(db, factory)
+        internal PageRepositoryStroring(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db, factory)
         {
         }
 
@@ -17,7 +17,7 @@ namespace DataAccess.Repositories
             base.SetMD(pageID, content);
             try
             {
-                IApiResult result = _factory.GetResult(content);
+                IHtmlAndContents result = _factory.GetResult(content);
                 base.SetHTML(pageID, result.PageHTML);
                 base.SetDetails(pageID, result.Contents);
             } catch (Exception e)

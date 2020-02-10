@@ -4,8 +4,8 @@ using System.Text;
 
 namespace DataAccess.Interfaces
 {
-    interface IApiConnectionFactory
+    interface IMdToHtmlAndContentsFactory
     {
-        internal IApiResult GetResult(string markDown);
+        internal IHtmlAndContents GetResult(string markDown);
     }
 }
