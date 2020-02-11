@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DataAccess.Interfaces
 {
-    interface IMdToHtmlAndContentsFactory
+    public interface IMdToHtmlAndContentsFactory
     {
-        internal IHtmlAndContents GetResult(string markDown);
+        public IHtmlAndContents GetResult(string markDown);
     }
 }

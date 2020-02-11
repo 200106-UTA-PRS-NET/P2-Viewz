@@ -5,9 +5,9 @@ using System.Text;
 
 namespace DataAccess.Interfaces
 {
-    interface IHtmlAndContents
+    public interface IHtmlAndContents
     {
-        IEnumerable<Contents> Contents { get; }
-        string PageHTML { get; }
+        public IEnumerable<Contents> Contents { get;}
+        public string PageHTML { get; }
     }
 }
