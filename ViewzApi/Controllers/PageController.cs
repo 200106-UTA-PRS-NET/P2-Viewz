@@ -26,14 +26,16 @@ namespace ViewzApi.Controllers
         {
             try
             {
+                //sets content in page based on Html bool, if true return html
+                //else gives back Md
                 if (html)
                 {
-                    //return _repository.GetHTML(WikiUrl, PageUrl);
-                    return new Page() { HtmlContent = _repository.GetHTML(WikiUrl, PageUrl)  };
+                    
+                    return new Page() { Content = _repository.GetHTML(WikiUrl, PageUrl)  };
                 }
                 else
                 {
-                    return new Page() {MdContent = _repository.GetMD(WikiUrl, PageUrl) };
+                    return new Page() { Content = _repository.GetMD(WikiUrl, PageUrl) };
                 } 
             }
             catch (Exception e)

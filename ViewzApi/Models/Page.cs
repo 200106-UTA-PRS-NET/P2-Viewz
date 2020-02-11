@@ -19,9 +19,10 @@ namespace ViewzApi
         public string Url { get; set; }
         public string PageName { get; set; }
 
-        public string HtmlContent { get; set; }
-        public string MdContent { get; set; }
+        //public string HtmlContent { get; set; }
+        //public string MdContent { get; set; }
 
+        public string Content { get; set; }
         //public virtual Wiki Wiki { get; set; }
         //public virtual PageHtmlContent PageHtmlContent { get; set; }
         //public virtual PageMdContent PageMdContent { get; set; }
