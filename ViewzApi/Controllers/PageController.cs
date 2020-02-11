@@ -46,29 +46,26 @@ namespace ViewzApi.Controllers
 
         }
         
-
-
-        //[HttpPost]
-        //public void Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody] string content)
-        //{
-        //    _repository.NewPage(WikiUrl, PageUrl, content);
-        //    _repository.SetMD(WikiUrl, PageUrl, content);
-        //}
-
-
-        //[HttpPost]
-        //public void Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody] string PageName, [FromBody] string content)
-        //{
-        //    _repository.NewPage(WikiUrl, PageUrl, PageName, content);
-        //    _repository.SetMD(WikiUrl, PageUrl, content);
-        //}
-
-
-        [HttpPut]
-        public void Put()
+        [HttpPost]
+        public void Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
         {
-            
+            if(page.PageName != null)
+            {
+                _repository.NewPage(WikiUrl, PageUrl, page.PageName, page.Content);
+            }
+            else{
+               _repository.NewPage(WikiUrl, PageUrl, page.Content);
+            }
+        
+            _repository.SetMD(WikiUrl, PageUrl, page.Content);
         }
+    
+
+        //[HttpPut]
+        //public void Put()
+        //{
+            
+        //}
 
 
 
