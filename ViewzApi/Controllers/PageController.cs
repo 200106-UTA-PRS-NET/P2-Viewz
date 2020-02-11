@@ -31,7 +31,6 @@ namespace ViewzApi.Controllers
                     //return _repository.GetHTML(WikiUrl, PageUrl);
                     return new Page() { HtmlContent = _repository.GetHTML(WikiUrl, PageUrl)  };
                 }
-
                 else
                 {
                     return new Page() {MdContent = _repository.GetMD(WikiUrl, PageUrl) };
