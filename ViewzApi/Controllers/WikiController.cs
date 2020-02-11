@@ -12,6 +12,7 @@ namespace ViewzApi.Controllers
     [ApiController]
     public class WikiController : ControllerBase
     {
+        /*
         static List<Page> Pages = new List<Page>()
         {
             new Page(){ PageId=1, WikiId=1, PageName="Page 1", Url="url-of-page-1",Content = "Content of Wiki 1 page 1"},
@@ -34,14 +35,15 @@ namespace ViewzApi.Controllers
                 Pages[3]
             } }
         };
-
+        */
         // GET: api/Wiki
-        [HttpGet]
-        public IEnumerable<Wiki> Get()
-        {
-            return Wikis;
-        }
+        //[HttpGet]
+        //public IEnumerable<Wiki> Get()
+        //{
+        //    return Wikis;
+        //}
 
+        /*
         // GET: api/Wiki/5
         //[HttpGet("{url}", Name = "GetWiki")] 
 
@@ -75,29 +77,35 @@ namespace ViewzApi.Controllers
         //}
 
 
-        [HttpGet("{url}", Name = "GetWiki")]
+        */
 
-        public Wiki Get([FromRoute]string url, [FromQuery]bool Content = true)
-        {
-            Wiki Wiki = new Wiki();
+        //api/wiki/url-of-wiki
+        //[HttpGet("{url}", Name = "GetWiki")]
+        //public Wiki Get([FromRoute]string url, [FromQuery]bool Content = true)
+        //{
+        //    Wiki Wiki = new Wiki();
 
-            if (Wikis.Exists(w => w.Url == url))
-            {
-                Wiki = Wikis.FirstOrDefault(w => w.Url == url);
-            }
+        //    if (Wikis.Exists(w => w.Url == url))
+        //    {
+        //        Wiki = Wikis.FirstOrDefault(w => w.Url == url);
+        //    }
 
-            return Wiki;
-        }
+        //    return Wiki;
+        //}
 
+        //public WikiHtmlDescription Get() 
+        //{
+             
+        //    return _repository.WikiHtmlDescription();
+        //}
+         
+        //
+        //[HttpPost]
+        //public IActionResult Post([FromBody]Wiki wiki)
+        //{
+        //    Wikis.Add(wiki);
 
-
-
-        [HttpPost]
-        public IActionResult Post([FromBody]Wiki wiki)
-        {
-            Wikis.Add(wiki);
-
-            return Ok($"{ wiki.Id} is added");
-        }
+        //    return Ok($"{ wiki.Id} is added");
+        //}
     }
 }
