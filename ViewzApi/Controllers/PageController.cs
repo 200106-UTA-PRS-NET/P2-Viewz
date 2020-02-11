@@ -21,33 +21,36 @@ namespace ViewzApi.Controllers
          
         //url from db
         //api/wiki/training-code/readme/?html=false
-        public Page Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
+        public IActionResult Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
                         bool details = true, bool html = true, bool content = true)
         {
             try
             {
                 //sets content in page based on Html bool, if true return html
                 //else gives back Md
+                Page page;
                 if (html)
                 {
                     
-                    return new Page() { Content = _repository.GetHTML(WikiUrl, PageUrl)  };
+                    page = new Page() { Content = _repository.GetHTML(WikiUrl, PageUrl)  };
                 }
                 else
                 {
-                    return new Page() { Content = _repository.GetMD(WikiUrl, PageUrl) };
-                } 
+                    page = new Page() { Content = _repository.GetMD(WikiUrl, PageUrl) };
+                }
+
+                return Ok(page);
             }
             catch (Exception e)
             {
                 base.Content($"{e.ToString()}", "text/html");
-                return new Page();
+                return BadRequest();
             }
 
         }
         
         [HttpPost]
-        public void Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
+        public IActionResult Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
         {
             try
             {
@@ -60,19 +63,37 @@ namespace ViewzApi.Controllers
                     _repository.NewPage(WikiUrl, PageUrl, page.Content);
                 }
 
-                _repository.SetMD(WikiUrl, PageUrl, page.Content);
+                //_repository.SetMD(WikiUrl, PageUrl, page.Content);
+                return CreatedAtRoute($"api/wiki/{WikiUrl}/{PageUrl}", page);
             }
             catch (Exception e) {
                 base.Content($"{e.ToString()}", "text/html");
+                return BadRequest();
             }
         }
-    
 
-        //[HttpPut]
-        //public void Put()
-        //{
+
+        [HttpPut]
+        public IActionResult Put([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
+        {
+
+            if (page.Content == null && page.PageName == null)
+            {
+                return BadRequest();
+            }
+            //if (page.PageName != null)
+            //{
+            //    //_repository.SetMD(WikiUrl, PageUrl, page.PageName, page.Content);
+            //}
+
+            if (page.Content != null)
+            {
+                _repository.SetMD(WikiUrl, PageUrl, page.Content);
+               
+            }
             
-        //}
+            return NoContent();
+        }
 
 
 
