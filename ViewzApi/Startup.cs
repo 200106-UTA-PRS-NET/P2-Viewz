@@ -2,6 +2,7 @@ using DataAccess.Interfaces;
 using DataAccess.MockRepositories;
 using DataAccess.Models;
 using DataAccess.Repositories;
+using DataAccess.APIAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,8 +35,9 @@ namespace ViewzApi
             services.AddDbContext<ViewzDbContext>(options =>
                options.UseSqlServer(
                    Configuration.GetConnectionString("ViewzDb")));
-             
-            services.AddTransient<IPageRepository, PageRepositoryRetrieving>(); 
+
+            services.AddSingleton<IMdToHtmlAndContentsFactory, MdToHtmlAndContentsFactory>();
+            services.AddScoped<IPageRepository, PageRepositoryRetrieving>(); 
              
         }
 
