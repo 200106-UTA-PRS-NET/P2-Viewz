@@ -49,15 +49,22 @@ namespace ViewzApi.Controllers
         [HttpPost]
         public void Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
         {
-            if(page.PageName != null)
+            try
             {
-                _repository.NewPage(WikiUrl, PageUrl, page.PageName, page.Content);
+                if (page.PageName != null)
+                {
+                    _repository.NewPage(WikiUrl, PageUrl, page.PageName, page.Content);
+                }
+                else
+                {
+                    _repository.NewPage(WikiUrl, PageUrl, page.Content);
+                }
+
+                _repository.SetMD(WikiUrl, PageUrl, page.Content);
             }
-            else{
-               _repository.NewPage(WikiUrl, PageUrl, page.Content);
+            catch (Exception e) {
+                base.Content($"{e.ToString()}", "text/html");
             }
-        
-            _repository.SetMD(WikiUrl, PageUrl, page.Content);
         }
     
 
