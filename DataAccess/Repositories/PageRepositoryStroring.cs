@@ -6,9 +6,9 @@ using System.Text;
 
 namespace DataAccess.Repositories
 {
-    internal class PageRepositoryStroring : PageRepositoryRetrieving
+    public class PageRepositoryStroring : PageRepositoryRetrieving
     {
-        internal PageRepositoryStroring(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db, factory)
+        public PageRepositoryStroring(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db, factory)
         {
         }
 

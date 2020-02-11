@@ -104,7 +104,7 @@ namespace DataAccess.Repositories
 
         private protected void SetContents(long pageID, IEnumerable<DataAccess.Storing.Contents> contents)
         {
-            throw new NotImplementedException(); // TODO
+            // TODO throw new NotImplementedException(); // TODO
         }
 
         public void NewPage(string wikiURL, string pageURL, string content)

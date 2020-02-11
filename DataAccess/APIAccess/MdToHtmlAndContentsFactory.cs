@@ -7,15 +7,21 @@ using DataAccess.Interfaces;
 
 namespace DataAccess.APIAccess
 {
-    public class MdToHtmlAndContentsFactory
+    public class MdToHtmlAndContentsFactory : IMdToHtmlAndContentsFactory
     {
+        private HttpClient client;
+
+        public MdToHtmlAndContentsFactory()
+        {
+            client = new HttpClient();
+            client.DefaultRequestHeaders.Add("User-Agent", "P2-Viewz");
+        }
         public IHtmlAndContents GetResult(string markDown)
         {
             return GetResultAsync(markDown).Result;
         }
         private async Task<IHtmlAndContents> GetResultAsync(string markDown)
         {
-            HttpClient client = new HttpClient();
             try
             {
                 var content = new StringContent(markDown, Encoding.UTF8, "text/plain");

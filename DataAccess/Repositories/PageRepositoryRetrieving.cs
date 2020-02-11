@@ -6,10 +6,10 @@ using System.Text;
 
 namespace DataAccess.Repositories
 {
-    internal class PageRepositoryRetrieving : PageRepository
+    public class PageRepositoryRetrieving : PageRepository
     {
         protected readonly IMdToHtmlAndContentsFactory _factory;
-        internal PageRepositoryRetrieving(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db)
+        public PageRepositoryRetrieving(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db)
         {
             _factory = factory;
         }
