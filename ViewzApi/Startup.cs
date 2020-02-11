@@ -27,16 +27,19 @@ namespace ViewzApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
-
+             
             //ADD CORS
             // services.AddCors();
-
+             
             services.AddDbContext<ViewzDbContext>(options =>
                options.UseSqlServer(
                    Configuration.GetConnectionString("ViewzDb")));
 
+
             services.AddTransient<IPageRepository, PageRepositoryRetrieving>(); 
+
+
+
         
         }
 

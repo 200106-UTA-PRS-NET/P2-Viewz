@@ -8,7 +8,7 @@ namespace DataAccess.Repositories
 {
     public class PageRepositoryRetrieving : PageRepository, IPageRepository
     {
-        protected readonly IMdToHtmlAndContentsFactory _factory;
+        public readonly IMdToHtmlAndContentsFactory _factory;
         internal PageRepositoryRetrieving(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db)
         {
             _factory = factory;
