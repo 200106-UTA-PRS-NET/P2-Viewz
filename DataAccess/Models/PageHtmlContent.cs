@@ -3,11 +3,10 @@ using System.Collections.Generic;
 
 namespace DataAccess.Models
 {
-    public partial class PageDetails
+    public partial class PageHtmlContent
     {
         public long PageId { get; set; }
-        public string DetKey { get; set; }
-        public string DetValue { get; set; }
+        public string HtmlContent { get; set; }
 
         public virtual Page Page { get; set; }
     }
