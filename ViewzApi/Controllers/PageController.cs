@@ -4,8 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using ViewzApi.Models;
+using Microsoft.AspNetCore.Mvc; 
 
 namespace ViewzApi.Controllers
 {
@@ -24,8 +23,7 @@ namespace ViewzApi.Controllers
         //api/wiki/training-code/readme/?html=false
         public string Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
                         bool details = true, bool html = true, bool content = true)
-        { 
-
+        {  
             if (html)
             {
                 return _repository.GetHTML(WikiUrl, PageUrl);
