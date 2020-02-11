@@ -23,30 +23,49 @@ namespace ViewzApi.Controllers
         //api/wiki/training-code/readme/?html=false
         public string Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
                         bool details = true, bool html = true, bool content = true)
-        {  
-            if (html)
+        {
+            try
             {
-                return _repository.GetHTML(WikiUrl, PageUrl);
+                if (html)
+                {
+                    return _repository.GetHTML(WikiUrl, PageUrl);
+                }
+
+                else
+                {
+                    return _repository.GetMD(WikiUrl, PageUrl);
+                }
             }
-            else 
+            catch (Exception e)
             {
-                return _repository.GetMD(WikiUrl, PageUrl);
+                return e.ToString();
             }
-            
+
         }
         
- 
-        //public void Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl,[FromForm] string content)
-        //{
-        //    _repository.NewPage(WikiUrl, PageUrl, content);
-        //    _repository.SetMD(WikiUrl, PageUrl, content);
-        //}
 
-        //public void Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromForm] string PageName,[FromForm] string content)
-        //{
-        //    _repository.NewPage(WikiUrl, PageUrl, PageName, content);
-        //    _repository.SetMD(WikiUrl, PageUrl, content);
-        //}
+
+        [HttpPost]
+        public void Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody] string content)
+        {
+            _repository.NewPage(WikiUrl, PageUrl, content);
+            _repository.SetMD(WikiUrl, PageUrl, content);
+        }
+
+
+        [HttpPost]
+        public void Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody] string PageName, [FromBody] string content)
+        {
+            _repository.NewPage(WikiUrl, PageUrl, PageName, content);
+            _repository.SetMD(WikiUrl, PageUrl, content);
+        }
+
+
+        [HttpPut]
+        public void Put()
+        {
+            
+        }
 
 
 
