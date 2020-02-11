@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 
 namespace ViewzApi.Models
 {
-    public class PageDetails
+    public class Contents
     {
-        //public int WikiId { get; set; }
         public long PageId { get; set; }
-        public string DetKey { get; set; }
-        public string DetValue { get; set; } 
+        public string Content { get; set; }
+        public string Id { get; set; } 
         public virtual Page Page { get; set; }
     }
 }
