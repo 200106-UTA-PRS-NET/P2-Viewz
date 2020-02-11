@@ -8,8 +8,8 @@ namespace DataAccess.Repositories
 {
     internal class PageRepositoryRetrieving : PageRepository
     {
-        protected readonly IApiConnectionFactory _factory;
-        internal PageRepositoryRetrieving(ViewzDbContext db, IApiConnectionFactory factory) : base(db)
+        protected readonly IMdToHtmlAndContentsFactory _factory;
+        internal PageRepositoryRetrieving(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db)
         {
             _factory = factory;
         }
@@ -22,9 +22,9 @@ namespace DataAccess.Repositories
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
-                IApiResult result = _factory.GetResult(base.GetMD(pageID));
+                IHtmlAndContents result = _factory.GetResult(base.GetMD(pageID));
                 base.SetHTML(pageID, result.PageHTML);
-                base.SetDetails(pageID, result.Contents);
+                base.SetContents(pageID, result.Contents);
                 return result.PageHTML;
             }
         }

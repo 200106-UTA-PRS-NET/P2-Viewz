@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DataAccess.Interfaces
 {
-    interface IApiResult
+    interface IHtmlAndContents
     {
         IEnumerable<Contents> Contents { get; }
         string PageHTML { get; }
