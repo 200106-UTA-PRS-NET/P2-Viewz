@@ -34,8 +34,7 @@ namespace ViewzApi
             services.AddDbContext<ViewzDbContext>(options =>
                options.UseSqlServer(
                    Configuration.GetConnectionString("ViewzDb")));
-
-
+             
             services.AddTransient<IPageRepository, PageRepositoryRetrieving>(); 
              
         }

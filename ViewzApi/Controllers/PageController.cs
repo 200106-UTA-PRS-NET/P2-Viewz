@@ -21,24 +21,26 @@ namespace ViewzApi.Controllers
          
         //url from db
         //api/wiki/training-code/readme/?html=false
-        public string Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
+        public Page Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
                         bool details = true, bool html = true, bool content = true)
         {
             try
             {
                 if (html)
                 {
-                    return _repository.GetHTML(WikiUrl, PageUrl);
+                    //return _repository.GetHTML(WikiUrl, PageUrl);
+                    return new Page() { HtmlContent = _repository.GetHTML(WikiUrl, PageUrl)  };
                 }
 
                 else
                 {
-                    return _repository.GetMD(WikiUrl, PageUrl);
-                }
+                    return new Page() {MdContent = _repository.GetMD(WikiUrl, PageUrl) };
+                } 
             }
             catch (Exception e)
             {
-                return e.ToString();
+                base.Content($"{e.ToString()}", "text/html");
+                return new Page();
             }
 
         }
