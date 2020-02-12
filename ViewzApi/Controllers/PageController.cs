@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc; 
+using Microsoft.AspNetCore.Mvc;
+using ViewzApi.Models;
 
 namespace ViewzApi.Controllers
 {
@@ -26,13 +27,30 @@ namespace ViewzApi.Controllers
         {
             try
             {
-                //sets content in page based on Html bool, if true return html
+                //sets content in page based on Html bool, if true sets html
                 //else gives back Md
                 Page page;
+                PageDetails pageDetails;
+                Contents contents;
+                /*
+                Page page = new Page();
+                if(details)
+                {
+                    //get pageDetails, set it to pageDetails variable
+                    page.PageDetails.Add(pageDetails);
+                    
+                } 
+                if(content)
+                {
+                    //get Contents, set it to contents variable
+                    page.Contents.Add(contents);
+                }
+                */
                 if (html)
                 {
                     
                     page = new Page() { Content = _repository.GetHTML(WikiUrl, PageUrl)  };
+                    
                 }
                 else
                 {
@@ -62,6 +80,10 @@ namespace ViewzApi.Controllers
                 {
                     _repository.NewPage(WikiUrl, PageUrl, page.Content);
                 }
+
+                /*
+                    _repository.SetPageDetails 
+                */
 
                 return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl, PageUrl }, value: null);
             }

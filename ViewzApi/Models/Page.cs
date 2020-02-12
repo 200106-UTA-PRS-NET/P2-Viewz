@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ViewzApi.Models;
 
-namespace ViewzApi
+namespace ViewzApi.Models
 {
     public class Page
     {
