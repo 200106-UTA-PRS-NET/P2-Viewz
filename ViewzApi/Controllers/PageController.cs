@@ -35,7 +35,7 @@ namespace ViewzApi.Controllers
                     Contents = (content) ? repoPage.Contents:null,
                     WikiUrl = WikiUrl,
                     Url = PageUrl,
-                    PageName = (repoPage.PageName!=null)?repoPage.PageName:PageUrl
+                    PageName = repoPage.PageName ?? PageUrl
                 }; 
                  
                 return Ok(page);
@@ -61,11 +61,7 @@ namespace ViewzApi.Controllers
                 {
                     _repository.NewPage(WikiUrl, PageUrl, page.Content);
                 }
-
-                /*
-                    _repository.SetPageDetails 
-                */
-
+                
                 return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl, PageUrl }, value: null);
             }
             catch (Exception e)
@@ -76,37 +72,31 @@ namespace ViewzApi.Controllers
         }
 
         
-        [HttpPut]
-        public IActionResult Put([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
-        {
+        [HttpPatch]
+        public IActionResult Patch([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
+        { 
+            if (page.Content == null && page.PageName == null && page.Details == null)
+            {
+                return BadRequest();
+            }
 
-            //if (page.Content == null && page.PageName == null)
-            //{
-            //    return BadRequest();
-            //}
-            ////if (page.PageName != null)
-            ////{
-            ////    //_repository.SetMD(WikiUrl, PageUrl, page.PageName, page.Content);
-            ////}
+            if (page.PageName != null)
+            {
+                _repository.SetName(WikiUrl, PageUrl, page.PageName);
+            }
 
-            //if (page.Content != null)
-            //{
-            //    _repository.SetMD(WikiUrl, PageUrl, page.Content);
-               
-            //}
-            
+            if (page.Content != null)
+            {
+                _repository.SetMD(WikiUrl, PageUrl, page.Content);
+
+            }
+
+            if (page.Details != null) 
+            {
+                _repository.SetPageDetails(WikiUrl, PageUrl, page.Details);
+            }
+
             return NoContent();
-        }
-
-
-        //[HttpPatch]
-        //public IActionResult Patch([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page) 
-        //{
-
-        //    return NoContent();
-        //}
-
-
-
+        } 
     }
 }
