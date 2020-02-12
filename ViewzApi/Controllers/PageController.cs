@@ -29,7 +29,7 @@ namespace ViewzApi.Controllers
             {
                 //sets content in page based on Html bool, if true sets html
                 //else gives back Md
-                Page page;
+                DataAccess.Storing.Page page;
                 PageDetails pageDetails;
                 Contents contents;
                 /*
@@ -37,24 +37,26 @@ namespace ViewzApi.Controllers
                 if(details)
                 {
                     //get pageDetails, set it to pageDetails variable
-                    page.PageDetails.Add(pageDetails);
+                    //page.PageDetails.Add(pageDetails);
                     
                 } 
                 if(content)
                 {
                     //get Contents, set it to contents variable
-                    page.Contents.Add(contents);
+                    //page.Contents.Add(contents);
                 }
                 */
                 if (html)
                 {
-                    
-                    page = new Page() { Content = _repository.GetHTML(WikiUrl, PageUrl)  };
-                    
+
+                    //page = new Page() { Content = _repository.GetHTML(WikiUrl, PageUrl)  };
+                    page =  _repository.GetPageWithHTML(WikiUrl, PageUrl) ;
+
                 }
                 else
                 {
-                    page = new Page() { Content = _repository.GetMD(WikiUrl, PageUrl) };
+                    //page = new Page() { Content = _repository.GetMD(WikiUrl, PageUrl) };
+                    page = _repository.GetPageWithMD(WikiUrl, PageUrl);
                 }
 
                 return Ok(page);
