@@ -7,10 +7,9 @@ using DataAccess.Interfaces;
 
 namespace DataAccess.APIAccess
 {
-    public class MdToHtmlAndContentsFactory : IMdToHtmlAndContentsFactory
+    public class MdToHtmlAndContentsFactory: IMdToHtmlAndContentsFactory
     {
-        private HttpClient client;
-
+        protected HttpClient client;
         public MdToHtmlAndContentsFactory()
         {
             client = new HttpClient();

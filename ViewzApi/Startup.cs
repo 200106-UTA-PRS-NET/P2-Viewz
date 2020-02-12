@@ -1,11 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DataAccess.Interfaces;
+using DataAccess.MockRepositories;
+using DataAccess.Models;
+using DataAccess.Repositories;
+using DataAccess.APIAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +28,17 @@ namespace ViewzApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+             
+            //ADD CORS
+            // services.AddCors();
+             
+            services.AddDbContext<ViewzDbContext>(options =>
+               options.UseSqlServer(
+                   Configuration.GetConnectionString("ViewzDb")));
+
+            services.AddSingleton<IMdToHtmlAndContentsFactory, MdToHtmlAndContentsFactory>();
+            services.AddScoped<IPageRepository, PageRepositoryRetrieving>(); 
+             
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,6 +50,11 @@ namespace ViewzApi
             }
 
             app.UseHttpsRedirection();
+
+
+            //USE CORS
+            //app.UseCors();
+
 
             app.UseRouting();
 
