@@ -10,7 +10,7 @@ using HtmlAgilityPack;
 
 namespace DataAccess.APIAccess
 {
-    public class MdToHtmlAndContentsFactory
+    public class MdToHtmlAndContentsFactory : IMdToHtmlAndContentsFactory
     {
         public IHtmlAndContents GetResult(string markDown)
         {
