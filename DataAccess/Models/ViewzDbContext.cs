@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DataAccess.Models
 {
-    public partial class ViewzDBContext : DbContext
+    public partial class ViewzDbContext : DbContext
     {
-        public ViewzDBContext()
+        public ViewzDbContext()
         {
         }
 
-        public ViewzDBContext(DbContextOptions<ViewzDBContext> options)
+        public ViewzDbContext(DbContextOptions<ViewzDbContext> options)
             : base(options)
         {
         }
