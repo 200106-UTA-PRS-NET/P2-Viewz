@@ -13,6 +13,10 @@
     <Folder Include="Views\WikiSettings\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+  </ItemGroup>
+
 
 
 </Project>
