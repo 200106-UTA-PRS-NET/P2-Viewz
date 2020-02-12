@@ -13,7 +13,7 @@ variables:
 
 jobs:
 - job: DeployMaster
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(always(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
   steps:
   - script: dotnet build --configuration $(buildConfiguration)
     displayName: 'dotnet build $(buildConfiguration)'
@@ -39,7 +39,7 @@ jobs:
       package: '$(System.DefaultWorkingDirectory)/ViewzApi/**/*.zip'
 
 - job: DeployAPICanary
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/api-service'), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(always(), eq(variables['Build.SourceBranch'], 'refs/heads/api-service'), ne(variables['Build.Reason'], 'PullRequest'))
   steps:
   - script: dotnet build --configuration $(buildConfiguration)
     displayName: 'dotnet build $(buildConfiguration)'
@@ -59,7 +59,7 @@ jobs:
       package: '$(System.DefaultWorkingDirectory)/ViewzApi/**/*.zip'
 
 - job: PullRequest
-  condition: eq(variables['Build.Reason'], 'PullRequest')
+  condition: and(always(), eq(variables['Build.Reason'], 'PullRequest'))
   steps:
   - task: SonarCloudPrepare@1
     inputs:
@@ -88,7 +88,7 @@ jobs:
       pollingTimeoutSec: '300'
 
 - job: EverythingElse
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(always(), ne(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
   steps:
   - task: SonarCloudPrepare@1
     inputs:
