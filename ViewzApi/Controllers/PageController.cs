@@ -18,7 +18,7 @@ namespace ViewzApi.Controllers
         { 
             _repository = repository; 
         }
-         
+
         //url from db
         //api/wiki/training-code/readme/?html=false
         public IActionResult Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
@@ -63,8 +63,7 @@ namespace ViewzApi.Controllers
                     _repository.NewPage(WikiUrl, PageUrl, page.Content);
                 }
 
-                //_repository.SetMD(WikiUrl, PageUrl, page.Content);
-                return CreatedAtRoute($"api/wiki/{WikiUrl}/{PageUrl}", page);
+                return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl, PageUrl }, value: null);
             }
             catch (Exception e) {
                 base.Content($"{e.ToString()}", "text/html");
