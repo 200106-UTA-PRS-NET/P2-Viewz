@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DataAccess.Models
 {
-    public partial class ViewzDbContext : DbContext
+    public partial class ViewzDBContext : DbContext
     {
-        public ViewzDbContext()
+        public ViewzDBContext()
         {
         }
 
-        public ViewzDbContext(DbContextOptions<ViewzDbContext> options)
+        public ViewzDBContext(DbContextOptions<ViewzDBContext> options)
             : base(options)
         {
         }
@@ -101,9 +101,12 @@ namespace DataAccess.Models
 
                 entity.Property(e => e.PageId).HasColumnName("pageId");
 
+                entity.Property(e => e.HitCount).HasColumnName("hitCount");
+
                 entity.Property(e => e.PageName).HasColumnType("ntext");
 
                 entity.Property(e => e.Url)
+                    .IsRequired()
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
@@ -194,12 +197,15 @@ namespace DataAccess.Models
                 entity.ToTable("wiki", "wiki");
 
                 entity.HasIndex(e => e.Url)
-                    .HasName("UQ__wiki__C5B214316D7F0DFB")
+                    .HasName("UQ__wiki__C5B214314968C6DB")
                     .IsUnique();
+
+                entity.Property(e => e.HitCount).HasColumnName("hitCount");
 
                 entity.Property(e => e.PageName).HasColumnType("ntext");
 
                 entity.Property(e => e.Url)
+                    .IsRequired()
                     .HasMaxLength(255)
                     .IsUnicode(false);
             });
