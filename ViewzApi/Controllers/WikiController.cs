@@ -26,11 +26,13 @@ namespace ViewzApi.Controllers
         //    return Wikis;//from repository
         //}
 
-        //GET: api/Wiki
-        [HttpGet]
+        //GET: api/Wiki/some-url
+        //[HttpGet]
+        [HttpGet("{WikiURL}", Name = "GetPopularPages")]
         public IEnumerable<DataAccess.Storing.Page> Get([FromRoute]string WikiURL)
         {
              return _repository.GetPopularPages(WikiURL,5);
+            
         }
 
         /*
