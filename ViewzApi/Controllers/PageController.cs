@@ -68,32 +68,33 @@ namespace ViewzApi.Controllers
             }
 
         }
-        
-        //[HttpPost]
-        //public IActionResult Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
-        //{
-        //    try
-        //    {
-        //        if (page.PageName != null)
-        //        {
-        //            _repository.NewPage(WikiUrl, PageUrl, page.PageName, page.Content);
-        //        }
-        //        else
-        //        {
-        //            _repository.NewPage(WikiUrl, PageUrl, page.Content);
-        //        }
 
-        //        /*
-        //            _repository.SetPageDetails 
-        //        */
+        [HttpPost]
+        public IActionResult Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
+        {
+            try
+            {
+                if (page.PageName != null)
+                {
+                    _repository.NewPage(WikiUrl, PageUrl, page.PageName, page.MdContent);
+                }
+                else
+                {
+                    _repository.NewPage(WikiUrl, PageUrl, page.MdContent);
+                }
 
-        //        return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl, PageUrl }, value: null);
-        //    }
-        //    catch (Exception e) {
-        //        base.Content($"{e.ToString()}", "text/html");
-        //        return BadRequest();
-        //    }
-        //}
+                /*
+                    _repository.SetPageDetails 
+                */
+
+                return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl, PageUrl }, value: null);
+            }
+            catch (Exception e)
+            {
+                base.Content($"{e.ToString()}", "text/html");
+                return BadRequest();
+            }
+        }
 
 
         [HttpPut]
