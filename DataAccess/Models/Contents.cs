@@ -8,6 +8,8 @@ namespace DataAccess.Models
         public long PageId { get; set; }
         public string Content { get; set; }
         public string Id { get; set; }
+        public int Order { get; set; }
+        public int Level { get; set; }
 
         public virtual Page Page { get; set; }
     }
