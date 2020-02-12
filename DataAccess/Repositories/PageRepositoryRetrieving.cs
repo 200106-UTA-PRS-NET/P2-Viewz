@@ -20,9 +20,8 @@ namespace DataAccess.Repositories
             {
                 return base.GetHTML(pageID);
             }
-            catch (Exception e)
+            catch (InvalidOperationException)
             {
-                Console.WriteLine(e.ToString());
                 IHtmlAndContents result = _factory.GetResult(base.GetMD(pageID));
                 base.SetHTML(pageID, result.PageHTML);
                 base.SetContents(pageID, result.Contents);

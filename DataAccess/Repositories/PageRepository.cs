@@ -170,12 +170,20 @@ namespace DataAccess.Repositories
         }
         protected Storing.Page GetPageWithHTML(long pageID)
         {
-            return Storing.Mapper.Map((from innerPage in _db.Page
+            Storing.Page page = Storing.Mapper.Map((from innerPage in _db.Page
                                        where innerPage.PageId == pageID
                                        select innerPage)
             .Include(o => o.PageDetails)
             .Include(o => o.Contents)
             .Include(o => o.PageHtmlContent).Single());
+            if (page.HtmlContent == null) { 
+            page.HtmlContent = GetHTML(pageID);
+            page.Contents = (from content in _db.Contents
+                             where content.PageId == pageID
+                             orderby content.Order ascending
+                             select Storing.Mapper.Map(content));
+            }
+            return page;
         }
 
         public IEnumerable<Storing.Page> GetPopularPages(string wikiURL, uint count = 5)
