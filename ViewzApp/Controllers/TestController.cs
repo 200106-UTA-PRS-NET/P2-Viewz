@@ -15,7 +15,7 @@ namespace ViewzApp.Controllers
         public IEnumerable<Contents> Index()
         {
             var factory = new MdToHtmlAndContentsFactory();
-            string md = "# Header1\n## Header2\n### Header3";
+            string md = "# Header1\n## Header2\n### Header3\n#### Header4";
             return factory.GetResult(md).Contents;
         }
     }
