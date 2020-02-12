@@ -7,5 +7,6 @@ namespace ViewzApi.Models
 {
     public class Wiki
     {
+
     }
 }

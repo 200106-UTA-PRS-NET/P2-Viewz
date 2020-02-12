@@ -20,11 +20,17 @@ namespace ViewzApi.Controllers
             _repository = repository;
         }
 
+        //[HttpGet]
+        //public IEnumerable<Wiki> Get() 
+        //{
+        //    return Wikis;//from repository
+        //}
+
         //GET: api/Wiki
         [HttpGet]
         public IEnumerable<DataAccess.Storing.Page> Get([FromRoute]string WikiURL)
         {
-             return _repository.GetPopularPages($"api/{WikiURL}",5);
+             return _repository.GetPopularPages(WikiURL,5);
         }
 
         /*
