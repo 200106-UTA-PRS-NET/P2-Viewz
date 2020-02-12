@@ -1,14 +1,10 @@
-using System;
-using Xunit;
+//using System;
+//using Xunit;
+//using DataAccess.APIAccess;
 
 namespace XUnitTestProject1
 {
     public class UnitTest1
     {
-        [Fact]
-        public void Test1()
-        {
-
-        }
     }
 }

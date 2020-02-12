@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using ViewzApi.Models;
 
-namespace DataAccess.Models
+namespace ViewzApi
 {
-    public partial class Page
+    public class Page
     {
         public Page()
         {
@@ -11,15 +14,15 @@ namespace DataAccess.Models
             PageDetails = new HashSet<PageDetails>();
         }
 
-        public int WikiId { get; set; }
-        public long PageId { get; set; }
+        //public int WikiId { get; set; }
+        //public long PageId { get; set; }
         public string Url { get; set; }
         public string PageName { get; set; }
-        public long HitCount { get; set; }
-
-        public virtual Wiki Wiki { get; set; }
-        public virtual PageHtmlContent PageHtmlContent { get; set; }
-        public virtual PageMdContent PageMdContent { get; set; }
+ 
+        public string Content { get; set; }
+        //public virtual Wiki Wiki { get; set; }
+        //public virtual PageHtmlContent PageHtmlContent { get; set; }
+        //public virtual PageMdContent PageMdContent { get; set; }
         public virtual ICollection<Contents> Contents { get; set; }
         public virtual ICollection<PageDetails> PageDetails { get; set; }
     }
