@@ -1,4 +1,5 @@
 ﻿using DataAccess.Interfaces;
+using DataAccess.Storing;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -59,6 +60,36 @@ namespace DataAccess.MockRepositories
         }
 
         public void NewPage(string wikiURL, string pageURL, string pageName, string content)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Storing.Page GetPage(string wikiURL, string pageURL)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Storing.Page GetPageWithMD(string wikiURL, string pageURL)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Storing.Page GetPageWithHTML(string wikiURL, string pageURL)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Storing.Page> GetPopularPages(string wikiURL, uint count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetName(string wikiURL, string pageURL, string newName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetPageDetails(string wikiURL, string pageURL, IEnumerable<PageDetails> details)
         {
             throw new NotImplementedException();
         }
