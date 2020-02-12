@@ -49,7 +49,7 @@ namespace DataAccess.APIAccess
                 var C = new Contents()
                 {
                     Id = id.Id,
-                    Content = h.InnerHtml
+                    Content = h.InnerText.Trim('\n')
                 };
                 list.Add(C);
             }
