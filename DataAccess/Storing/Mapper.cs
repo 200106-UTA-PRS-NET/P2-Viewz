@@ -46,7 +46,7 @@ namespace DataAccess.Storing
                 MdContent = page.PageMdContent?.MdContent,
                 Contents = (from content in page.Contents
                             orderby content.Order
-                            select Map(content)).ToList(),
+                            select Map(content)).ToList().Skip(1),
                 Details = (from detail in page.PageDetails
                            orderby detail.Order
                            select Map(detail)).ToList()
@@ -55,14 +55,24 @@ namespace DataAccess.Storing
 
         internal static ICollection<Models.Contents> Map(IEnumerable<Contents> contents)
         {
+            List<Models.Contents> retList = new List<Models.Contents>()
+            {
+                new Models.Contents()
+                {
+                    Order = 0,
+                    Level = 0,
+                    Id = "bad",
+                    Content = "link"
+                }
+            };
             int i = 0;
-            return (from content in contents
+            return retList.Concat((from content in contents
                     select new Models.Contents() {
                         Content = content.Content,
                         Level = content.Level,
                         Id = content.Id,
                         Order = ++i
-                    }).ToList();
+                    }).ToList()).ToList();
         }
 
         internal static ICollection<Models.PageDetails> Map(IEnumerable<PageDetails> details)
