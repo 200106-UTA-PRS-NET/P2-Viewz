@@ -15,6 +15,7 @@ namespace DataAccess.Models
         public long PageId { get; set; }
         public string Url { get; set; }
         public string PageName { get; set; }
+        public long HitCount { get; set; }
 
         public virtual Wiki Wiki { get; set; }
         public virtual PageHtmlContent PageHtmlContent { get; set; }
