@@ -120,5 +120,5 @@ jobs:
   - task: PublishCodeCoverageResults@1
     inputs:
       codeCoverageTool: 'Cobertura'
-      summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverage*.cobertura.xml'
+      summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverage/**/*cobertura.xml'
   
