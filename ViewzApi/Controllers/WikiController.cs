@@ -31,8 +31,7 @@ namespace ViewzApi.Controllers
         [HttpGet("{WikiURL}", Name = "GetPopularPages")]
         public IEnumerable<DataAccess.Storing.Page> Get([FromRoute]string WikiURL)
         {
-             return _repository.GetPopularPages(WikiURL,5);
-            
+             return _repository.GetPopularPages(WikiURL,5); 
         }
 
         /*
