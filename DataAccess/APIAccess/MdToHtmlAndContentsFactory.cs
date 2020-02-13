@@ -12,23 +12,23 @@ namespace DataAccess.APIAccess
 {
     public class MdToHtmlAndContentsFactory : IMdToHtmlAndContentsFactory
     {
-        private HttpClient client;
+        protected HttpClient client;
+
         public MdToHtmlAndContentsFactory()
         {
             client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "P2-Viewz");
         }
-
         public IHtmlAndContents GetResult(string markDown)
         {
             return GetResultAsync(markDown).Result;
         }
         private async Task<IHtmlAndContents> GetResultAsync(string markDown)
         {
-            
-            var content = new StringContent(markDown, Encoding.UTF8, "text/plain");
-            if (content == null)
+            if (markDown == null)
                 return null;
+            var content = new StringContent(markDown, Encoding.UTF8, "text/plain");
+            
 
             HttpResponseMessage _response = await client.PostAsync("https://api.github.com/markdown/raw", content);
             if((int)_response.StatusCode != 200)

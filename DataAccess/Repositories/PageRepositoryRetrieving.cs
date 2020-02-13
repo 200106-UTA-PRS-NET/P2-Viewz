@@ -6,10 +6,11 @@ using System.Text;
 
 namespace DataAccess.Repositories
 {
-    internal class PageRepositoryRetrieving : PageRepository
+    public class PageRepositoryRetrieving : PageRepository, IPageRepository
     {
         protected readonly IMdToHtmlAndContentsFactory _factory;
-        internal PageRepositoryRetrieving(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db)
+
+        public PageRepositoryRetrieving(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db)
         {
             _factory = factory;
         }
@@ -19,9 +20,8 @@ namespace DataAccess.Repositories
             {
                 return base.GetHTML(pageID);
             }
-            catch (Exception e)
+            catch (InvalidOperationException)
             {
-                Console.WriteLine(e.ToString());
                 IHtmlAndContents result = _factory.GetResult(base.GetMD(pageID));
                 base.SetHTML(pageID, result.PageHTML);
                 base.SetContents(pageID, result.Contents);

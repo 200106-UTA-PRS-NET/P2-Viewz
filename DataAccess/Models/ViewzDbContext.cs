@@ -33,28 +33,37 @@ namespace DataAccess.Models
         {
             modelBuilder.Entity<Contents>(entity =>
             {
-                entity.HasKey(e => new { e.PageId, e.Id })
-                    .HasName("PK__tmp_ms_x__B790C1F73E6B15DA");
+                entity.HasKey(e => new { e.PageId, e.Order })
+                    .HasName("PK__tmp_ms_x__36A471A7161CF576");
 
                 entity.ToTable("contents", "wiki");
 
+                entity.HasIndex(e => new { e.PageId, e.Id })
+                    .HasName("UQ__contents__B790C1F68FDA0895")
+                    .IsUnique();
+
                 entity.Property(e => e.PageId).HasColumnName("pageId");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.Order).HasColumnName("order");
 
                 entity.Property(e => e.Content)
                     .IsRequired()
                     .HasColumnName("content")
                     .HasMaxLength(255);
 
+                entity.Property(e => e.Id)
+                    .IsRequired()
+                    .HasColumnName("id")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Level).HasColumnName("level");
+
                 entity.HasOne(d => d.Page)
                     .WithMany(p => p.Contents)
                     .HasForeignKey(d => d.PageId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__contents__pageId__76969D2E");
+                    .HasConstraintName("FK__contents__pageId__17036CC0");
             });
 
             modelBuilder.Entity<Images>(entity =>
@@ -92,9 +101,12 @@ namespace DataAccess.Models
 
                 entity.Property(e => e.PageId).HasColumnName("pageId");
 
+                entity.Property(e => e.HitCount).HasColumnName("hitCount");
+
                 entity.Property(e => e.PageName).HasColumnType("ntext");
 
                 entity.Property(e => e.Url)
+                    .IsRequired()
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
@@ -109,14 +121,21 @@ namespace DataAccess.Models
 
             modelBuilder.Entity<PageDetails>(entity =>
             {
-                entity.HasKey(e => new { e.PageId, e.DetKey })
+                entity.HasKey(e => new { e.PageId, e.Order })
                     .HasName("PK_WikiDetails");
 
                 entity.ToTable("pageDetails", "wiki");
 
+                entity.HasIndex(e => new { e.PageId, e.DetValue })
+                    .HasName("UQ__tmp_ms_x__F25C5ED5CE0F7570")
+                    .IsUnique();
+
                 entity.Property(e => e.PageId).HasColumnName("pageId");
 
+                entity.Property(e => e.Order).HasColumnName("order");
+
                 entity.Property(e => e.DetKey)
+                    .IsRequired()
                     .HasColumnName("detKey")
                     .HasMaxLength(255)
                     .IsUnicode(false);
@@ -178,12 +197,15 @@ namespace DataAccess.Models
                 entity.ToTable("wiki", "wiki");
 
                 entity.HasIndex(e => e.Url)
-                    .HasName("UQ__wiki__C5B214316D7F0DFB")
+                    .HasName("UQ__wiki__C5B214314968C6DB")
                     .IsUnique();
+
+                entity.Property(e => e.HitCount).HasColumnName("hitCount");
 
                 entity.Property(e => e.PageName).HasColumnType("ntext");
 
                 entity.Property(e => e.Url)
+                    .IsRequired()
                     .HasMaxLength(255)
                     .IsUnicode(false);
             });
