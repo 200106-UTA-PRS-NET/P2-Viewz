@@ -97,7 +97,7 @@ jobs:
       projectKey: 'jdf.viewz'
       extraProperties: |
           sonar.exclusions=**/wwwroot/lib/**/*,**/DataAccess/Models/**/*
-          sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/**/*.opencover.xml"
+          sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/**/*opencover.xml"
           sonar.cs.vstest.reportsPaths="$(Build.ArtifactStagingDirectory)/test/*.trx"
   - script: dotnet build --configuration $(buildConfiguration)
     displayName: 'dotnet build $(buildConfiguration)'
