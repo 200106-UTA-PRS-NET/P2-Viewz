@@ -110,6 +110,8 @@ jobs:
       /p:CoverletOutputFormat=\"cobertura,opencover\"
       /p:CoverletOutput="$(Build.ArtifactStagingDirectory)/coverage/"
     displayName: 'Dotnet test and coverage'
+  - script: type $(Build.ArtifactStagingDirectory)/test/*.trx
+    displayName: 'Cat test result file'
   - task: SonarCloudAnalyze@1
     condition: always()
   - task: SonarCloudPublish@1
