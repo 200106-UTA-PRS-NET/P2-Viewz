@@ -35,7 +35,7 @@ namespace DataAccess.Repositories
                            select wiki.Id
                          on page.WikiId equals wikiId
             where page.Url == pageURL
-            select page.PageId).First();
+            select page.PageId).Single();
         }
 
         int GetID(string wikiURL)
@@ -126,7 +126,7 @@ namespace DataAccess.Repositories
 
         public void NewPage(string wikiURL, string pageURL, string pageName, string content)
         {
-            int wikiId = _db.Wiki.Where(o => o.Url == wikiURL).Select(o => o.Id).Single();
+            int wikiId = GetID(wikiURL);
             _db.Page.Add(new Models.Page()
             {
                 WikiId = wikiId,

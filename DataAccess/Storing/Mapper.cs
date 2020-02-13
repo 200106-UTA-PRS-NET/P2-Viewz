@@ -75,6 +75,17 @@ namespace DataAccess.Storing
                     }).ToList()).ToList();
         }
 
+        internal static Wiki Map(Models.Wiki wiki)
+        {
+            return new Storing.Wiki()
+            {
+                PageName = wiki.PageName,
+                Url = wiki.Url,
+                HtmlDescription = wiki.WikiHtmlDescription?.HtmlDescription,
+                MdDescription = wiki.WikiMdDescription?.MdDescription
+            };
+        }
+
         internal static ICollection<Models.PageDetails> Map(IEnumerable<PageDetails> details)
         {
             int i = 0;
