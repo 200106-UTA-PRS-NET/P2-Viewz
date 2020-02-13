@@ -94,6 +94,8 @@ jobs:
       configMode: 'manual'
       cliProjectKey: 'jdf.viewz'
       cliSources: '.'
+      extraProperties: |
+          sonar.exclusions=**/wwwroot/lib/**/*,**/DataAccess/Models/**/*
   - task: SonarCloudAnalyze@1
   - task: SonarCloudPublish@1
     inputs:
