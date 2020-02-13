@@ -120,7 +120,8 @@ jobs:
     condition: always()
     inputs:
       testResultsFormat: 'XUnit'
-      testResultsFiles: '$(Build.ArtifactStagingDirectory)/test/**/*.trx'
+      testResultsFiles: '**/*.trx'
+      searchFolder: '$(Build.ArtifactStagingDirectory)/test/'
   - task: PublishCodeCoverageResults@1
     condition: always()
     inputs:
