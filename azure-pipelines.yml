@@ -38,7 +38,7 @@ jobs:
 
 - job: DeployAPICanary
   pool: Default
-  condition: and(always(), eq(variables['Build.SourceBranch'], 'refs/heads/api-service'), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(always(), or(eq(variables['Build.SourceBranch'], 'refs/heads/api-service'), eq(variables['Build.SourceBranch'], 'refs/heads/dev-pipeline')), ne(variables['Build.Reason'], 'PullRequest'))
   steps:
   - script: dotnet build --configuration $(buildConfiguration)
     displayName: 'dotnet build $(buildConfiguration)'
