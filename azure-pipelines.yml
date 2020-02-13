@@ -121,7 +121,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testResultsFormat: 'XUnit'
+      testResultsFormat: 'VSTest'
       testResultsFiles: '**/*.trx'
       searchFolder: '$(Build.ArtifactStagingDirectory)/test/'
   - task: PublishCodeCoverageResults@1
