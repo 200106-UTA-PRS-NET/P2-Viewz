@@ -143,11 +143,14 @@ namespace DataAccess.Repositories
         }
         protected Storing.Page GetPage(long pageID)
         {
-            return Storing.Mapper.Map((from innerPage in _db.Page
+            var page = (from innerPage in _db.Page
                         where innerPage.PageId == pageID
                         select innerPage)
                         .Include(o => o.PageDetails)
-                        .Include(o => o.Contents).Single());
+                        .Include(o => o.Contents).Single();
+            page.HitCount += 1;
+            _db.SaveChanges();
+            return Storing.Mapper.Map(page);
         }
 
         public Storing.Page GetPageWithMD(string wikiURL, string pageURL)
@@ -156,12 +159,15 @@ namespace DataAccess.Repositories
         }
         protected Storing.Page GetPageWithMD(long pageID)
         {
-            return Storing.Mapper.Map((from innerPage in _db.Page
-                                              where innerPage.PageId == pageID
-                                              select innerPage)
+            var page = (from innerPage in _db.Page
+                        where innerPage.PageId == pageID
+                        select innerPage)
                         .Include(o => o.PageDetails)
                         .Include(o => o.Contents)
-                        .Include(o => o.PageMdContent).Single());
+                        .Include(o => o.PageMdContent).Single();
+            page.HitCount += 1;
+            _db.SaveChanges();
+            return Storing.Mapper.Map(page);
         }
 
         public Storing.Page GetPageWithHTML(string wikiURL, string pageURL)
@@ -170,12 +176,15 @@ namespace DataAccess.Repositories
         }
         protected Storing.Page GetPageWithHTML(long pageID)
         {
-            Storing.Page page = Storing.Mapper.Map((from innerPage in _db.Page
-                                       where innerPage.PageId == pageID
-                                       select innerPage)
+            var modelsPage = (from innerPage in _db.Page
+                        where innerPage.PageId == pageID
+                        select innerPage)
             .Include(o => o.PageDetails)
             .Include(o => o.Contents)
-            .Include(o => o.PageHtmlContent).Single());
+            .Include(o => o.PageHtmlContent).Single();
+            modelsPage.HitCount += 1;
+            var dbSave = _db.SaveChangesAsync();
+            Storing.Page page = Storing.Mapper.Map(modelsPage);
             if (page.HtmlContent == null) { 
             page.HtmlContent = GetHTML(pageID);
             page.Contents = (from content in _db.Contents
@@ -183,6 +192,7 @@ namespace DataAccess.Repositories
                              orderby content.Order ascending
                              select Storing.Mapper.Map(content));
             }
+            dbSave.Wait();
             return page;
         }
 
@@ -190,7 +200,7 @@ namespace DataAccess.Repositories
         {
             return GetPopularPages(GetID(wikiURL), count);
         }
-        public IEnumerable<Storing.Page> GetPopularPages(int wikiID, uint count = 5)
+        protected IEnumerable<Storing.Page> GetPopularPages(int wikiID, uint count = 5)
         {
             IEnumerable<Models.Page> pages = (from page in _db.Page
                     where page.WikiId == wikiID
@@ -199,6 +209,17 @@ namespace DataAccess.Repositories
                     .Include(o => o.PageDetails)
                     .Include(o => o.Contents)
                     .Take((int)count).ToList();
+            foreach(var page in pages)
+            {
+                if (page.Contents.Count() == 0)
+                {
+                    GetHTML(page.PageId); // Will either create the page or just load html from db
+                    page.Contents = (from content in _db.Contents
+                                     where content.PageId == page.PageId
+                                     orderby content.Order ascending
+                                     select content).ToList();
+                }
+            }
             return from page in pages
                    select Storing.Mapper.Map(page);
         }
@@ -207,7 +228,7 @@ namespace DataAccess.Repositories
         {
             SetName(GetID(wikiURL, pageURL), newName);
         }
-        public void SetName(long pageID, string newName)
+        protected void SetName(long pageID, string newName)
         {
             Models.Page page = (from innerPage in _db.Page
                                                     where innerPage.PageId == pageID
@@ -220,7 +241,7 @@ namespace DataAccess.Repositories
         {
             SetPageDetails(GetID(wikiURL, pageURL), details);
         }
-        public void SetPageDetails(long pageID, IEnumerable<Storing.PageDetails> details)
+        protected void SetPageDetails(long pageID, IEnumerable<Storing.PageDetails> details)
         {
             (from innerPage in _db.Page
              where innerPage.PageId == pageID
