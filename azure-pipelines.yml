@@ -58,16 +58,6 @@ jobs:
 - job: PullRequestsAndNonMasterBuilds
   condition: and(always(), or(ne(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
   steps:
-  - task: SonarCloudPrepare@1
-    inputs:
-      SonarCloud: 'SonarCloud'
-      organization: 'jdf-revature'
-      scannerMode: 'MSBuild'
-      projectKey: 'jdf.viewz'
-      extraProperties: |
-          sonar.exclusions=**/wwwroot/lib/**/*,**/DataAccess/Models/**/*
-          sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/**/coverage/**/*opencover.xml"
-          sonar.cs.vstest.reportsPaths="$(Build.ArtifactStagingDirectory)/**/test/**/*.trx"
   - script: dotnet build --configuration $(buildConfiguration)
     displayName: 'dotnet build $(buildConfiguration)'
   - script: dotnet test
@@ -79,12 +69,6 @@ jobs:
       /p:CoverletOutputFormat=\"cobertura,opencover\"
       /p:CoverletOutput="$(Build.ArtifactStagingDirectory)/coverage/"
     displayName: 'Dotnet test and coverage'
-  - task: SonarCloudAnalyze@1
-    condition: always()
-  - task: SonarCloudPublish@1
-    condition: always()
-    inputs:
-      pollingTimeoutSec: '300'
   - task: PublishTestResults@2
     condition: always()
     inputs:
@@ -96,4 +80,21 @@ jobs:
     inputs:
       codeCoverageTool: 'Cobertura'
       summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverage/**/*cobertura.xml'
-  
+
+- job: StaticAnalysis
+  condition: and(always(), or(ne(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - task: SonarCloudPrepare@1
+    inputs:
+      SonarCloud: 'SonarCloud'
+      organization: 'jdf-revature'
+      scannerMode: 'CLI'
+      configMode: 'manual'
+      cliProjectKey: 'jdf.viewz'
+      cliSources: '.'
+  - task: SonarCloudAnalyze@1
+  - task: SonarCloudPublish@1
+    inputs:
+      pollingTimeoutSec: '300'
