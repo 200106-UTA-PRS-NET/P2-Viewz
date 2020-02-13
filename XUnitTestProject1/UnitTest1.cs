@@ -16,15 +16,5 @@ namespace XUnitTestProject1
             };
             Assert.Equal(name, page.PageName);
         }
-        [Theory]
-        [InlineData("page-name")]
-        public void SimpleFailingTest(string name)
-        {
-            Page page = new Page()
-            {
-                PageName = name
-            };
-            Assert.NotEqual(name, page.PageName);
-        }
     }
 }
