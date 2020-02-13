@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using DataAccess.APIAccess;
+using System.Net.Http;
 
 namespace XUnitTestProject1
 {
@@ -50,6 +51,31 @@ namespace XUnitTestProject1
 
             Assert.Equal(EXPECTED, ACTUAL);
 		}
+        */
+        /*
+        [Fact]
+        public void TestGetResultNull()
+        {
+            var factory = new MdToHtmlAndContentsFactory();
+            string md = null;
+
+            HtmlAndContents EXPECTED = null;
+            var ACTUAL = factory.GetResult(null);
+
+            Assert.Equal(EXPECTED, ACTUAL);
+        }
+        */
+        /*
+        [Fact]
+        public void TestGetResultType()
+        {
+            var factory = new MdToHtmlAndContentsFactory();
+            string md = "# Header1";
+            var EXPECTED = new HtmlAndContents();
+            var ACTUAL = factory.GetResult(md);
+
+            Assert.Equal(EXPECTED.GetType(), ACTUAL.GetType());
+        }
         */
     }
 }

@@ -25,10 +25,10 @@ namespace DataAccess.APIAccess
         }
         private async Task<IHtmlAndContents> GetResultAsync(string markDown)
         {
-            
-            var content = new StringContent(markDown, Encoding.UTF8, "text/plain");
-            if (content == null)
+            if (markDown == null)
                 return null;
+
+            var content = new StringContent(markDown, Encoding.UTF8, "text/plain");
 
             HttpResponseMessage _response = await client.PostAsync("https://api.github.com/markdown/raw", content);
             if((int)_response.StatusCode != 200)
@@ -48,9 +48,12 @@ namespace DataAccess.APIAccess
             HtmlDoc.LoadHtml(pagehtml);
             var xpath = "//*[self::h1 or self::h2 or self::h3]";
             HtmlNode[] headers = HtmlDoc.DocumentNode.SelectNodes(xpath).ToArray();
+            int id_count = 0;
             foreach(var h in headers)
             {
                 HtmlNode id = h.SelectSingleNode(".//a");
+                if (id != null)
+                    id_count++;
 
                 var C = new Contents();
                 C.Id = id.Id;
@@ -69,9 +72,12 @@ namespace DataAccess.APIAccess
                     //default:                                      //TODO delete after testing
                         //throw new NotImplementedException();
                 }
-     
+                
                 list.Add(C);
             }
+
+            if (headers.Length != id_count)
+                return null;
 
             return list;
         }
