@@ -12,13 +12,13 @@ namespace DataAccess.APIAccess
 {
     public class MdToHtmlAndContentsFactory : IMdToHtmlAndContentsFactory
     {
-        private HttpClient client;
+        protected HttpClient client;
+
         public MdToHtmlAndContentsFactory()
         {
             client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "P2-Viewz");
         }
-
         public IHtmlAndContents GetResult(string markDown)
         {
             return GetResultAsync(markDown).Result;
@@ -27,6 +27,8 @@ namespace DataAccess.APIAccess
         {
             if (markDown == null)
                 return null;
+            var content = new StringContent(markDown, Encoding.UTF8, "text/plain");
+            
 
             var content = new StringContent(markDown, Encoding.UTF8, "text/plain");
 

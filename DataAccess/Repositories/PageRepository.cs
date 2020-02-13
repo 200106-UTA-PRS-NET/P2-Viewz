@@ -38,6 +38,13 @@ namespace DataAccess.Repositories
             select page.PageId).First();
         }
 
+        int GetID(string wikiURL)
+        {
+            return (from wiki in _db.Wiki
+                    where wiki.Url == wikiURL
+                    select wiki.Id).Single();
+        }
+
         public string GetMD(string wikiURL, string pageURL)
         {
             return GetMD(GetID(wikiURL, pageURL));
@@ -104,7 +111,12 @@ namespace DataAccess.Repositories
 
         private protected void SetContents(long pageID, IEnumerable<DataAccess.Storing.Contents> contents)
         {
-            throw new NotImplementedException(); // TODO
+            (from innerPage in _db.Page
+                        where innerPage.PageId == pageID
+                        select innerPage)
+                        .Include(o => o.Contents).Single()
+                        .Contents = Storing.Mapper.Map(contents);
+            _db.SaveChanges();
         }
 
         public void NewPage(string wikiURL, string pageURL, string content)
@@ -123,6 +135,120 @@ namespace DataAccess.Repositories
             });
             _db.SaveChanges();
             SetMD(wikiURL, pageURL, content);
+        }
+
+        public Storing.Page GetPage(string wikiURL, string pageURL)
+        {
+            return GetPage(GetID(wikiURL, pageURL));
+        }
+        protected Storing.Page GetPage(long pageID)
+        {
+            var page = (from innerPage in _db.Page
+                        where innerPage.PageId == pageID
+                        select innerPage)
+                        .Include(o => o.PageDetails)
+                        .Include(o => o.Contents).Single();
+            page.HitCount += 1;
+            _db.SaveChanges();
+            return Storing.Mapper.Map(page);
+        }
+
+        public Storing.Page GetPageWithMD(string wikiURL, string pageURL)
+        {
+            return GetPageWithMD(GetID(wikiURL, pageURL));
+        }
+        protected Storing.Page GetPageWithMD(long pageID)
+        {
+            var page = (from innerPage in _db.Page
+                        where innerPage.PageId == pageID
+                        select innerPage)
+                        .Include(o => o.PageDetails)
+                        .Include(o => o.Contents)
+                        .Include(o => o.PageMdContent).Single();
+            page.HitCount += 1;
+            _db.SaveChanges();
+            return Storing.Mapper.Map(page);
+        }
+
+        public Storing.Page GetPageWithHTML(string wikiURL, string pageURL)
+        {
+            return GetPageWithHTML(GetID(wikiURL, pageURL));
+        }
+        protected Storing.Page GetPageWithHTML(long pageID)
+        {
+            var modelsPage = (from innerPage in _db.Page
+                        where innerPage.PageId == pageID
+                        select innerPage)
+            .Include(o => o.PageDetails)
+            .Include(o => o.Contents)
+            .Include(o => o.PageHtmlContent).Single();
+            modelsPage.HitCount += 1;
+            var dbSave = _db.SaveChangesAsync();
+            Storing.Page page = Storing.Mapper.Map(modelsPage);
+            if (page.HtmlContent == null) { 
+            page.HtmlContent = GetHTML(pageID);
+            page.Contents = (from content in _db.Contents
+                             where content.PageId == pageID
+                             orderby content.Order ascending
+                             select Storing.Mapper.Map(content));
+            }
+            dbSave.Wait();
+            return page;
+        }
+
+        public IEnumerable<Storing.Page> GetPopularPages(string wikiURL, uint count = 5)
+        {
+            return GetPopularPages(GetID(wikiURL), count);
+        }
+        protected IEnumerable<Storing.Page> GetPopularPages(int wikiID, uint count = 5)
+        {
+            IEnumerable<Models.Page> pages = (from page in _db.Page
+                    where page.WikiId == wikiID
+                    orderby page.HitCount descending
+                    select page)
+                    .Include(o => o.PageDetails)
+                    .Include(o => o.Contents)
+                    .Take((int)count).ToList();
+            foreach(var page in pages)
+            {
+                if (page.Contents.Count() == 0)
+                {
+                    GetHTML(page.PageId); // Will either create the page or just load html from db
+                    page.Contents = (from content in _db.Contents
+                                     where content.PageId == page.PageId
+                                     orderby content.Order ascending
+                                     select content).ToList();
+                }
+            }
+            return from page in pages
+                   select Storing.Mapper.Map(page);
+        }
+
+        public void SetName(string wikiURL, string pageURL, string newName)
+        {
+            SetName(GetID(wikiURL, pageURL), newName);
+        }
+        protected void SetName(long pageID, string newName)
+        {
+            Models.Page page = (from innerPage in _db.Page
+                                                    where innerPage.PageId == pageID
+                                                    select innerPage).Single();
+            page.PageName = newName;
+            _db.SaveChanges();
+        }
+
+        public void SetPageDetails(string wikiURL, string pageURL, IEnumerable<Storing.PageDetails> details)
+        {
+            SetPageDetails(GetID(wikiURL, pageURL), details);
+        }
+        protected void SetPageDetails(long pageID, IEnumerable<Storing.PageDetails> details)
+        {
+            (from innerPage in _db.Page
+             where innerPage.PageId == pageID
+             select innerPage)
+                        .Include(o => o.PageDetails).Single()
+                        .PageDetails = Storing.Mapper.Map(details);
+            _db.SaveChanges();
         }
     }
 }
