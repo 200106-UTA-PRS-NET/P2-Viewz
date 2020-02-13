@@ -98,7 +98,7 @@ jobs:
       extraProperties: |
           sonar.exclusions=**/wwwroot/lib/**/*,**/DataAccess/Models/**/*
           sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/**/*opencover.xml"
-          sonar.cs.vstest.reportsPaths="$(Build.ArtifactStagingDirectory)/test/*.trx"
+          sonar.cs.vstest.reportsPaths="$(Build.ArtifactStagingDirectory)/test/**/*.trx"
   - script: dotnet build --configuration $(buildConfiguration)
     displayName: 'dotnet build $(buildConfiguration)'
   - script: dotnet test
@@ -120,7 +120,7 @@ jobs:
     condition: always()
     inputs:
       testResultsFormat: 'XUnit'
-      testResultsFiles: '$(Build.ArtifactStagingDirectory)/test/*.trx'
+      testResultsFiles: '$(Build.ArtifactStagingDirectory)/test/**/*.trx'
   - task: PublishCodeCoverageResults@1
     condition: always()
     inputs:
