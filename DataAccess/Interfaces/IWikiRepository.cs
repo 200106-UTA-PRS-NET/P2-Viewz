@@ -8,13 +8,16 @@ namespace DataAccess.Interfaces
     public interface IWikiRepository
     {
         // Getters
-        IEnumerable<Wiki> GetPopularWikis(uint count);
         string GetMD(string wikiURL);
         string GetHTML(string wikiURL);
-        string GetName(string wikiURL);
+        Wiki GetWiki(string wikiURL);
+        Wiki GetWikiWithMD(string wikiURL);
+        Wiki GetWikiWithHTML(string wikiURL);
+        IEnumerable<Wiki> GetPopularWikis(uint count, bool description = false);
 
         // Setters
         void SetMD(string wikiURL, string content);
+        void SetName(string wikiURL, string newName);
         void NewWiki(string wikiURL, string pageName, string content);
         void NewWiki(string wikiURL, string content);
     }
