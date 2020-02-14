@@ -7,6 +7,6 @@ namespace DataAccess.Interfaces
 {
     public interface IMdToHtmlAndContentsFactory
     {
-        public IHtmlAndContents GetResult(string markDown);
+        public IHtmlAndContents GetHtmlAndContents(string markDown);
     }
 }
