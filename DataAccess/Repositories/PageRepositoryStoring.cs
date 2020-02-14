@@ -17,7 +17,7 @@ namespace DataAccess.Repositories
             base.SetMD(pageID, content);
             try
             {
-                IHtmlAndContents result = _factory.GetResult(content);
+                IHtmlAndContents result = _factory.GetHtmlAndContents(content);
                 base.SetHTML(pageID, result.PageHTML);
                 base.SetContents(pageID, result.Contents);
             } catch (Exception e)
