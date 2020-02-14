@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using ViewzApi.Models;
 
 namespace ViewzApi.Controllers
@@ -14,10 +15,12 @@ namespace ViewzApi.Controllers
     public class PageController : ControllerBase
     { 
         private readonly IPageRepository _repository;
+        private readonly ILogger _logger;
 
-        public PageController(IPageRepository repository)
+        public PageController(IPageRepository repository, ILogger<PageController> logger)
         { 
-            _repository = repository; 
+            _repository = repository;
+            _logger = logger;
         }
 
         //url from db
@@ -41,8 +44,10 @@ namespace ViewzApi.Controllers
                 return Ok(page);
             }
             catch (Exception e)
-            {
-                base.Content($"{e.ToString()}", "text/html");
+            { 
+                // _logger.LogInformation(e.StackTrace.ToString());
+                base.Content($"<h3>{e.Message}</h3>", "text/html");
+                _logger.LogError(e.Message);
                 return BadRequest();
             }
 
@@ -66,7 +71,8 @@ namespace ViewzApi.Controllers
             }
             catch (Exception e)
             {
-                base.Content($"{e.ToString()}", "text/html");
+                base.Content($"<h3>{e.Message}</h3>", "text/html");
+                _logger.LogError(e.Message);
                 return BadRequest();
             }
         }
@@ -74,26 +80,33 @@ namespace ViewzApi.Controllers
         
         [HttpPatch]
         public IActionResult Patch([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
-        { 
-            if (page.Content == null && page.PageName == null && page.Details == null)
+        {
+            try
             {
-                return BadRequest();
+                if (page.Content == null && page.PageName == null && page.Details == null)
+                { 
+                    return BadRequest();
+                }
+
+                if (page.PageName != null)
+                {
+                    _repository.SetName(WikiUrl, PageUrl, page.PageName);
+                }
+
+                if (page.Content != null)
+                {
+                    _repository.SetMD(WikiUrl, PageUrl, page.Content);
+
+                }
+
+                if (page.Details != null)
+                {
+                    _repository.SetPageDetails(WikiUrl, PageUrl, page.Details);
+                }
             }
-
-            if (page.PageName != null)
-            {
-                _repository.SetName(WikiUrl, PageUrl, page.PageName);
-            }
-
-            if (page.Content != null)
-            {
-                _repository.SetMD(WikiUrl, PageUrl, page.Content);
-
-            }
-
-            if (page.Details != null) 
-            {
-                _repository.SetPageDetails(WikiUrl, PageUrl, page.Details);
+            catch (Exception e) {
+                _logger.LogError(e.Message);
+                base.Content($"<h3>{e.Message}</h3>", "text/html");
             }
 
             return NoContent();

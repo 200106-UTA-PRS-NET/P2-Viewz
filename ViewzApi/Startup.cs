@@ -28,19 +28,19 @@ namespace ViewzApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-             
+
             //ADD CORS
             // services.AddCors();
-             
+
             services.AddDbContext<ViewzDbContext>(options =>
                options.UseSqlServer(
                    Configuration.GetConnectionString("ViewzDb")));
-
+             
             services.AddSingleton<IMdToHtmlAndContentsFactory, MdToHtmlAndContentsFactory>();
             //services.AddScoped<IWikirepository, WikiRepository>();
-            services.AddScoped<IPageRepository, PageRepositoryRetrieving>(); 
-            
-             
+            services.AddScoped<IPageRepository, PageRepositoryRetrieving>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
