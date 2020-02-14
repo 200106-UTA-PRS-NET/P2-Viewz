@@ -14,11 +14,17 @@ namespace ViewzApi.Controllers
     public class WikiController : ControllerBase
     {
         private readonly IPageRepository _repository;
+        private readonly IWikiRepository _wikiRepository;
 
         public WikiController(IPageRepository repository)
         {
             _repository = repository;
         }
+
+        //public WikiController(IWikiRepository repository)
+        //{
+        //    _wikiRepository = repository;
+        //}
 
         //[HttpGet]
         //public IEnumerable<Wiki> Get() 
@@ -26,8 +32,7 @@ namespace ViewzApi.Controllers
         //    return Wikis;//from repository
         //}
 
-        //GET: api/wiki/some-url
-        //[HttpGet]
+        //GET: api/wiki/some-url 
         [HttpGet("{WikiURL}", Name = "GetPopularPages")]
         public IEnumerable<DataAccess.Storing.Page> Get([FromRoute]string WikiURL)
         {

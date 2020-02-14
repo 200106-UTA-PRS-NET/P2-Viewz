@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using ViewzApi.Models;
 
 namespace ViewzApi.Controllers
-{
+{ 
     [Route("api/Wiki/{WikiUrl}/{PageUrl}")]
     [ApiController]
     public class PageController : ControllerBase
