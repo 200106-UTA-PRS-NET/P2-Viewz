@@ -46,7 +46,7 @@ namespace ViewzApi.Controllers
             catch (Exception e)
             { 
                 // _logger.LogInformation(e.StackTrace.ToString());
-                base.Content($"<h3>{e.Message}</h3>", "text/html");
+               // base.Content($"<h3>{e.Message}</h3>", "text/html");
                 _logger.LogError(e.Message);
                 return BadRequest();
             }
@@ -71,7 +71,7 @@ namespace ViewzApi.Controllers
             }
             catch (Exception e)
             {
-                base.Content($"<h3>{e.Message}</h3>", "text/html");
+                //base.Content($"<h3>{e.Message}</h3>", "text/html");
                 _logger.LogError(e.Message);
                 return BadRequest();
             }
@@ -106,7 +106,7 @@ namespace ViewzApi.Controllers
             }
             catch (Exception e) {
                 _logger.LogError(e.Message);
-                base.Content($"<h3>{e.Message}</h3>", "text/html");
+               // base.Content($"<h3>{e.Message}</h3>", "text/html");
             }
 
             return NoContent();
