@@ -34,10 +34,20 @@ namespace ViewzApi.Controllers
 
         //GET: api/wiki/some-url 
         [HttpGet("{WikiURL}", Name = "GetPopularPages")]
-        public IEnumerable<DataAccess.Storing.Page> Get([FromRoute]string WikiURL)
+        public IEnumerable<Page> Get([FromRoute]string WikiURL)
         {
-             return _repository.GetPopularPages(WikiURL,5); 
-        } 
+            return (from repoPage in _repository.GetPopularPages(WikiURL, 5)
+                    select new Page()
+                    {
+                        Content = null,
+                        Details = repoPage.Details,
+                        Contents = repoPage.Contents,
+                        WikiUrl = WikiURL,
+                        Url = repoPage.Url,
+                        PageName = repoPage.PageName ?? repoPage.Url
+                    }); 
+
+        }
         /*
          
         */
