@@ -50,14 +50,14 @@ namespace ViewzApi
                 options.AddPolicy(AllMyOrigins, b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
-            //services.AddDbContext<ViewzDbContext>(options =>
-            //   options.UseSqlServer(
-            //       Configuration.GetConnectionString("ViewzDb")));
+            services.AddDbContext<ViewzDbContext>(options =>
+               options.UseSqlServer(
+                   Configuration.GetConnectionString("ViewzDb")));
 
             services.AddSingleton<IMdToHtmlAndContentsFactory, MdToHtmlAndContentsFactory>();
             //services.AddScoped<IWikirepository, WikiRepository>();
-           //services.AddScoped<IPageRepository, PageRepositoryRetrieving>();
-          services.AddScoped<IPageRepository, MockPageRepository>();
+           services.AddScoped<IPageRepository, PageRepositoryRetrieving>();
+          //services.AddScoped<IPageRepository, MockPageRepository>();
 
 
         }
