@@ -21,17 +21,22 @@ namespace DataAccess.APIAccess
         }
 
         public IHtmlAndContents GetHtmlAndContents(string markDown)
+
         {
             if (markDown == null)
                 return null;
 
             HtmlAndContents RESULT = new HtmlAndContents();
-            RESULT.PageHTML = GetHtml(markDown).Result;
+            RESULT.PageHTML = GetHtmlAsync(markDown).Result;
             RESULT.Contents = AParser(RESULT.PageHTML);
             return RESULT;
         }
 
-        public async Task<string> GetHtml(string markDown)
+        public string GetHtml(string markDown)
+        {
+            return GetHtmlAsync(markDown).Result;
+        }
+        async Task<string> GetHtmlAsync(string markDown)
         {
             if (markDown == null)
                 return null;

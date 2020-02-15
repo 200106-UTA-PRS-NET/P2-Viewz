@@ -18,8 +18,8 @@ namespace DataAccess.Repositories
             try
             {
                 IHtmlAndContents result = _factory.GetHtmlAndContents(content);
-                base.SetHTML(pageID, result.PageHTML);
-                base.SetContents(pageID, result.Contents);
+                base.SetHTML(pageID, result?.PageHTML);
+                base.SetContents(pageID, result?.Contents);
             } catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
