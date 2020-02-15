@@ -23,14 +23,23 @@ namespace ViewzApi
         }
 
         public IConfiguration Configuration { get; }
+        readonly string AllMyOrigins = "_allMyOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            //this service initially took empty overload
+            services.AddControllers(options =>
+            {
+                options.RespectBrowserAcceptHeader = true; 
+            });
 
             //ADD CORS
-            // services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(AllMyOrigins, b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
 
             services.AddDbContext<ViewzDbContext>(options =>
                options.UseSqlServer(
@@ -54,10 +63,9 @@ namespace ViewzApi
 
             app.UseHttpsRedirection();
 
-          //  loggerFactory.AddFile("Logs/mylog-{Date}.txt");
+            //  loggerFactory.AddFile("Logs/mylog-{Date}.txt");
             //USE CORS
-            //app.UseCors();
-
+            app.UseCors(AllMyOrigins);
 
             app.UseRouting();
 
