@@ -14,7 +14,6 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Reflection;
 using System.IO;
-using DataAccess.MockRepositories;
 
 namespace ViewzApi
 {

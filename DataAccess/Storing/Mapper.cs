@@ -1,6 +1,6 @@
-﻿using System;
+﻿//using System;
 using System.Collections.Generic;
-using System.Text;
+//using System.Text;
 using System.Linq;
 
 namespace DataAccess.Storing
@@ -46,7 +46,7 @@ namespace DataAccess.Storing
                 MdContent = page.PageMdContent?.MdContent,
                 Contents = (from content in page.Contents
                             orderby content.Order
-                            select Map(content)).ToList().Skip(1),
+                            select Map(content)).Skip(1),           //SMELL#52: removed ToList() from Map(content)).ToList().Skip(1)
                 Details = (from detail in page.PageDetails
                            orderby detail.Order
                            select Map(detail)).ToList()

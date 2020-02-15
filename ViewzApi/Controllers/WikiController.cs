@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ViewzApi.Models;
+using System.Collections.Generic;
 
 namespace ViewzApi.Controllers
 {
@@ -14,13 +13,11 @@ namespace ViewzApi.Controllers
     public class WikiController : ControllerBase
     {
         private readonly IPageRepository _repository;
-       // private readonly IWikiRepository _wikiRepository;
 
         public WikiController(IPageRepository repository)
         {
             _repository = repository;
         }
-
         //public WikiController(IWikiRepository repository)
         //{
         //    _wikiRepository = repository;
