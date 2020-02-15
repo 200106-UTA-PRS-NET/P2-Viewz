@@ -6,6 +6,7 @@ using DataAccess.Storing;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace XUnitTestProject1
 {
@@ -34,7 +35,7 @@ namespace XUnitTestProject1
 
             Assert.Equal(EXPECTED, ACTUAL);
         }
-        /*
+        
         //FAILS but functions properly
         [Fact]
         public void GetHtmlAndContentsTest()
@@ -67,9 +68,15 @@ namespace XUnitTestProject1
             EXPECTED.Contents = (IEnumerable<Contents>)contents;
             var ACTUAL = factory.GetHtmlAndContents(md);
 
-            Assert.Equal(EXPECTED, ACTUAL);
+            foreach(var pair in EXPECTED.Contents.Zip(ACTUAL.Contents))
+            {
+                Assert.Equal(pair.First.Id, pair.Second.Id);
+                Assert.Equal(pair.First.Content, pair.Second.Content);
+                Assert.Equal(pair.First.Level, pair.Second.Level);
+            }
+
+            Assert.Equal(EXPECTED.PageHTML, ACTUAL.PageHTML);
         }
-        */
 
         [Fact]
         public void GetHtmlAndContentsTestNull()
