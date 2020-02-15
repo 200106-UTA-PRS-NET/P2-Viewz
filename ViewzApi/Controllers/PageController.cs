@@ -22,30 +22,31 @@ namespace ViewzApi.Controllers
 
         //url from db
         //api/wiki/training-code/readme/?html=false
+        [HttpGet]
         public IActionResult Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
                         bool details = true, bool html = true, bool content = true)
         {
             try
             {
-                var repoPage = (html) ? _repository.GetPageWithHTML(WikiUrl,PageUrl) : _repository.GetPageWithMD(WikiUrl, PageUrl);
-                 
-                Page page = new Page() {
+                var repoPage = (html) ? _repository.GetPageWithHTML(WikiUrl, PageUrl) : _repository.GetPageWithMD(WikiUrl, PageUrl);
+
+                Page page = new Page()
+                {
                     Content = (html) ? repoPage.HtmlContent : repoPage.MdContent,
                     Details = (details) ? repoPage.Details : null,
-                    Contents = (content) ? repoPage.Contents:null,
+                    Contents = (content) ? repoPage.Contents : null,
                     WikiUrl = WikiUrl,
                     Url = PageUrl,
                     PageName = repoPage.PageName ?? PageUrl
-                }; 
-                 
+                };
+
                 return Ok(page);
             }
             catch (Exception e)
-            {  
+            {
                 _logger.LogError(e.Message);
                 return NotFound("404 resource can not be found");
             }
-
         }
 
         [HttpPost]
@@ -65,12 +66,10 @@ namespace ViewzApi.Controllers
                 return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl, PageUrl }, value: null);
             }
             catch (Exception e)
-            {
-                //base.Content($"<h3>{e.Message}</h3>", "text/html");
+            { 
                 _logger.LogError(e.Message);
-                //return BadRequest();
-                //if request is duplicated 
-                return StatusCode(StatusCodes.Status409Conflict); // TODO replace with actual action for 409 if existing
+
+                return Conflict("Post request must be unique");
             }
         }
 
@@ -102,8 +101,7 @@ namespace ViewzApi.Controllers
                 }
             }
             catch (Exception e) {
-                _logger.LogError(e.Message);
-               // base.Content($"<h3>{e.Message}</h3>", "text/html");
+                _logger.LogError(e.Message); 
             }
 
             return NoContent();
