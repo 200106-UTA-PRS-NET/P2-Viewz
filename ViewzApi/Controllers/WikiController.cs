@@ -24,7 +24,7 @@ namespace ViewzApi.Controllers
         //get popular wikis
         [HttpGet]
         //api/wiki
-        public IActionResult Get([FromQuery]uint count=1,bool description=false)
+        public IActionResult Get([FromQuery]uint count=1,[FromQuery]bool description=false)
         {
             try
             {
