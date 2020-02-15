@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -48,8 +45,7 @@ namespace ViewzApi.Controllers
             {  
                 _logger.LogError(e.Message);
                 return NotFound("404 resource can not be found");
-            }
-
+            } 
         }
 
         [HttpPost]
@@ -69,12 +65,10 @@ namespace ViewzApi.Controllers
                 return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl, PageUrl }, value: null);
             }
             catch (Exception e)
-            {
-                //base.Content($"<h3>{e.Message}</h3>", "text/html");
+            { 
                 _logger.LogError(e.Message);
-                //return BadRequest();
                 //if request is duplicated 
-                return StatusCode(StatusCodes.Status409Conflict); // TODO replace with actual action for 409 if existing
+                return Conflict("Post request must be unique");
             }
         }
 
@@ -106,8 +100,7 @@ namespace ViewzApi.Controllers
                 }
             }
             catch (Exception e) {
-                _logger.LogError(e.Message);
-               // base.Content($"<h3>{e.Message}</h3>", "text/html");
+                _logger.LogError(e.Message); 
             }
 
             return NoContent();
