@@ -13,6 +13,7 @@ namespace DataAccess.APIAccess
     public class MdToHtmlAndContentsFactory : IMdToHtmlAndContentsFactory
     {
         protected HttpClient client;
+        private readonly string url = "https://api.github.com/markdown/raw";
 
         public MdToHtmlAndContentsFactory()
         {
@@ -38,7 +39,7 @@ namespace DataAccess.APIAccess
 
             var content = new StringContent(markDown, Encoding.UTF8, "text/plain");
             
-            HttpResponseMessage _response = await client.PostAsync("https://api.github.com/markdown/raw", content);
+            HttpResponseMessage _response = await client.PostAsync(url, content);
             if((int)_response.StatusCode != 200)
                 throw new HttpRequestException();
 
@@ -74,15 +75,13 @@ namespace DataAccess.APIAccess
                     case "h3":
                         C.Level = 3;
                         break;
-                    //default:                                //TODO delete after testing
-                        //throw new NotImplementedException();
                 }
                 
                 list.Add(C);
             }
 
             if (headers.Length != id_count)
-                return null;
+                list.Clear();
 
             return list;
         }
