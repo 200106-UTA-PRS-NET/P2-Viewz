@@ -56,8 +56,8 @@ jobs:
       appName: 'viewzapicanary'
       package: '$(System.DefaultWorkingDirectory)/ViewzApi/**/*.zip'
 
-- job: PullRequestsAndNonMasterBuilds
-  condition: and(always(), or(ne(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
+- job: Analysis
+  condition: always()
   steps:
   - task: SonarCloudPrepare@1
     inputs:
