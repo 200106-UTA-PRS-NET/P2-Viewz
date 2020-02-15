@@ -57,7 +57,7 @@ namespace DataAccess.Repositories
                     select contents.MdContent).Single();
         }
 
-        public void SetHTML(string wikiURL, string pageURL, string content)
+        protected void SetHTML(string wikiURL, string pageURL, string content)
         {
             SetHTML(GetID(wikiURL, pageURL), content);
         }

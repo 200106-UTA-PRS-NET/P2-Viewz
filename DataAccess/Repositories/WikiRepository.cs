@@ -27,7 +27,7 @@ namespace DataAccess.Repositories
             return GetHTML(GetId(wikiURL));
         }
 
-        private string GetHTML(int wikiId)
+        protected virtual string GetHTML(int wikiId)
         {
             return (from content in _db.WikiHtmlDescription
                     where content.WikiId == wikiId
@@ -39,7 +39,7 @@ namespace DataAccess.Repositories
             return GetMD(GetId(wikiURL));
         }
 
-        private string GetMD(int wikiId)
+        protected string GetMD(int wikiId)
         {
             return (from content in _db.WikiMdDescription
                     where content.WikiId == wikiId
@@ -135,7 +135,7 @@ namespace DataAccess.Repositories
             SetMD(GetId(wikiURL), content);
         }
 
-        private void SetMD(int wikiId, string content)
+        protected virtual void SetMD(int wikiId, string content)
         {
             var wikiMD = (from desc in _db.WikiMdDescription
                           where desc.WikiId == wikiId
@@ -165,6 +165,31 @@ namespace DataAccess.Repositories
                                 where inWiki.Id == wikiId
                                 select inWiki).Single();
             wiki.PageName = newName;
+            _db.SaveChanges();
+        }
+
+        protected void SetHTML(string wikiURL, string content)
+        {
+            SetHTML(GetId(wikiURL), content);
+        }
+
+        protected void SetHTML(int wikiId, string content)
+        {
+            var pageHtml = (from contents in _db.WikiHtmlDescription
+                            where contents.WikiId == wikiId
+                            select contents).SingleOrDefault();
+            if (pageHtml != null)
+            {
+                pageHtml.HtmlDescription = content;
+            }
+            else
+            {
+                _db.WikiHtmlDescription.Add(new WikiHtmlDescription()
+                {
+                    WikiId = wikiId,
+                    HtmlDescription = content
+                });
+            }
             _db.SaveChanges();
         }
     }
