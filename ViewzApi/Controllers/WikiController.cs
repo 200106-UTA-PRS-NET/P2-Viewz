@@ -14,7 +14,7 @@ namespace ViewzApi.Controllers
     public class WikiController : ControllerBase
     {
         private readonly IPageRepository _repository;
-        private readonly IWikiRepository _wikiRepository;
+       // private readonly IWikiRepository _wikiRepository;
 
         public WikiController(IPageRepository repository)
         {

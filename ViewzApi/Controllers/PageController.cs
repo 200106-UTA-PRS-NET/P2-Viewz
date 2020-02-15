@@ -44,9 +44,7 @@ namespace ViewzApi.Controllers
                 return Ok(page);
             }
             catch (Exception e)
-            { 
-                // _logger.LogInformation(e.StackTrace.ToString());
-               // base.Content($"<h3>{e.Message}</h3>", "text/html");
+            {  
                 _logger.LogError(e.Message);
                 return BadRequest();
             }

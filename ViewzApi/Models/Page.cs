@@ -9,13 +9,13 @@ namespace ViewzApi.Models
 {
     public class Page
     {
-        private readonly ILogger _logger;
+       // private readonly ILogger _logger;
 
         public Page() { }
-        public Page(ILogger<Page> logger) 
-        {
-            _logger = logger;
-        }
+        //public Page(ILogger<Page> logger) 
+        //{
+        //    _logger = logger;
+        //}
 
         public string WikiUrl { get; set; }
         public string Url { get; set; }
