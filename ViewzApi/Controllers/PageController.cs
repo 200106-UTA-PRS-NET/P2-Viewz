@@ -25,6 +25,7 @@ namespace ViewzApi.Controllers
 
         //url from db
         //api/wiki/training-code/readme/?html=false
+        [HttpGet]
         public IActionResult Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
                         bool details = true, bool html = true, bool content = true)
         {
