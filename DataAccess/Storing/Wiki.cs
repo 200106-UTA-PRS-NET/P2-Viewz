@@ -8,6 +8,7 @@ namespace DataAccess.Storing
     {
         public string Url { get; set; }
         public string PageName { get; set; }
-        public string Description { get; set; }
+        public string HtmlDescription { get; set; }
+        public string MdDescription { get; set; }
     }
 }

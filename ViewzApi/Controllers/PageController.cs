@@ -71,11 +71,9 @@ namespace ViewzApi.Controllers
             {
                 //base.Content($"<h3>{e.Message}</h3>", "text/html");
                 _logger.LogError(e.Message);
-
                 //return BadRequest();
                 //if request is duplicated 
-                return StatusCode(StatusCodes.Status409Conflict);
-                
+                return StatusCode(StatusCodes.Status409Conflict); // TODO replace with actual action for 409 if existing
             }
         }
 

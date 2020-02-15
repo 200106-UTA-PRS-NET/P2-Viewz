@@ -56,8 +56,8 @@ jobs:
       appName: 'viewzapicanary'
       package: '$(System.DefaultWorkingDirectory)/ViewzApi/**/*.zip'
 
-- job: PullRequest
-  condition: and(always(), eq(variables['Build.Reason'], 'PullRequest'))
+- job: Analysis
+  condition: always()
   steps:
   - task: SonarCloudPrepare@1
     inputs:
@@ -67,8 +67,8 @@ jobs:
       projectKey: 'jdf.viewz'
       extraProperties: |
           sonar.exclusions=**/wwwroot/lib/**/*,**/DataAccess/Models/**/*
-          sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/*"
-          sonar.cs.vstest.reportsPaths="$(Build.ArtifactStagingDirectory)/test/*.trx"
+          sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/**/*opencover.xml"
+          sonar.cs.vstest.reportsPaths="$(Build.ArtifactStagingDirectory)/test/**/*.trx"
   - script: dotnet build --configuration $(buildConfiguration)
     displayName: 'dotnet build $(buildConfiguration)'
   - script: dotnet test
@@ -77,39 +77,24 @@ jobs:
       --no-build
       --results-directory $(Build.ArtifactStagingDirectory)/test/
       /p:CollectCoverage=true
-      /p:CoverletOutputFormat=opencover
+      /p:CoverletOutputFormat=\"cobertura,opencover\"
       /p:CoverletOutput="$(Build.ArtifactStagingDirectory)/coverage/"
     displayName: 'Dotnet test and coverage'
   - task: SonarCloudAnalyze@1
+    condition: always()
   - task: SonarCloudPublish@1
+    condition: always()
     inputs:
       pollingTimeoutSec: '300'
-
-- job: EverythingElse
-  condition: and(always(), ne(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
-  steps:
-  - task: SonarCloudPrepare@1
+  - task: PublishTestResults@2
+    condition: always()
     inputs:
-      SonarCloud: 'SonarCloud'
-      organization: 'jdf-revature'
-      scannerMode: 'MSBuild'
-      projectKey: 'jdf.viewz'
-      extraProperties: |
-          sonar.exclusions=**/wwwroot/lib/**/*,**/DataAccess/Models/**/*
-          sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/*"
-          sonar.cs.vstest.reportsPaths="$(Build.ArtifactStagingDirectory)/test/*.trx"
-  - script: dotnet build --configuration $(buildConfiguration)
-    displayName: 'dotnet build $(buildConfiguration)'
-  - script: dotnet test
-      --configuration $(buildConfiguration)
-      --logger trx
-      --no-build
-      --results-directory $(Build.ArtifactStagingDirectory)/test/
-      /p:CollectCoverage=true
-      /p:CoverletOutputFormat=opencover
-      /p:CoverletOutput="$(Build.ArtifactStagingDirectory)/coverage/"
-    displayName: 'Dotnet test and coverage'
-  - task: SonarCloudAnalyze@1
-  - task: SonarCloudPublish@1
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '**/*.trx'
+      searchFolder: '$(Build.ArtifactStagingDirectory)/test/'
+  - task: PublishCodeCoverageResults@1
+    condition: always()
     inputs:
-      pollingTimeoutSec: '300'
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverage/**/*cobertura.xml'
+  

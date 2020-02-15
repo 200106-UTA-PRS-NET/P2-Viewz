@@ -43,7 +43,6 @@ namespace ViewzApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Viewz API", Version = "v1" });
             });
-
             //ADD CORS
             services.AddCors(options =>
             {
@@ -55,10 +54,8 @@ namespace ViewzApi
                    Configuration.GetConnectionString("ViewzDb")));
 
             services.AddSingleton<IMdToHtmlAndContentsFactory, MdToHtmlAndContentsFactory>();
-            //services.AddScoped<IWikirepository, WikiRepository>();
+            services.AddScoped<IWikirepository, WikiRepositoryRetrieving>();
            services.AddScoped<IPageRepository, PageRepositoryRetrieving>();
-          //services.AddScoped<IPageRepository, MockPageRepository>();
-
 
         }
 
@@ -79,7 +76,6 @@ namespace ViewzApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Viewz API V1");
                 //c.RoutePrefix = string.Empty;
             });
-
             //  loggerFactory.AddFile("Logs/mylog-{Date}.txt");
             //USE CORS
             app.UseCors(AllMyOrigins);
