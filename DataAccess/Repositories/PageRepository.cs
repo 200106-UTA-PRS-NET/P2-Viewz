@@ -64,7 +64,7 @@ namespace DataAccess.Repositories
 
         protected void SetHTML(long pageID, string content)
         {
-            // TODO put in table split classes
+            //!!! put in table split classes
             var pageHtml = (from contents in _db.PageHtmlContent
                           where contents.PageId == pageID
                           select contents).SingleOrDefault();
@@ -91,7 +91,7 @@ namespace DataAccess.Repositories
 
         protected virtual void SetMD(long pageID, string content)
         {
-            // TODO put in table split classes
+            //!!! put in table split classes
             var pageMD = (from contents in _db.PageMdContent
                           where contents.PageId == pageID
                           select contents).SingleOrDefault();

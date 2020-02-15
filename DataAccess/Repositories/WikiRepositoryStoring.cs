@@ -1,12 +1,13 @@
 ﻿using DataAccess.Interfaces;
 using DataAccess.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
+//using System.Collections.Generic;
+//using System.Text;
 
 namespace DataAccess.Repositories
 {
-    class WikiRepositoryStoring: WikiRepositoryRetrieving, IWikiRepository
+    //SMELL#46: Inheritance of interface unnecessary
+    class WikiRepositoryStoring: WikiRepositoryRetrieving
     {
         public WikiRepositoryStoring(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db, factory)
         {

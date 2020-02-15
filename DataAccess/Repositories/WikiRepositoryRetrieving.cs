@@ -1,12 +1,13 @@
 ﻿using DataAccess.Interfaces;
 using DataAccess.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
+//using System.Collections.Generic;
+//using System.Text;
 
 namespace DataAccess.Repositories
 {
-    class WikiRepositoryRetrieving : WikiRepository, IWikiRepository
+    //SMELL#43: Inheritance of interface unnecessary
+    class WikiRepositoryRetrieving : WikiRepository
     {
         protected readonly IMdToHtmlAndContentsFactory _factory;
 
