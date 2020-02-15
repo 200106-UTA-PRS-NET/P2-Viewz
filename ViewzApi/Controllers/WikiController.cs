@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq; 
+﻿using System;  
 using DataAccess.Interfaces; 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,64 +19,58 @@ namespace ViewzApi.Controllers
             _wikiRepository = wikiRepository;
             _repository = repository;
             _logger = logger;
-        }
-
-        //[HttpGet]
-        ////api/wiki
-        //public IEnumerable<Wiki> Get(bool html = true)
-        //{
-        //    return (from repoWiki in _wikiRepository.GetPopularWikis(5, false) 
-        //            select new Wiki()
-        //            {
-        //                Url = repoWiki.Url,
-        //                PageName = repoWiki.PageName,
-        //                Description = (html) ? repoWiki.HtmlDescription : repoWiki.MdDescription
-        //            }); 
-        //}
-
-        //GET: api/wiki/some-url 
-        [HttpGet("{WikiURL}", Name = "GetPopularPages")]
-        public IEnumerable<Page> Get([FromRoute]string WikiURL)
-        {
-            return (from repoPage in _repository.GetPopularPages(WikiURL, 5)
-                    select new Page()
-                    {
-                        Content = null,
-                        Details = repoPage.Details,
-                        Contents = repoPage.Contents,
-                        WikiUrl = WikiURL,
-                        Url = repoPage.Url,
-                        PageName = repoPage.PageName ?? repoPage.Url
-                    });
-
-        }
-
-
-        //[HttpGet("{WikiURL}", Name = "GetPopularPages")]
-        //public Wiki Get([FromRoute]string WikiURL)
-        //{
-        //    return (from repoWiki in _wikiRepository.GetWikiWithHTML(WikiURL)
-        //            select new Wiki() {
-        //                Description = repoWiki
-        //            });  
-        //}
-        /*
-         
-        [HttpPost]
-        public IActionResult Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
+        } 
+        
+        //get popular wikis
+        [HttpGet]
+        //api/wiki
+        public IActionResult Get([FromQuery]uint count,bool description=false)
         {
             try
             {
-                if (page.PageName != null)
+                return Ok(_wikiRepository.GetPopularWikis(count, description));
+            }
+            catch (Exception e) 
+            {
+                _logger.LogError(e.Message);
+                
+                return NotFound();
+            }
+        }
+ 
+        //get one wiki
+        [HttpGet("{WikiURL}", Name = "GetWiki")]
+        public IActionResult Get([FromRoute]string WikiURL, bool html=true)
+        {
+            var repoWiki = (html)? _wikiRepository.GetWikiWithHTML(WikiURL) : _wikiRepository.GetWikiWithMD(WikiURL);
+
+            Wiki wiki = new Wiki()
+            {
+                Url = repoWiki.Url,
+                PageName = repoWiki.PageName ?? WikiURL ,
+                Description = (html) ? repoWiki.HtmlDescription:repoWiki.MdDescription,
+                PopularPages = _repository.GetPopularPages(WikiURL,5) 
+            };
+
+            return Ok(wiki);
+        }
+         
+         
+        [HttpPost]
+        public IActionResult Post([FromRoute] string WikiUrl,  [FromBody]Wiki wiki)
+        {
+            try
+            {
+                if (wiki.PageName != null)
                 {
-                    _repository.NewPage(WikiUrl, PageUrl, page.PageName, page.Content);
+                    _wikiRepository.NewWiki(WikiUrl, wiki.PageName, wiki.Description);
                 }
                 else
                 {
-                    _repository.NewPage(WikiUrl, PageUrl, page.Content);
+                    _wikiRepository.NewWiki(WikiUrl,wiki.Description);
                 }
                 
-                return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl, PageUrl }, value: null);
+                return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl}, value: null);
             }
             catch (Exception e)
             { 
@@ -89,55 +82,31 @@ namespace ViewzApi.Controllers
 
         
         [HttpPatch]
-        public IActionResult Patch([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
+        public IActionResult Patch([FromRoute] string WikiUrl, [FromBody]Wiki wiki)
         {
             try
             {
-                if (page.Content == null && page.PageName == null && page.Details == null)
-                { 
-                    return BadRequest("page values cannot all be null");
+                if (wiki.PageName == null && wiki.Description == null)
+                {
+                    return BadRequest("wiki values cannot all be null");
                 }
 
-                if (page.PageName != null)
+                if (wiki.PageName != null)
                 {
-                    _repository.SetName(WikiUrl, PageUrl, page.PageName);
+                    _wikiRepository.SetName(WikiUrl, wiki.PageName);
                 }
 
-                if (page.Content != null)
+                if (wiki.Description != null)
                 {
-                    _repository.SetMD(WikiUrl, PageUrl, page.Content);
-
-                }
-
-                if (page.Details != null)
-                {
-                    _repository.SetPageDetails(WikiUrl, PageUrl, page.Details);
+                    _wikiRepository.SetMD(WikiUrl, wiki.Description);
                 }
             }
-            catch (Exception e) {
-                _logger.LogError(e.Message); 
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
             }
 
             return NoContent();
-        } 
-        */
-        //api/wiki/url-of-wiki
-        //[HttpGet("{url}", Name = "GetWiki")]
-        //public Wiki Get([FromRoute]string url, [FromQuery]bool Content = true)
-        //{
-        //    Wiki Wiki = new Wiki();
-
-        //    if (Wikis.Exists(w => w.Url == url))
-        //    {
-        //        Wiki = Wikis.FirstOrDefault(w => w.Url == url);
-        //    }
-
-        //    return Wiki;
-        //}
-
-        //public WikiHtmlDescription Get() 
-        //{ 
-        //    return _repository.WikiHtmlDescription();
-        //} 
+        }
     }
 }

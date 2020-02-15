@@ -35,7 +35,7 @@ namespace ViewzApi.Controllers
                     Details = (details) ? repoPage.Details : null,
                     Contents = (content) ? repoPage.Contents:null,
                     WikiUrl = WikiUrl,
-                    Url = PageUrl,
+                    Url = repoPage.Url ?? PageUrl,
                     PageName = repoPage.PageName ?? PageUrl
                 }; 
                  

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting; 
-using Microsoft.OpenApi.Models; 
+using Microsoft.OpenApi.Models;
 
 namespace ViewzApi
 {
@@ -50,7 +50,7 @@ namespace ViewzApi
 
             services.AddSingleton<IMdToHtmlAndContentsFactory, MdToHtmlAndContentsFactory>();
             services.AddScoped<IWikiRepository, WikiRepositoryRetrieving>();
-           services.AddScoped<IPageRepository, PageRepositoryRetrieving>();
+            services.AddScoped<IPageRepository, PageRepositoryRetrieving>();
 
         }
 
