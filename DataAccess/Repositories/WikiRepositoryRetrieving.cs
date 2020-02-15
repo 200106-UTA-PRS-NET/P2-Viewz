@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DataAccess.Repositories
 {
-    class WikiRepositoryRetrieving : WikiRepository, IWikiRepository
+    public class WikiRepositoryRetrieving : WikiRepository, IWikiRepository
     {
         protected readonly IMdToHtmlAndContentsFactory _factory;
 
