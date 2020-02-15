@@ -46,7 +46,7 @@ namespace ViewzApi.Controllers
             catch (Exception e)
             {  
                 _logger.LogError(e.Message);
-                return BadRequest();
+                return NotFound("404 resource can not be found");
             }
 
         }
@@ -71,7 +71,11 @@ namespace ViewzApi.Controllers
             {
                 //base.Content($"<h3>{e.Message}</h3>", "text/html");
                 _logger.LogError(e.Message);
-                return BadRequest();
+
+                //return BadRequest();
+                //if request is duplicated 
+                return StatusCode(StatusCodes.Status409Conflict);
+                
             }
         }
 
@@ -83,7 +87,7 @@ namespace ViewzApi.Controllers
             {
                 if (page.Content == null && page.PageName == null && page.Details == null)
                 { 
-                    return BadRequest();
+                    return BadRequest("page values cannot all be null");
                 }
 
                 if (page.PageName != null)
