@@ -1,17 +1,20 @@
 using DataAccess.Interfaces;
-using DataAccess.MockRepositories;
 using DataAccess.Models;
 using DataAccess.Repositories;
 using DataAccess.APIAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using System;
+using System.Reflection;
+using System.IO;
+using DataAccess.MockRepositories;
 
 namespace ViewzApi
 {
@@ -35,20 +38,26 @@ namespace ViewzApi
                 options.RespectBrowserAcceptHeader = true; 
             });
 
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Viewz API", Version = "v1" });
+            });
+
             //ADD CORS
             services.AddCors(options =>
             {
                 options.AddPolicy(AllMyOrigins, b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
-            services.AddDbContext<ViewzDbContext>(options =>
-               options.UseSqlServer(
-                   Configuration.GetConnectionString("ViewzDb")));
+            //services.AddDbContext<ViewzDbContext>(options =>
+            //   options.UseSqlServer(
+            //       Configuration.GetConnectionString("ViewzDb")));
 
             services.AddSingleton<IMdToHtmlAndContentsFactory, MdToHtmlAndContentsFactory>();
             //services.AddScoped<IWikirepository, WikiRepository>();
-           services.AddScoped<IPageRepository, PageRepositoryRetrieving>();
-          //  services.AddScoped<IPageRepository, MockPageRepository>();
+           //services.AddScoped<IPageRepository, PageRepositoryRetrieving>();
+          services.AddScoped<IPageRepository, MockPageRepository>();
 
 
         }
@@ -62,6 +71,14 @@ namespace ViewzApi
             }
 
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Viewz API V1");
+                //c.RoutePrefix = string.Empty;
+            });
 
             //  loggerFactory.AddFile("Logs/mylog-{Date}.txt");
             //USE CORS
