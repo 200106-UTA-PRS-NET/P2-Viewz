@@ -56,8 +56,9 @@ jobs:
       appName: 'viewzapicanary'
       package: '$(System.DefaultWorkingDirectory)/ViewzApi/**/*.zip'
 
-- job: PullRequestsAndNonMasterBuilds
-  condition: and(always(), or(ne(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
+- job: Analysis
+  # Run job if a PR into master or long term branch or CI anywhere
+  condition: and(always(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/branch-')))
   steps:
   - task: SonarCloudPrepare@1
     inputs:
@@ -81,19 +82,19 @@ jobs:
       /p:CoverletOutput="$(Build.ArtifactStagingDirectory)/coverage/"
     displayName: 'Dotnet test and coverage'
   - task: SonarCloudAnalyze@1
-    condition: always()
+    condition: succeededOrFailed()
   - task: SonarCloudPublish@1
-    condition: always()
+    condition: succeededOrFailed()
     inputs:
       pollingTimeoutSec: '300'
   - task: PublishTestResults@2
-    condition: always()
+    condition: succeededOrFailed()
     inputs:
       testResultsFormat: 'VSTest'
       testResultsFiles: '**/*.trx'
       searchFolder: '$(Build.ArtifactStagingDirectory)/test/'
   - task: PublishCodeCoverageResults@1
-    condition: always()
+    condition: succeededOrFailed()
     inputs:
       codeCoverageTool: 'Cobertura'
       summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverage/**/*cobertura.xml'

@@ -26,7 +26,7 @@ namespace DataAccess.Repositories
                 IHtmlAndContents result = _factory.GetHtmlAndContents(base.GetMD(pageID));
                 base.SetHTML(pageID, result?.PageHTML);
                 base.SetContents(pageID, result?.Contents);
-                return result.PageHTML;
+                return result?.PageHTML;
             }
         }
     }

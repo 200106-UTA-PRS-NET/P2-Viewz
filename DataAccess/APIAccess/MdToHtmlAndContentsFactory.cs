@@ -44,7 +44,7 @@ namespace DataAccess.APIAccess
 
             var content = new StringContent(markDown, Encoding.UTF8, "text/plain");
             
-            HttpResponseMessage _response = await client.PostAsync(url, content);
+            HttpResponseMessage _response = await client.PostAsync("https://api.github.com/markdown/raw", content);
             if((int)_response.StatusCode != 200)
                 throw new HttpRequestException();
 
@@ -67,7 +67,7 @@ namespace DataAccess.APIAccess
                     id_count++;
 
                 var C = new Contents();
-                C.Id = id.Id;
+                C.Id = id?.Id;
                 C.Content = h.InnerText.Trim('\n');
                 switch(h.Name.ToLower())
                 {
@@ -84,9 +84,6 @@ namespace DataAccess.APIAccess
                 
                 list.Add(C);
             }
-
-            if (headers.Length != id_count)
-                list.Clear();
 
             return list;
         }
