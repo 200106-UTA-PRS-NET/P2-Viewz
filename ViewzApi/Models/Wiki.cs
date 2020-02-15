@@ -1,4 +1,4 @@
-﻿namespace ViewzApi.Models
+namespace ViewzApi.Models
 {
     public class Wiki
     { 

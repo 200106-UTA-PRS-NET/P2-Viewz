@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Hosting; 
-using Microsoft.Extensions.Hosting; 
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace ViewzApi
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {

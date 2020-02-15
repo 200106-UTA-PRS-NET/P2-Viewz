@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq; 
 using DataAccess.Interfaces; 
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ViewzApi.Models;
@@ -14,7 +16,6 @@ namespace ViewzApi.Controllers
         private readonly IWikiRepository _wikiRepository;
         private readonly IPageRepository _repository;
         private readonly ILogger _logger;
-
         public WikiController(IWikiRepository wikiRepository, IPageRepository repository, ILogger<WikiController> logger)
         {
             _wikiRepository = wikiRepository;
