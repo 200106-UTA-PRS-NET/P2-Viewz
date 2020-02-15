@@ -66,7 +66,7 @@ namespace DataAccess.APIAccess
                     id_count++;
 
                 var C = new Contents();
-                C.Id = id.Id;
+                C.Id = id?.Id;
                 C.Content = h.InnerText.Trim('\n');
                 switch(h.Name.ToLower())
                 {
