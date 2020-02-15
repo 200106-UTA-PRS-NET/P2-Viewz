@@ -54,7 +54,7 @@ namespace ViewzApi
                    Configuration.GetConnectionString("ViewzDb")));
 
             services.AddSingleton<IMdToHtmlAndContentsFactory, MdToHtmlAndContentsFactory>();
-            services.AddScoped<IWikirepository, WikiRepositoryRetrieving>();
+            services.AddScoped<IWikiRepository, WikiRepositoryRetrieving>();
            services.AddScoped<IPageRepository, PageRepositoryRetrieving>();
 
         }
