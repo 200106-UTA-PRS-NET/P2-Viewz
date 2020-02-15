@@ -1,17 +1,17 @@
 using DataAccess.Interfaces;
-using DataAccess.MockRepositories;
+//using DataAccess.MockRepositories;
 using DataAccess.Models;
 using DataAccess.Repositories;
 using DataAccess.APIAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+//using Microsoft.AspNetCore.HttpsPolicy;
+//using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+//using Microsoft.Extensions.Logging;
 
 namespace ViewzApi
 {
@@ -37,7 +37,7 @@ namespace ViewzApi
                    Configuration.GetConnectionString("ViewzDb")));
 
             services.AddSingleton<IMdToHtmlAndContentsFactory, MdToHtmlAndContentsFactory>();
-            //services.AddScoped<IWikirepository, WikiRepository>();
+            //services.AddScoped<IWikirepository, WikiRepository>();                                // TODO if unused, remove
             services.AddScoped<IPageRepository, PageRepositoryRetrieving>(); 
             
              

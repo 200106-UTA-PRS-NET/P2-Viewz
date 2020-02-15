@@ -1,18 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataAccess.APIAccess;
-using DataAccess.Interfaces;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Threading.Tasks;
+//using DataAccess.APIAccess;
+//using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+//using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using ViewzApp.Controllers;
+//using Microsoft.Extensions.Logging;
+//using ViewzApp.Controllers;
 
 namespace ViewzApp
 {
-    public class Program
+    //SMELL#72/79: Added static to class declaration
+    public static class Program
     {
         public static void Main(string[] args)
         {
