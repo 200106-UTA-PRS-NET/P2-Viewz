@@ -4,6 +4,7 @@ using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ViewzApi.Models;
+using System.Collections.Generic;
 
 namespace ViewzApi.Controllers
 {
