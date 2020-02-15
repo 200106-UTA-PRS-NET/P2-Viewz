@@ -8,7 +8,6 @@ namespace DataAccess.Storing
     {
         public string Content { get; set; }
         public string Id { get; set; }
-
         public int Level { get; set; }
     }
 }

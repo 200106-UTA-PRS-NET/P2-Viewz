@@ -19,25 +19,35 @@ namespace DataAccess.APIAccess
             client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "P2-Viewz");
         }
-        public IHtmlAndContents GetResult(string markDown)
-        {
-            return GetResultAsync(markDown).Result;
-        }
-        private async Task<IHtmlAndContents> GetResultAsync(string markDown)
+
+        public IHtmlAndContents GetHtmlAndContents(string markDown)
+
         {
             if (markDown == null)
                 return null;
+
+            HtmlAndContents RESULT = new HtmlAndContents();
+            RESULT.PageHTML = GetHtmlAsync(markDown).Result;
+            RESULT.Contents = AParser(RESULT.PageHTML);
+            return RESULT;
+        }
+
+        public string GetHtml(string markDown)
+        {
+            return GetHtmlAsync(markDown).Result;
+        }
+        async Task<string> GetHtmlAsync(string markDown)
+        {
+            if (markDown == null)
+                return null;
+
             var content = new StringContent(markDown, Encoding.UTF8, "text/plain");
             
-
             HttpResponseMessage _response = await client.PostAsync("https://api.github.com/markdown/raw", content);
             if((int)_response.StatusCode != 200)
                 throw new HttpRequestException();
-                
-            var RESULT = new HtmlAndContents();
-            RESULT.PageHTML = await _response.Content.ReadAsStringAsync();
-            RESULT.Contents = AParser(RESULT.PageHTML);
-            return RESULT;
+
+            return await _response.Content.ReadAsStringAsync();
         }
 
         private static IEnumerable<Contents> AParser(string pagehtml)
@@ -48,9 +58,12 @@ namespace DataAccess.APIAccess
             HtmlDoc.LoadHtml(pagehtml);
             var xpath = "//*[self::h1 or self::h2 or self::h3]";
             HtmlNode[] headers = HtmlDoc.DocumentNode.SelectNodes(xpath).ToArray();
+            int id_count = 0;
             foreach(var h in headers)
             {
                 HtmlNode id = h.SelectSingleNode(".//a");
+                if (id != null)
+                    id_count++;
 
                 var C = new Contents();
                 C.Id = id.Id;
@@ -66,12 +79,15 @@ namespace DataAccess.APIAccess
                     case "h3":
                         C.Level = 3;
                         break;
-                    //default:                                      //TODO delete after testing
+                    //default:                                //TODO delete after testing
                         //throw new NotImplementedException();
                 }
-     
+                
                 list.Add(C);
             }
+
+            if (headers.Length != id_count)
+                return null;
 
             return list;
         }
