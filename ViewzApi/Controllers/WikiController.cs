@@ -24,7 +24,7 @@ namespace ViewzApi.Controllers
         //get popular wikis
         [HttpGet]
         //api/wiki
-        public IActionResult Get([FromQuery]uint count,bool description=false)
+        public IActionResult Get([FromQuery]uint count=1,bool description=false)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace ViewzApi.Controllers
             }
             catch (Exception e) {
                 _logger.LogError(e.Message);
-                return BadRequest();
+                return NotFound();
             }
         }
          
