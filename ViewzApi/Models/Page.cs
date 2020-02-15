@@ -1,14 +1,13 @@
-﻿using System;
+﻿//using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ViewzApi.Models;
+//using System.Linq;
+//using System.Threading.Tasks;
+//using ViewzApi.Models;
 
 namespace ViewzApi.Models
 {
     public class Page
     {
-         
         public string WikiUrl { get; set; }
         public string Url { get; set; }
         public string PageName { get; set; }  
