@@ -6,8 +6,7 @@ using System;
 
 namespace DataAccess.Repositories
 {
-    //SMELL#35: IPageRepository removed from inheritance list (PageRepository implements Interface)
-    public class PageRepositoryRetrieving : PageRepository
+    public class PageRepositoryRetrieving : PageRepository, IPageRepository
     {
         protected readonly IMdToHtmlAndContentsFactory _factory;
 

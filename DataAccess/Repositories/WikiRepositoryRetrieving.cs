@@ -7,7 +7,7 @@ using System;
 namespace DataAccess.Repositories
 {
     //SMELL#43: Inheritance of interface unnecessary
-    class WikiRepositoryRetrieving : WikiRepository
+    class WikiRepositoryRetrieving : WikiRepository, IWikiRepository
     {
         protected readonly IMdToHtmlAndContentsFactory _factory;
 

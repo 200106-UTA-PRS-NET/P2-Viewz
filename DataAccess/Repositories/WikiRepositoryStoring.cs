@@ -7,7 +7,7 @@ using System;
 namespace DataAccess.Repositories
 {
     //SMELL#46: Inheritance of interface unnecessary
-    class WikiRepositoryStoring: WikiRepositoryRetrieving
+    class WikiRepositoryStoring: WikiRepositoryRetrieving, IWikiRepository
     {
         public WikiRepositoryStoring(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db, factory)
         {

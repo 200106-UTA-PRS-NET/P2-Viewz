@@ -6,8 +6,7 @@ using System;
 
 namespace DataAccess.Repositories
 {
-    //SMELL#38: Same as #35 (inheritance of IPageRepository unnecessary)
-    public class PageRepositoryStoring : PageRepositoryRetrieving
+    public class PageRepositoryStoring : PageRepositoryRetrieving, IPageRepository
     {
         public PageRepositoryStoring(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db, factory)
         {

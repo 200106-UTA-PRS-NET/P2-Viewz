@@ -86,7 +86,7 @@ namespace DataAccess.APIAccess
             }
 
             if (headers.Length != id_count)
-                list.Clear();
+                return null;
 
             return list;
         }
