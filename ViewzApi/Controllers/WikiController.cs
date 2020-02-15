@@ -42,17 +42,24 @@ namespace ViewzApi.Controllers
         [HttpGet("{WikiURL}", Name = "GetWiki")]
         public IActionResult Get([FromRoute]string WikiURL, bool html=true)
         {
-            var repoWiki = (html)? _wikiRepository.GetWikiWithHTML(WikiURL) : _wikiRepository.GetWikiWithMD(WikiURL);
-
-            Wiki wiki = new Wiki()
+            try
             {
-                Url = repoWiki.Url,
-                PageName = repoWiki.PageName ?? WikiURL ,
-                Description = (html) ? repoWiki.HtmlDescription:repoWiki.MdDescription,
-                PopularPages = _repository.GetPopularPages(WikiURL,5) 
-            };
+                var repoWiki = (html) ? _wikiRepository.GetWikiWithHTML(WikiURL) : _wikiRepository.GetWikiWithMD(WikiURL);
 
-            return Ok(wiki);
+                Wiki wiki = new Wiki()
+                {
+                    Url = repoWiki.Url,
+                    PageName = repoWiki.PageName ?? WikiURL,
+                    Description = (html) ? repoWiki.HtmlDescription : repoWiki.MdDescription,
+                    PopularPages = _repository.GetPopularPages(WikiURL, 5)
+                };
+
+                return Ok(wiki);
+            }
+            catch (Exception e) {
+                _logger.LogError(e.Message);
+                return BadRequest();
+            }
         }
          
          
