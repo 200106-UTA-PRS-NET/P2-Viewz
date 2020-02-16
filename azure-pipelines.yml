@@ -11,7 +11,7 @@ variables:
   buildConfiguration: 'Release'
 jobs:
 - job: DeployMaster
-  condition: and(always(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(always(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/front-end')), ne(variables['Build.Reason'], 'PullRequest'))
   steps:
   - script: dotnet build --configuration $(buildConfiguration)
     displayName: 'dotnet build $(buildConfiguration)'
