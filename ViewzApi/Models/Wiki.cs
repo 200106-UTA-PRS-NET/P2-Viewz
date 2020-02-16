@@ -8,6 +8,6 @@ namespace ViewzApi.Models
         public string PageName { get; set; }
         public string Description { get; set; }
 
-        public IEnumerable<DataAccess.Storing.Page> PopularPages { get; set; }
+        public IEnumerable<Page> PopularPages { get; set; }
     }
 }

@@ -1,12 +1,15 @@
-﻿using System;  
-using DataAccess.Interfaces; 
+﻿using System;
+using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ViewzApi.Models;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace ViewzApi.Controllers
 {
     [Route("api/[controller]")]
+    //[Route("api/Wiki/{WikiUrl}")]
     [ApiController]
     public class WikiController : ControllerBase
     {
@@ -19,28 +22,29 @@ namespace ViewzApi.Controllers
             _wikiRepository = wikiRepository;
             _repository = repository;
             _logger = logger;
-        } 
-        
+        }
+
         //get popular wikis
-        [HttpGet(Name="GetPopular")]
+        [HttpGet(Name = "GetPopular")]
+        //[HttpGet]
         //api/wiki
-        public IActionResult Get([FromQuery]uint count=1,[FromQuery]bool description=false)
+        public IActionResult Get([FromQuery]uint count = 1, [FromQuery]bool description = false)
         {
             try
             {
                 return Ok(_wikiRepository.GetPopularWikis(count, description));
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 _logger.LogError(e.Message);
-                
+
                 return NotFound();
             }
         }
- 
+
         //get one wiki
         [HttpGet("{WikiURL}", Name = "GetWiki")]
-        public IActionResult Get([FromRoute]string WikiURL, bool html=true)
+        public IActionResult Get([FromRoute]string WikiURL, bool html = true)
         {
             try
             {
@@ -51,20 +55,30 @@ namespace ViewzApi.Controllers
                     Url = repoWiki.Url,
                     PageName = repoWiki.PageName ?? WikiURL,
                     Description = (html) ? repoWiki.HtmlDescription : repoWiki.MdDescription,
-                    PopularPages = _repository.GetPopularPages(WikiURL, 5)
+                    PopularPages = (from repoPage in _repository.GetPopularPages(WikiURL, 5)
+                                    select new Page()
+                                    {
+                                        Content = null,
+                                        Details = repoPage.Details,
+                                        Contents = repoPage.Contents,
+                                        WikiUrl = WikiURL,
+                                        Url = repoPage.Url,
+                                        PageName = repoPage.PageName ?? repoPage.Url
+                                    })
                 };
 
                 return Ok(wiki);
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 _logger.LogError(e.Message);
                 return NotFound();
             }
         }
-         
-         
-        [HttpPost]
-        public IActionResult Post([FromRoute] string WikiUrl,  [FromBody]Wiki wiki)
+
+
+        [HttpPost("{WikiURL}")]
+        public IActionResult Post([FromRoute] string WikiUrl, [FromBody]Wiki wiki)
         {
             try
             {
@@ -74,20 +88,20 @@ namespace ViewzApi.Controllers
                 }
                 else
                 {
-                    _wikiRepository.NewWiki(WikiUrl,wiki.Description);
+                    _wikiRepository.NewWiki(WikiUrl, wiki.Description);
                 }
-                
-                return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl}, value: null);
+
+                return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl }, value: null);
             }
             catch (Exception e)
-            { 
+            {
                 _logger.LogError(e.Message);
                 //if request is duplicated 
                 return Conflict("Post request must be unique");
             }
         }
 
-        
+
         [HttpPatch]
         public IActionResult Patch([FromRoute] string WikiUrl, [FromBody]Wiki wiki)
         {
