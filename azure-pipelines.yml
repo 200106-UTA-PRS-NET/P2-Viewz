@@ -104,6 +104,9 @@ jobs:
       command: 'buildAndPush'
       Dockerfile: '$(System.DefaultWorkingDirectory)/ViewzApp/Dockerfile'
       buildContext: '$(System.DefaultWorkingDirectory)/ViewzApp'
+      tags: |
+        $(Build.BuildId)
+        latest
   - task: AzureWebAppContainer@1
     inputs:
       azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
