@@ -7,11 +7,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace XUnitTestProject1
+namespace Tests
 {
-    public class UnitTest1
+    public class APIConsumptionMethodTesting
     {
-
         [Fact]
         public void GetHtmlTest()
         {

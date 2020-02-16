@@ -9,9 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewzApi", "ViewzApi\ViewzA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{DAF34755-7A14-40BB-B12B-8109CEFCC78E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XUnitTestProject1", "XUnitTestProject1\XUnitTestProject1.csproj", "{90535CB6-0BF8-4460-95BD-59690C31DBCF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIAccess", "APIAccess\APIAccess.csproj", "{8D102775-E53A-449C-AFFD-9BA10E50B189}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "XUnitTestProject1\Tests.csproj", "{90535CB6-0BF8-4460-95BD-59690C31DBCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{90535CB6-0BF8-4460-95BD-59690C31DBCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90535CB6-0BF8-4460-95BD-59690C31DBCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90535CB6-0BF8-4460-95BD-59690C31DBCF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D102775-E53A-449C-AFFD-9BA10E50B189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D102775-E53A-449C-AFFD-9BA10E50B189}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D102775-E53A-449C-AFFD-9BA10E50B189}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D102775-E53A-449C-AFFD-9BA10E50B189}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
