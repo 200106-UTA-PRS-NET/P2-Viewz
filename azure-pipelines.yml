@@ -111,4 +111,4 @@ jobs:
     inputs:
       azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
       appName: 'viewz'
-      containers: 'hub.docker.com/jacobdf/viewz'
+      containers: 'jacobdf/viewz'
