@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq; 
-using DataAccess.Interfaces; 
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using System.Linq;
+using DataAccess.Interfaces;
+using ViewzApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ViewzApi.Models;
 
 namespace ViewzApi.Controllers
 {
