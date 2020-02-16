@@ -3,11 +3,11 @@ using DataAccess.Interfaces;
 using DataAccess.Models;
 using DataAccess.Repositories;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting; 
 using Microsoft.OpenApi.Models;
 
 namespace ViewzApi
@@ -50,7 +50,7 @@ namespace ViewzApi
 
             services.AddSingleton<IMdToHtmlAndContentsFactory, MdToHtmlAndContentsFactory>();
             services.AddScoped<IWikiRepository, WikiRepositoryRetrieving>();
-           services.AddScoped<IPageRepository, PageRepositoryRetrieving>();
+            services.AddScoped<IPageRepository, PageRepositoryRetrieving>();
 
         }
 
@@ -69,7 +69,8 @@ namespace ViewzApi
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Viewz API V1");
-            });
+            }); 
+
             //USE CORS
             app.UseCors(AllMyOrigins);
 
