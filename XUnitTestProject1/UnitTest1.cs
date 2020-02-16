@@ -36,7 +36,7 @@ namespace XUnitTestProject1
             Assert.Equal(EXPECTED, ACTUAL);
         }
         
-        //FAILS but functions properly
+        //Fixed
         [Fact]
         public void GetHtmlAndContentsTest()
         {

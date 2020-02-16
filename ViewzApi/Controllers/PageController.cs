@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using DataAccess.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using ViewzApi.Models;
 
@@ -28,24 +28,25 @@ namespace ViewzApi.Controllers
         {
             try
             {
-                var repoPage = (html) ? _repository.GetPageWithHTML(WikiUrl,PageUrl) : _repository.GetPageWithMD(WikiUrl, PageUrl);
-                 
-                Page page = new Page() {
+                var repoPage = (html) ? _repository.GetPageWithHTML(WikiUrl, PageUrl) : _repository.GetPageWithMD(WikiUrl, PageUrl);
+
+                Page page = new Page()
+                {
                     Content = (html) ? repoPage.HtmlContent : repoPage.MdContent,
                     Details = (details) ? repoPage.Details : null,
-                    Contents = (content) ? repoPage.Contents:null,
+                    Contents = (content) ? repoPage.Contents : null,
                     WikiUrl = WikiUrl,
                     Url = repoPage.Url ?? PageUrl,
                     PageName = repoPage.PageName ?? PageUrl
-                }; 
-                 
+                };
+
                 return Ok(page);
             }
             catch (Exception e)
-            {  
+            {
                 _logger.LogError(e.Message);
                 return NotFound("404 resource can not be found");
-            } 
+            }
         }
 
         [HttpPost]
@@ -67,7 +68,7 @@ namespace ViewzApi.Controllers
             catch (Exception e)
             { 
                 _logger.LogError(e.Message);
-                //if request is duplicated 
+
                 return Conflict("Post request must be unique");
             }
         }

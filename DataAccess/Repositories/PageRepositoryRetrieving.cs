@@ -1,12 +1,13 @@
 ﻿using DataAccess.Interfaces;
 using DataAccess.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
+//using System.Collections.Generic;
+//using System.Text;
 
 namespace DataAccess.Repositories
 {
-    public class PageRepositoryRetrieving : PageRepository, IPageRepository
+    //SMELL#35: IPageRepository removed from inheritance list (PageRepository implements Interface)
+    public class PageRepositoryRetrieving : PageRepository
     {
         protected readonly IMdToHtmlAndContentsFactory _factory;
 

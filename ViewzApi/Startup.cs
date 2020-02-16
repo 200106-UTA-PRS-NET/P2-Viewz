@@ -1,7 +1,7 @@
+using DataAccess.APIAccess;
 using DataAccess.Interfaces;
 using DataAccess.Models;
 using DataAccess.Repositories;
-using DataAccess.APIAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting; 
 using Microsoft.EntityFrameworkCore;

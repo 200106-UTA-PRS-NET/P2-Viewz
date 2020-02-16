@@ -1,12 +1,13 @@
 ﻿using DataAccess.Interfaces;
 using DataAccess.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
+//using System.Collections.Generic;
+//using System.Text;
 
 namespace DataAccess.Repositories
 {
-    public class PageRepositoryStoring : PageRepositoryRetrieving, IPageRepository
+    //SMELL#38: Same as #35 (inheritance of IPageRepository unnecessary)
+    public class PageRepositoryStoring : PageRepositoryRetrieving
     {
         public PageRepositoryStoring(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db, factory)
         {
