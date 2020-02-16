@@ -13,7 +13,7 @@ namespace DataAccess.APIAccess
     public class MdToHtmlAndContentsFactory : IMdToHtmlAndContentsFactory
     {
         protected HttpClient client;
-        private readonly string url = "https://api.github.com/markdown/raw";
+        private const string url = "https://api.github.com/markdown/raw";
 
         public MdToHtmlAndContentsFactory()
         {
@@ -22,13 +22,14 @@ namespace DataAccess.APIAccess
         }
 
         public IHtmlAndContents GetHtmlAndContents(string markDown)
-
         {
             if (markDown == null)
                 return null;
 
-            HtmlAndContents RESULT = new HtmlAndContents();
-            RESULT.PageHTML = GetHtmlAsync(markDown).Result;
+            HtmlAndContents RESULT = new HtmlAndContents
+            {
+                PageHTML = GetHtmlAsync(markDown).Result
+            };
             RESULT.Contents = AParser(RESULT.PageHTML);
             return RESULT;
         }
@@ -66,10 +67,12 @@ namespace DataAccess.APIAccess
                 if (id != null)
                     id_count++;
 
-                var C = new Contents();
-                C.Id = id.Id;
-                C.Content = h.InnerText.Trim('\n');
-                switch(h.Name.ToLower())
+                var C = new Contents
+                {
+                    Id = id?.Id,
+                    Content = h.InnerText.Trim('\n')
+                };
+                switch (h.Name.ToLower())
                 {
                     case "h1":
                         C.Level = 1;

@@ -6,7 +6,8 @@ using System;
 
 namespace DataAccess.Repositories
 {
-    public class PageRepositoryRetrieving : PageRepository, IPageRepository
+    //SMELL#35: IPageRepository removed from inheritance list (PageRepository implements Interface)
+    public class PageRepositoryRetrieving : PageRepository
     {
         protected readonly IMdToHtmlAndContentsFactory _factory;
 
@@ -25,7 +26,7 @@ namespace DataAccess.Repositories
                 IHtmlAndContents result = _factory.GetHtmlAndContents(base.GetMD(pageID));
                 base.SetHTML(pageID, result?.PageHTML);
                 base.SetContents(pageID, result?.Contents);
-                return result.PageHTML;
+                return result?.PageHTML;
             }
         }
     }
