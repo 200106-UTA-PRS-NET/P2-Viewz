@@ -93,6 +93,8 @@ jobs:
       codeCoverageTool: 'Cobertura'
       summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverage/**/*cobertura.xml'
 - job: DeployAngularApp
+  pool:
+    'ubuntu-latest'
   condition: and(always(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/front-end')), ne(variables['Build.Reason'], 'PullRequest'))
   steps:
   - task: Docker@2
