@@ -27,12 +27,6 @@ jobs:
     inputs:
       azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
       appType: 'webAppLinux'
-      appName: 'viewz'
-      package: '$(System.DefaultWorkingDirectory)/ViewzApp/**/*.zip'
-  - task: AzureWebApp@1
-    inputs:
-      azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
-      appType: 'webAppLinux'
       appName: 'viewzapi'
       package: '$(System.DefaultWorkingDirectory)/ViewzApi/**/*.zip'
 
@@ -98,4 +92,23 @@ jobs:
     inputs:
       codeCoverageTool: 'Cobertura'
       summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverage/**/*cobertura.xml'
-  
+- job: DeployAngularApp
+  pool:
+    vmImage: 'ubuntu-latest'
+  condition: and(always(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/front-end')), ne(variables['Build.Reason'], 'PullRequest'))
+  steps:
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'Docker'
+      repository: 'jacobdf/viewz'
+      command: 'buildAndPush'
+      Dockerfile: '$(System.DefaultWorkingDirectory)/ViewzApp/Dockerfile'
+      buildContext: '$(System.DefaultWorkingDirectory)/ViewzApp'
+      tags: |
+        $(Build.BuildId)
+        latest
+  - task: AzureWebAppContainer@1
+    inputs:
+      azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
+      appName: 'viewz'
+      containers: 'jacobdf/viewz'
