@@ -22,7 +22,6 @@ namespace DataAccess.APIAccess
         }
 
         public IHtmlAndContents GetHtmlAndContents(string markDown)
-
         {
             if (markDown == null)
                 return null;
@@ -88,6 +87,9 @@ namespace DataAccess.APIAccess
                 
                 list.Add(C);
             }
+
+            if (headers.Length != id_count)
+                return null;
 
             return list;
         }
