@@ -6,6 +6,7 @@ using DataAccess.Storing;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Tests
 {
@@ -33,8 +34,7 @@ namespace Tests
 
             Assert.Equal(EXPECTED, ACTUAL);
         }
-        
-        /*
+
         //FAILS but functions properly
         [Fact]
         public void GetHtmlAndContentsTest()
@@ -67,9 +67,15 @@ namespace Tests
             EXPECTED.Contents = (IEnumerable<Contents>)contents;
             var ACTUAL = factory.GetHtmlAndContents(md);
 
-            Assert.Equal(EXPECTED, ACTUAL);
+            foreach(var (First, Second) in EXPECTED.Contents.Zip(ACTUAL.Contents))
+            {
+                Assert.Equal(First.Id, Second.Id);
+                Assert.Equal(First.Content, Second.Content);
+                Assert.Equal(First.Level, Second.Level);
+            }
+
+            Assert.Equal(EXPECTED.PageHTML, ACTUAL.PageHTML);
         }
-        */
 
         [Fact]
         public void GetHtmlAndContentsTestNull()
