@@ -23,6 +23,18 @@ jobs:
       zipAfterPublish: true
       projects: '**/Viewz*.csproj'
     displayName: 'DotNet publish api and app + zip'
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'Docker'
+      repository: 'jacobdf/viewz'
+      command: 'buildAndPush'
+      Dockerfile: '**/ViewzApp/Dockerfile'
+      buildContext: '**/ViewzApp'
+  - task: AzureWebAppContainer@1
+    inputs:
+      azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
+      appName: 'viewz'
+      containers: 'hub.docker.com/jacobdf/viewz'
   - task: AzureWebApp@1
     inputs:
       azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
