@@ -76,25 +76,6 @@ jobs:
       /p:CoverletOutput="$(Build.ArtifactStagingDirectory)/coverage/"
     displayName: 'Dotnet test and coverage'
   - task: SonarCloudAnalyze@1
-<<<<<<< HEAD
-    condition: always()
-  - task: SonarCloudPublish@1
-    condition: always()
-    inputs:
-      pollingTimeoutSec: '300'
-  - task: PublishTestResults@2
-    condition: always()
-    inputs:
-      testResultsFormat: 'VSTest'
-      testResultsFiles: '**/*.trx'
-      searchFolder: '$(Build.ArtifactStagingDirectory)/test/'
-  - task: PublishCodeCoverageResults@1
-    condition: always()
-    inputs:
-      codeCoverageTool: 'Cobertura'
-      summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverage/**/*cobertura.xml'
-  
-=======
     condition: succeededOrFailed()
   - task: SonarCloudPublish@1
     condition: succeededOrFailed()
