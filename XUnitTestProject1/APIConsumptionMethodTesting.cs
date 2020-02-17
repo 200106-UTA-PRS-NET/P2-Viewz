@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace XUnitTestProject1
+namespace Tests
 {
-    public class UnitTest1
+    public class APIConsumptionMethodTesting
     {
-
         [Fact]
         public void GetHtmlTest()
         {
@@ -35,8 +34,8 @@ namespace XUnitTestProject1
 
             Assert.Equal(EXPECTED, ACTUAL);
         }
-        
-        //Fixed
+
+        //FAILS but functions properly
         [Fact]
         public void GetHtmlAndContentsTest()
         {
@@ -68,11 +67,11 @@ namespace XUnitTestProject1
             EXPECTED.Contents = (IEnumerable<Contents>)contents;
             var ACTUAL = factory.GetHtmlAndContents(md);
 
-            foreach(var pair in EXPECTED.Contents.Zip(ACTUAL.Contents))
+            foreach(var (First, Second) in EXPECTED.Contents.Zip(ACTUAL.Contents))
             {
-                Assert.Equal(pair.First.Id, pair.Second.Id);
-                Assert.Equal(pair.First.Content, pair.Second.Content);
-                Assert.Equal(pair.First.Level, pair.Second.Level);
+                Assert.Equal(First.Id, Second.Id);
+                Assert.Equal(First.Content, Second.Content);
+                Assert.Equal(First.Level, Second.Level);
             }
 
             Assert.Equal(EXPECTED.PageHTML, ACTUAL.PageHTML);

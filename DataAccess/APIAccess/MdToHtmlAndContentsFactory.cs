@@ -22,7 +22,6 @@ namespace DataAccess.APIAccess
         }
 
         public IHtmlAndContents GetHtmlAndContents(string markDown)
-
         {
             if (markDown == null)
                 return null;
