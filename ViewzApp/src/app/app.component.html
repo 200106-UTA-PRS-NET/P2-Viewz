@@ -1,7 +1,6 @@
-<h1>
-  Viewz Markdown Wiki
-</h1>
+<h1 [innerHTML]="title"></h1>
 <ul>
-  <li *ngFor="let popPage of popularPages"><a [href]="popPage.pageUrl" (click)="scrollToElement(popPage.pageUrl)">{{popPage.content}}</a></li>
+  <li *ngFor="let popPage of popularPages"><a routerLink="{{popPage.pageUrl}}" [innerHTML]="popPage.pageName"></a></li>
 </ul>
 <div [innerHTML]="content"></div>
+<router-outlet></router-outlet>

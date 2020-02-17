@@ -15,7 +15,8 @@ export class AppComponent {
   constructor(
     private wikiService: WikiConnectorService,
     private sanitized: DomSanitizer
-  ){}
+  ){
+  }
 
   ngOnInit() {
     this.getWiki();
@@ -26,11 +27,11 @@ export class AppComponent {
       .subscribe(wiki => {
         this.title = wiki['pageName'];
         this.content = this.sanitized.bypassSecurityTrustHtml(wiki['description']);
-        this.popularPages = Array.from(wiki['popularPages'], wikiPages => <page> {
+        this.popularPages = wiki['popularPages'].map(wikiPages => <page> {
           pageUrl: wikiPages['url'],
           pageName: wikiPages['pageName'],
-          content: null
-        })
+          content: this.sanitized.bypassSecurityTrustHtml(wikiPages['content'])
+        });
       })
   }
 

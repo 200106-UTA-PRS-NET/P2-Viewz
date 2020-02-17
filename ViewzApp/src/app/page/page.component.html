@@ -1,1 +1,5 @@
-<p>page works!</p>
+<h1 [innerHTML]="title"></h1>
+<ul>
+  <li *ngFor="let contentEl of contents"><a href="#{{contentEl.id}}" (click)="scrollToElement(contentEl.id)" [innerHTML]="contentEl.content"></a></li>
+</ul>
+<div [innerHTML]="content"></div>

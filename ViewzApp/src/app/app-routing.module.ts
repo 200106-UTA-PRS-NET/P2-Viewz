@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
+import { PageComponent } from './page/page.component';
 import { WikiComponent } from './wiki/wiki.component';
 
 const routes: Routes = [
-  { path: '', component: AppComponent },
-  { path: ':wiki', component: WikiComponent}
+  { path: '', component: WikiComponent, pathMatch: 'full' },
+  { path: ':page', component: PageComponent}
 ];
 
 @NgModule({
@@ -15,6 +15,5 @@ const routes: Routes = [
 })
 export class AppRoutingModule {
   constructor() {
-    
   }
 }

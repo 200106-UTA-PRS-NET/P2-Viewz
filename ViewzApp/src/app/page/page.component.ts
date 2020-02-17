@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 import { ContentEntry } from '../content-entry';
 import { WikiConnectorService } from '../wiki-connector.service';
+import { ActivatedRoute, Params } from '@angular/router';
+import { PageHistoryService } from '../page-history.service';
 
 @Component({
   selector: 'app-page',
@@ -12,13 +14,19 @@ export class PageComponent implements OnInit {
   title = '';
   content : SafeHtml;
   contents: ContentEntry[];
+  sub;
   constructor(
+    private route: ActivatedRoute,
     private wikiService: WikiConnectorService,
-    private sanitized: DomSanitizer
+    private sanitized: DomSanitizer,
+    private history: PageHistoryService
   ){}
 
   ngOnInit() {
-    this.getPage('readme');
+    this.sub = this.route.params.subscribe((params: Params) => {
+      this.getPage(params['page']);
+      this.history.add(params['page']);
+    });
   }
 
   getPage(pageUrl: string): void {
@@ -31,7 +39,6 @@ export class PageComponent implements OnInit {
   }
 
   scrollToElement(id: string): boolean {
-    debugger;
     try{
     document.getElementById(id).scrollIntoView({"behavior": "smooth"});
   } catch {
