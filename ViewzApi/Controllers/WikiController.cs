@@ -57,7 +57,7 @@ namespace ViewzApi.Controllers
                     Url = repoWiki.Url,
                     PageName = repoWiki.PageName ?? WikiURL,
                     Description = (html) ? repoWiki.HtmlDescription : repoWiki.MdDescription,
-                    PopularPages = (from repoPage in _repository.GetPopularPages(WikiURL, 3)
+                    PopularPages = (from repoPage in _repository.GetPopularPages(WikiURL, 5)
                                     select new Page()
                                     {
                                        // Content = null,
