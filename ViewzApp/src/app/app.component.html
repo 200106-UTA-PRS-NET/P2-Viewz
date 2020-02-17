@@ -2,6 +2,6 @@
   Viewz Markdown Wiki
 </h1>
 <ul>
-  <li *ngFor="let contentEl of contents"><a [href]="contentEl.id" (click)="scrollToElement(contentEl.id)">{{contentEl.content}}</a></li>
+  <li *ngFor="let popPage of popularPages"><a [href]="popPage.pageUrl" (click)="scrollToElement(popPage.pageUrl)">{{popPage.content}}</a></li>
 </ul>
 <div [innerHTML]="content"></div>

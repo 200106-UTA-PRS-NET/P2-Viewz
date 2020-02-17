@@ -1,6 +1,7 @@
 import { Component, Pipe, PipeTransform } from '@angular/core';
 import { WikiConnectorService } from './wiki-connector.service'
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ContentEntry } from './content-entry';
 
 @Component({
   selector: 'app-root',
@@ -9,23 +10,35 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class AppComponent {
   title = '';
-  content;
-  contents: ContentEntry[];
+  content : SafeHtml;
+  popularPages : page[];
   constructor(
     private wikiService: WikiConnectorService,
     private sanitized: DomSanitizer
   ){}
 
   ngOnInit() {
-    this.getPage();
+    this.getWiki();
   }
 
-  getPage(): void {
-    this.wikiService.getPage()
+  getWiki(){
+    this.wikiService.getWiki()
+      .subscribe(wiki => {
+        this.title = wiki['pageName'];
+        this.content = this.sanitized.bypassSecurityTrustHtml(wiki['description']);
+        this.popularPages = Array.from(wiki['popularPages'], wikiPages => <page> {
+          pageUrl: wikiPages['url'],
+          pageName: wikiPages['pageName'],
+          content: null
+        })
+      })
+  }
+
+  getPage(pageUrl: string): void {
+    this.wikiService.getPage(pageUrl)
       .subscribe(page => {
         this.title = page['pageName'];
         this.content = this.sanitized.bypassSecurityTrustHtml(page['content']);
-        this.contents = page['contents'];
     });
   }
 
@@ -40,8 +53,8 @@ export class AppComponent {
   }
 }
 
-interface ContentEntry {
-  content: string;
-  id: string;
-  level: number;
+interface page {
+  pageUrl: string,
+  pageName: string,
+  content: SafeHtml | null
 }
