@@ -105,7 +105,7 @@ namespace ViewzApi.Controllers
         }
 
 
-        [HttpPatch]
+        [HttpPatch("{WikiURL}")]
         public IActionResult Patch([FromRoute] string WikiUrl, [FromBody]Wiki wiki)
         {
             try
