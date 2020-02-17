@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 import { ContentEntry } from '../content-entry';
 import { WikiConnectorService } from '../wiki-connector.service';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { PageHistoryService } from '../page-history.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-page',
@@ -12,17 +12,19 @@ import { PageHistoryService } from '../page-history.service';
 })
 export class PageComponent implements OnInit {
   title = '';
-  content : SafeHtml;
+  content : string;
   contents: ContentEntry[];
-  sub;
+  sub : Subscription;
+  pageContent : HTMLElement;
   constructor(
     private route: ActivatedRoute,
     private wikiService: WikiConnectorService,
-    private sanitized: DomSanitizer,
-    private history: PageHistoryService
+    private history: PageHistoryService,
+    private router: Router
   ){}
 
   ngOnInit() {
+    this.pageContent = document.getElementById('pageContent');
     this.sub = this.route.params.subscribe((params: Params) => {
       this.getPage(params['page']);
       this.history.add(params['page']);
@@ -30,12 +32,26 @@ export class PageComponent implements OnInit {
   }
 
   getPage(pageUrl: string): void {
+
     this.wikiService.getPage(pageUrl)
       .subscribe(page => {
         this.title = page['pageName'];
-        this.content = this.sanitized.bypassSecurityTrustHtml(page['content']);
+        this.content = page['content']//this.sanitized.bypassSecurityTrustHtml(page['content']);
         this.contents = page['contents'];
-    });
+        this.pageContent.innerHTML = this.content;
+        let anchors: any = this.pageContent.getElementsByTagName("a");
+        for (let anchor of anchors) {
+          anchor.onclick = e => {
+            try{
+              this.router.navigateByUrl(anchor['pathname']);
+              return false;
+            }catch{
+              return true;
+            }
+            //this.router.navigateByUrl(e.)
+          }
+        }
+      });
   }
 
   scrollToElement(id: string): boolean {
