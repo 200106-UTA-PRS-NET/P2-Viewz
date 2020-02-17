@@ -17,7 +17,7 @@ namespace ViewzApi.Controllers
         private readonly IPageRepository _repository;
         private readonly ILogger _logger;
 
-        public WikiController(IWikiRepository wikiRepository) { }
+        //public WikiController(IWikiRepository wikiRepository) { }
 
         public WikiController(IWikiRepository wikiRepository, IPageRepository repository, ILogger<WikiController> logger)
         {
