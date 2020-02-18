@@ -26,8 +26,7 @@ export class PageComponent implements OnInit {
   ngOnInit() {
     this.pageContent = document.getElementById('pageContent');
     this.sub = this.route.params.subscribe((params: Params) => {
-      this.getPage(params['page']);
-      this.history.add(params['page']);
+      this.getPage(`${params['wiki']}/${params['page']}`);
     });
   }
 
@@ -36,19 +35,22 @@ export class PageComponent implements OnInit {
     this.wikiService.getPage(pageUrl)
       .subscribe(page => {
         this.title = page['pageName'];
-        this.content = page['content']//this.sanitized.bypassSecurityTrustHtml(page['content']);
+        this.content = page['content'];
         this.contents = page['contents'];
         this.pageContent.innerHTML = this.content;
         let anchors: any = this.pageContent.getElementsByTagName("a");
+        this.history.add({
+          pageName: page['pageName'],
+          pageUrl: pageUrl
+        });
         for (let anchor of anchors) {
-          anchor.onclick = e => {
-            try{
+          if(document['baseURI'].startsWith(anchor['origin'])){
+            anchor.onclick = () => {
               this.router.navigateByUrl(anchor['pathname']);
               return false;
-            }catch{
-              return true;
-            }
-            //this.router.navigateByUrl(e.)
+            };
+          } else {
+            anchor.target = "_blank";
           }
         }
       });

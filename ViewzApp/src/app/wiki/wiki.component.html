@@ -1,1 +1,4 @@
-<p>wiki works!</p>
+<ul id="popularPages">
+    <li *ngFor="let page of popularPages"><a routerLink="{{page.pageUrl}}">{{page.pageName}}</a></li>
+</ul>
+<div id="wikiDescription"></div>
