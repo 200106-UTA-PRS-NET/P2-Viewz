@@ -1,15 +1,28 @@
-<div *ngIf="!editMode"><ul id="popularPages">
+<div *ngIf="!editMode">
+
     <h1>{{title}}</h1>
-    <li *ngFor="let page of popularPages"><a routerLink="{{page.pageUrl}}">{{page.pageName}}</a></li>
-</ul>
-<button (click)="Edit()">Edit</button>
-<div id="wikiDescription"></div>
+    <button (click)="Edit()">Edit</button>
+
+    <table id="popularPages">
+        <thead>
+            <h3>Popular Pages</h3>
+        </thead>
+        <tbody>
+            <tr *ngFor="let page of popularPages">
+                <td><a routerLink="{{page.pageUrl}}">{{page.pageName}}</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="wikiDescription"></div>
+
 </div>
+
 <div *ngIf="editMode">
-    <input type="text" [(ngModel)]="title" placeholder="page title" />
-    <br>
-    <textarea id="mainInput" [(ngModel)]="content" placeholder="Page Markdown"></textarea>
-    <br>
+    <input type="text" title="Edit the Wiki title" [(ngModel)]="title" placeholder="page title" />
+    <hr/>
+    <textarea id="mainInput" title="Edit the Wiki content" [(ngModel)]="content" placeholder="Page Markdown" rows="50" cols="100"></textarea>
+    <br/><br/>
     <button (click)="Save()">Save</button>
     <button (click)="Cancel()">Cancel</button>
 </div>
