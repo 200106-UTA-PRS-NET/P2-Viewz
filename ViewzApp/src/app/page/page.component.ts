@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ContentEntry } from '../content-entry';
 import { WikiConnectorService } from '../wiki-connector.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -12,10 +12,18 @@ import { PageAndContents } from '../pageAndContents';
   styleUrls: ['./page.component.css']
 })
 export class PageComponent implements OnInit {
-  page: PageAndContents;
-  title = '';
-  content : string;
-  contents: ContentEntry[];
+  @Input() page: PageAndContents = {
+    pageHeader: {
+      pageName : null,
+      pageUrl : null
+    },
+    content : '',
+    contents: [],
+    details: []
+  };
+  // title = '';
+  // content : string;
+  // contents: ContentEntry[];
   sub : Subscription;
   pageContent : HTMLElement;
   wikiUrl : string;
@@ -34,6 +42,7 @@ export class PageComponent implements OnInit {
     this.sub = this.route.params.subscribe((params: Params) => {
       this.wikiUrl = params['wiki'];
       this.pageUrl = params['page'];
+      this.page.pageHeader.pageUrl = params['page'];
       this.editMode = this.route.snapshot.queryParams['edit'];
       this.newPage = false;
       this.getPage(params['wiki'], params['page']);
@@ -48,11 +57,10 @@ export class PageComponent implements OnInit {
       sub = this.wikiService.getPage(`${wikiUrl}/${pageUrl}`);
     }
       sub.subscribe(page => {
-        debugger;
-        this.title = page['pageName'];
-        this.content = page['content'];
-        this.contents = page['contents'];
-        this.pageContent.innerHTML = this.content;
+        this.page.pageHeader.pageName = page['pageName'];
+        this.page.content = page['content'];
+        this.page.contents = page['contents'];
+        this.pageContent.innerHTML = this.page.content;
         if (!this.editMode) {
           this.history.add({
             pageName: page['pageName'],
@@ -74,9 +82,10 @@ export class PageComponent implements OnInit {
       }, () => {
         this.editMode = true;
         this.newPage = true;
-        this.title = pageUrl;
-        this.content = '';
-        this.contents = [];
+        this.page.pageHeader.pageName = pageUrl;
+        this.page.content = '';
+        this.page.contents = [];
+        this.page.details = [];
       });
   }
 
