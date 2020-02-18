@@ -1,4 +1,4 @@
-.container
+section
 {
     position:sticky;
     top:0;
@@ -17,9 +17,6 @@
 
 #pageContent
 {
-    border:2px;
-    border-style:solid;
-    border-color:silver;
     padding:10px;
     float:left;
     width:60%;
@@ -28,6 +25,13 @@
 .page
 {
     display:inline-block;
+}
+
+header
+{
+    background-color:ghostwhite;
+    padding:20px;
+    margin:10px;
 }
 
 thead h3

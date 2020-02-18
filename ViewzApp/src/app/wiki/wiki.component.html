@@ -1,7 +1,15 @@
 <div *ngIf="!editMode">
 
-    <h1>{{title}}</h1>
-    <button (click)="Edit()">Edit</button>
+    <header>
+        <table>
+            <tbody>
+                <tr>
+                    <td style="width:100%;"><h1>{{title}}</h1></td>
+                    <td><button (click)="Edit()">Edit</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </header>
 
     <table id="popularPages">
         <thead>

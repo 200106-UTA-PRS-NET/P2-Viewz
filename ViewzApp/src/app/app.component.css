@@ -16,6 +16,7 @@ html
 #router-outlet-right-side{
   position:absolute;
   margin-left:340px;
+  margin-right:20px;
   padding:10px;
   border:2px;
   border-style:solid;
