@@ -1,52 +1,43 @@
 <div *ngIf="!editMode" class="page">
+
   <header>
     <table>
       <tbody>
         <tr>
           <td style="width:100%;"><h1 [innerHTML]="page.pageHeader.pageName"></h1></td>
-          <td><button (click)="Edit()">Edit</button></td>
+          <td><button style="width:80px;height:40px;" (click)="Edit()">Edit Page</button></td>
         </tr>
       </tbody>
     </table>
   </header>
 
-  <!-- <table>
-    <tbody>
-      <tr>
-        <td> -->
-          <section class="container" id="contents">
-            <table>
-              <thead>
-                <h3>Contents</h3>
-              </thead>
-              <tbody>
-                <tr *ngFor="let contentEl of page.contents">
-                  <td><a href="#{{contentEl.id}}" (click)="scrollToElement(contentEl.id)" [innerHTML]="contentEl.content"></a></td>
-                </tr>
-              </tbody>
-            </table>
-          </section>
-        <!-- </td>
-        <td> -->
-          <div id="pageContent"></div>
-        <!-- </td>
-        <td> -->
-          <section class="container" id="details" *ngIf="page.details.length">
-            <table>
-              <thead>
-                <h3>Details</h3>
-              </thead>
-              <tbody>
-                <tr *ngFor="let detail of page.details">
-                  <td><strong>{{detail.detKey}}:</strong> {{detail.detValue}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </section>
-        <!-- </td>
-      </tr>
-    </tbody>
-  </table> -->
+  <section id="contents">
+    <table>
+      <thead>
+        <h3>Contents</h3>
+      </thead>
+      <tbody>
+        <tr *ngFor="let contentEl of page.contents">
+          <td><a href="#{{contentEl.id}}" (click)="scrollToElement(contentEl.id)" [innerHTML]="contentEl.content"></a></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div id="pageContent"></div>
+
+  <section id="details">
+    <table>
+      <thead>
+        <h3>Details</h3>
+      </thead>
+      <tbody>
+        <tr *ngFor="let detail of page.details">
+          <td><strong>{{detail.detKey}}:</strong> {{detail.detValue}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 </div>
 
 <div *ngIf="editMode">
