@@ -1,6 +1,5 @@
 ﻿using DataAccess;
 
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using ViewzApi.Models;
