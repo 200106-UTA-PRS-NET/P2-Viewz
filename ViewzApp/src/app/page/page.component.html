@@ -2,4 +2,5 @@
 <ul>
   <li *ngFor="let contentEl of contents"><a href="#{{contentEl.id}}" (click)="scrollToElement(contentEl.id)" [innerHTML]="contentEl.content"></a></li>
 </ul>
+<!--add details-->
 <div id="pageContent"></div>
