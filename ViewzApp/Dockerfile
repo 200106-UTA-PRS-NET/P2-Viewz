@@ -13,6 +13,8 @@ FROM nginx
 
 WORKDIR /app
 
+COPY nginx/default.conf /etc/nginx/conf.d/
+
 RUN rm -rf /usr/share/nginx/html/*
 
 COPY --from=build /ng-app/dist /usr/share/nginx/html
