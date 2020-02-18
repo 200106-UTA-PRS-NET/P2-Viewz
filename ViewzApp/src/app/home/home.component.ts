@@ -15,7 +15,6 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.wikiService.getWikis().subscribe((wikis:any) =>{
-      debugger;
       this.popularWikis = wikis.map(wiki => <PageHead> {
         pageName: wiki.pageName,
         pageUrl: wiki.url

@@ -1,9 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ViewzApi.Models
 {
-    public class Page {
-        public string WikiUrl { get; set; }
+    public class Page
+    {   
+        //public string WikiUrl { get; set; }
         public string Url { get; set; }
         public string PageName { get; set; }  
         public string Content { get; set; }
