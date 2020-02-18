@@ -2,8 +2,7 @@
 using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ViewzApi.Models;
-using Microsoft.AspNetCore.Http;
+using ViewzApi.Models; 
 using System.Linq;
 
 namespace ViewzApi.Controllers
@@ -34,6 +33,7 @@ namespace ViewzApi.Controllers
         {
             try
             {
+               
                 return Ok(_wikiRepository.GetPopularWikis(count, description));
             }
             catch (Exception e)
@@ -59,12 +59,10 @@ namespace ViewzApi.Controllers
                     Description = (html) ? repoWiki.HtmlDescription : repoWiki.MdDescription,
                     PopularPages = (from repoPage in _repository.GetPopularPages(WikiURL, 5)
                                     select new Page()
-                                    {
-                                       // Content = null,
+                                    { 
                                         Content = (html) ? repoPage.HtmlContent : repoPage.MdContent,
                                         Details = repoPage.Details,
-                                        Contents = repoPage.Contents,
-                                        //WikiUrl = WikiURL,
+                                        Contents = repoPage.Contents, 
                                         Url = repoPage.Url,
                                         PageName = repoPage.PageName ?? repoPage.Url
                                     })
