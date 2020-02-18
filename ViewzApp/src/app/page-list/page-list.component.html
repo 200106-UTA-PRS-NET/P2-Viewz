@@ -1,7 +1,7 @@
 <div id="Up" *ngIf="history.upPage">
     <h2>Parent</h2>
     <br>
-    <a [href]="history.upPage.pageUrl">{{history.upPage.pageName}}</a>
+    <a [routerLink]="history.upPage.pageUrl">{{history.upPage.pageName}}</a>
 </div>
 <div id="favoriteHistory">
 <div class="side" id="favorite">
