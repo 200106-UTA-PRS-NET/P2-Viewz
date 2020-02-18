@@ -5,10 +5,10 @@ html {
 #page-list-left-side{
   position: absolute;
   left: 0px;
-  width: 10%;
+  width: 20%;
 }
 #router-outlet-right-side{
   position: absolute;
   right: 0px;
-  width: 90%;
+  width: 75%;
 }
