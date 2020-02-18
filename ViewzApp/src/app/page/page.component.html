@@ -1,6 +1,8 @@
-<h1 [innerHTML]="title"></h1>
-<ul>
-  <li *ngFor="let contentEl of contents"><a href="#{{contentEl.id}}" (click)="scrollToElement(contentEl.id)" [innerHTML]="contentEl.content"></a></li>
+<h1 [innerHTML]="page.pageHeader.pageName"></h1>
+<ul id="contents">
+  <li *ngFor="let contentEl of page.contents"><a href="#{{contentEl.id}}" (click)="scrollToElement(contentEl.id)" [innerHTML]="contentEl.content"></a></li>
 </ul>
-<!--add details-->
+<ul id="details">
+  <li *ngFor="let detail of page.details"><strong>{{detail.DetKey}}:</strong> {{detail.DetVal}}</li>
+</ul>
 <div id="pageContent"></div>
