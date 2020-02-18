@@ -1,14 +1,24 @@
-html {
-    scroll-behavior: smooth;
-  }
+html 
+{
+  scroll-behavior: smooth;
+}
 
 #page-list-left-side{
   position: absolute;
   left: 0px;
-  width: 20%;
+  display:inline-block;
+  padding:10px;
+  width:300px;
+  background-color:lightblue;
 }
+
 #router-outlet-right-side{
-  position: absolute;
-  right: 0px;
-  width: 75%;
+  position:absolute;
+  left:330px;
+  padding:10px;
+  border:2px;
+  border-style:solid;
+  border-color:lavender;
+  border-radius:2px;
+  background-color:white;
 }

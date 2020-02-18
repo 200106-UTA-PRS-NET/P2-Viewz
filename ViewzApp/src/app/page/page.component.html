@@ -1,11 +1,20 @@
 <div *ngIf="!editMode">
 <h1 [innerHTML]="page.pageHeader.pageName"></h1>
-<ul id="contents">
-  <li *ngFor="let contentEl of page.contents"><a href="#{{contentEl.id}}" (click)="scrollToElement(contentEl.id)" [innerHTML]="contentEl.content"></a></li>
-</ul>
-<ul id="details">
-  <li *ngFor="let detail of page.details"><strong>{{detail.DetKey}}:</strong> {{detail.DetVal}}</li>
-</ul>
+<table>
+  <tbody id="contents">
+    <tr *ngFor="let contentEl of page.contents">
+      <td><a href="#{{contentEl.id}}" (click)="scrollToElement(contentEl.id)" [innerHTML]="contentEl.content"></a></td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody id="details">
+    <tr *ngFor="let detail of page.details">
+      <td><strong>{{detail.DetKey}}:</strong> {{detail.DetVal}}</td>
+    </tr>
+  </tbody>
+</table>
 <button (click)="Edit()">Edit</button>
 <div id="pageContent"></div>
 </div>

@@ -1,10 +1,13 @@
 .container
 {
-    display:inline-block;
+
 }
 .side
 {
+    display:inline-block;
     padding:10px 25px 10px 50px;
+    width:210px;
+    margin-left:10px;
 }
 
 #favorite
@@ -29,7 +32,6 @@
     content: "\2606";
     color:black;
     visibility:visible;
-    
 }
 /*use this before original checked*/
 .star:checked:before
