@@ -41,7 +41,7 @@ export class WikiComponent implements OnInit {
         for (let anchor of anchors) {
           if (document['baseURI'].startsWith(anchor['origin'])) {
             anchor.onclick = () => {
-              this.router.navigateByUrl(anchor['pathname']);
+              this.router.navigateByUrl(`${wiki}${anchor['pathname']}`);
               return false;
             };
           } else {

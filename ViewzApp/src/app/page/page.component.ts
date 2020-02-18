@@ -26,13 +26,13 @@ export class PageComponent implements OnInit {
   ngOnInit() {
     this.pageContent = document.getElementById('pageContent');
     this.sub = this.route.params.subscribe((params: Params) => {
-      this.getPage(`${params['wiki']}/${params['page']}`);
+      this.getPage(params['wiki'], params['page']);
     });
   }
 
-  getPage(pageUrl: string): void {
+  getPage(wikiUrl: string, pageUrl: string): void {
 
-    this.wikiService.getPage(pageUrl)
+    this.wikiService.getPage(`${wikiUrl}/${pageUrl}`)
       .subscribe(page => {
         this.title = page['pageName'];
         this.content = page['content'];
@@ -46,7 +46,7 @@ export class PageComponent implements OnInit {
         for (let anchor of anchors) {
           if(document['baseURI'].startsWith(anchor['origin'])){
             anchor.onclick = () => {
-              this.router.navigateByUrl(anchor['pathname']);
+              this.router.navigateByUrl(`${wikiUrl}${anchor['pathname']}`);
               return false;
             };
           } else {
