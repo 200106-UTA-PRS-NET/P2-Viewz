@@ -3,8 +3,8 @@ import { PageHead } from '../pageHead';
 import { Subscription, Observable, merge } from 'rxjs';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { WikiConnectorService } from '../wiki-connector.service';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Location } from '@angular/common';
+import { PageHistoryService } from '../page-history.service';
 
 @Component({
   selector: 'app-wiki',
@@ -23,13 +23,17 @@ export class WikiComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private wikiService: WikiConnectorService,
-    private sanitized: DomSanitizer,
+    private history: PageHistoryService,
     private router: Router,
     private location: Location
   ){
   }
 
   ngOnInit() {
+    this.history.setUpPage({
+      pageName: 'Home',
+      pageUrl: ''
+    })
     this.sub = merge(this.route.params, this.route.queryParams).subscribe(() => {
       this.editMode = this.route.snapshot.queryParams['edit'];
       this.newWiki = false;
