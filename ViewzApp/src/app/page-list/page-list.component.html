@@ -1,4 +1,9 @@
-
+<div id="Up" *ngIf="history.upPage">
+    <h2>Parent</h2>
+    <br>
+    <a [routerLink]="history.upPage.pageUrl">{{history.upPage.pageName}}</a>
+</div>
+<div id="favoriteHistory">
 <div class="side" id="favorite">
     <h2>Favorite Pages</h2>
     <table>
@@ -21,4 +26,5 @@
             </tr>
         </tbody>
     </table>
+</div>
 </div>

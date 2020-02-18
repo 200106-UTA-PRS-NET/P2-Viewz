@@ -33,12 +33,11 @@
       </thead>
       <tbody>
         <tr *ngFor="let detail of page.details">
-          <td><strong>{{detail.DetKey}}:</strong> {{detail.DetVal}}</td>
+          <td><strong>{{detail.detKey}}:</strong> {{detail.detValue}}</td>
         </tr>
       </tbody>
     </table>
   </section>
-
 </div>
 
 <div *ngIf="editMode">

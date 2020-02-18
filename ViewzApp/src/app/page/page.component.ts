@@ -41,6 +41,10 @@ export class PageComponent implements OnInit {
   ngOnInit() {
     this.sub = merge(this.route.params, this.route.queryParams).subscribe(() => {
       this.wikiUrl = this.route.snapshot.params['wiki'];
+      this.history.setUpPage({
+        pageName: 'Up',
+        pageUrl: this.wikiUrl
+      })
       this.pageUrl = this.route.snapshot.params['page'];
       this.page.pageHeader.pageUrl = this.pageUrl;
       this.editMode = this.route.snapshot.queryParams['edit'];
