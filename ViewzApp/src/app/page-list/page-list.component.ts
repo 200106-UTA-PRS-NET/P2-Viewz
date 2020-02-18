@@ -16,4 +16,12 @@ export class PageListComponent implements OnInit {
 
   }
 
+  UpdateFavorite(page: FavoritePageHead){
+    if(page.favorite){
+      this.history.addFavorite(page.page);
+    } else {
+      this.history.removeFavorite(page.page);
+    }
+  }
+
 }
