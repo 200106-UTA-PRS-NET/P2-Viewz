@@ -59,7 +59,11 @@ namespace DataAccess.APIAccess
 
             HtmlDoc.LoadHtml(pagehtml);
             var xpath = "//*[self::h1 or self::h2 or self::h3]";
-            HtmlNode[] headers = HtmlDoc.DocumentNode.SelectNodes(xpath).ToArray();
+            HtmlNode[] headers = HtmlDoc.DocumentNode.SelectNodes(xpath)?.ToArray();
+            if(headers == null)
+            {
+                return list;
+            }
             int id_count = 0;
             foreach(var h in headers)
             {

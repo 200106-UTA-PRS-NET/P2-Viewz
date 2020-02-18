@@ -1,7 +1,4 @@
-import { Component, Pipe, PipeTransform } from '@angular/core';
-import { WikiConnectorService } from './wiki-connector.service'
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ContentEntry } from './content-entry';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -10,52 +7,5 @@ import { ContentEntry } from './content-entry';
 })
 export class AppComponent {
   title = '';
-  content : SafeHtml;
-  popularPages : page[];
-  constructor(
-    private wikiService: WikiConnectorService,
-    private sanitized: DomSanitizer
-  ){
-  }
-
-  ngOnInit() {
-    this.getWiki();
-  }
-
-  getWiki(){
-    this.wikiService.getWiki()
-      .subscribe(wiki => {
-        this.title = wiki['pageName'];
-        this.content = this.sanitized.bypassSecurityTrustHtml(wiki['description']);
-        this.popularPages = wiki['popularPages'].map(wikiPages => <page> {
-          pageUrl: wikiPages['url'],
-          pageName: wikiPages['pageName'],
-          content: this.sanitized.bypassSecurityTrustHtml(wikiPages['content'])
-        });
-      })
-  }
-
-  getPage(pageUrl: string): void {
-    this.wikiService.getPage(pageUrl)
-      .subscribe(page => {
-        this.title = page['pageName'];
-        this.content = this.sanitized.bypassSecurityTrustHtml(page['content']);
-    });
-  }
-
-  scrollToElement(id: string): boolean {
-    debugger;
-    try{
-    document.getElementById(id).scrollIntoView({"behavior": "smooth"});
-  } catch {
-    document.getElementById(id).scrollIntoView();
-  }
-    return false;
-  }
-}
-
-interface page {
-  pageUrl: string,
-  pageName: string,
-  content: SafeHtml | null
+  
 }

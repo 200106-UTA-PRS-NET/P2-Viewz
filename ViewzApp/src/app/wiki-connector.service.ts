@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment'
 
 @Injectable({
@@ -11,13 +11,17 @@ export class WikiConnectorService {
     private http: HttpClient
   ) { }
   
-  pageUrl = `${environment.apiUrl}/training-code`;
+  pageUrl = environment.apiUrl;
 
-  getWiki(){
-    return this.http.get(this.pageUrl);
+  getWikis(){
+    return this.http.get(`${this.pageUrl}`);
   }
 
-  getPage(pageName: string){
-    return this.http.get(`${this.pageUrl}/${pageName}`);
+  getWiki(wikiURL: string){
+    return this.http.get(`${this.pageUrl}/${wikiURL}`);
+  }
+
+  getPage(wikiPageURL: string){
+    return this.http.get(`${this.pageUrl}/${wikiPageURL}?html=Html`);
   }
 }
