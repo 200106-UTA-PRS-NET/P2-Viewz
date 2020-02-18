@@ -1,3 +1,14 @@
 html {
     scroll-behavior: smooth;
   }
+
+#page-list-left-side{
+  position: absolute;
+  left: 0px;
+  width: 20%;
+}
+#router-outlet-right-side{
+  position: absolute;
+  right: 0px;
+  width: 75%;
+}

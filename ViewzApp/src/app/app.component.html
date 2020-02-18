@@ -1,6 +1,2 @@
-<h1 [innerHTML]="title"></h1>
-<ul>
-  <li *ngFor="let popPage of popularPages"><a routerLink="{{popPage.pageUrl}}" [innerHTML]="popPage.pageName"></a></li>
-</ul>
-<div [innerHTML]="content"></div>
-<router-outlet></router-outlet>
+<app-page-list id="page-list-left-side"></app-page-list>
+<div id="router-outlet-right-side"><router-outlet></router-outlet></div>

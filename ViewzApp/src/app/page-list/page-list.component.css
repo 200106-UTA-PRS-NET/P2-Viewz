@@ -1,0 +1,44 @@
+.container
+{
+    display:inline-block;
+}
+.side
+{
+    padding:10px 25px 10px 50px;
+}
+
+#favorite
+{
+    background-color:lightgreen;
+}
+#history
+{
+    background-color:rgb(235, 235, 235);
+}
+
+/*hide original checkbox icon*/
+.star
+{
+    visibility:hidden;
+    font-size:30px;
+    cursor:pointer;
+}
+/*use this before original*/
+.star:before
+{
+    content: "\2606";
+    color:black;
+    visibility:visible;
+    
+}
+/*use this before original checked*/
+.star:checked:before
+{
+    content: "\2605";
+    color:yellow;
+}
+
+a
+{
+    text-decoration:none;
+}

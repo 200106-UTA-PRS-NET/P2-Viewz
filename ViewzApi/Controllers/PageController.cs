@@ -2,7 +2,8 @@
 using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ViewzApi.Models; 
+using ViewzApi.Models;
+using System.Linq;
 
 namespace ViewzApi.Controllers
 {
@@ -26,8 +27,7 @@ namespace ViewzApi.Controllers
             _repository = repository;
             _logger = logger;
         }
-  
-        //api/wiki/training-code/readme/?html=false 
+
         [HttpGet]
         public IActionResult Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
                       PageContent html=PageContent.NoContent, bool details = true, bool content=true)

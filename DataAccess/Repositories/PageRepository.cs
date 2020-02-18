@@ -191,7 +191,7 @@ namespace DataAccess.Repositories
             page.Contents = (from content in _db.Contents
                              where content.PageId == pageID
                              orderby content.Order ascending
-                             select Storing.Mapper.Map(content));
+                             select Storing.Mapper.Map(content)).Skip(1);
             }
             dbSave.Wait();
             return page;
