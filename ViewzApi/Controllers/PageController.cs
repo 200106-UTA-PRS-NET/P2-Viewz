@@ -7,7 +7,6 @@ using System.Linq;
 
 namespace ViewzApi.Controllers
 {
-
     public enum PageContent
     {
         Md,
