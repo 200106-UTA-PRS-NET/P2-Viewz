@@ -1,8 +1,8 @@
 ﻿using DataAccess.Interfaces;
-using System;
+//using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
+//using System.Text;
 using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -64,10 +64,11 @@ namespace DataAccess.Repositories
 
         protected void SetHTML(long pageID, string content)
         {
-            // TODO put in table split classes
+            //!!! put in table split classes
             var pageHtml = (from contents in _db.PageHtmlContent
                           where contents.PageId == pageID
                           select contents).SingleOrDefault();
+
             if (pageHtml != null)
             {
                 pageHtml.HtmlContent = content;
@@ -90,7 +91,7 @@ namespace DataAccess.Repositories
 
         protected virtual void SetMD(long pageID, string content)
         {
-            // TODO put in table split classes
+            //!!! put in table split classes
             var pageMD = (from contents in _db.PageMdContent
                           where contents.PageId == pageID
                           select contents).SingleOrDefault();
@@ -211,7 +212,8 @@ namespace DataAccess.Repositories
                     .Take((int)count).ToList();
             foreach(var page in pages)
             {
-                if (page.Contents.Count() == 0)
+                //SMELL#31,32: replaced page.Contents.Count == 0 with !page.Contents.Any()
+                if (!page.Contents.Any())
                 {
                     GetHTML(page.PageId); // Will either create the page or just load html from db
                     page.Contents = (from content in _db.Contents

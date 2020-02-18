@@ -13,6 +13,7 @@ namespace DataAccess.APIAccess
     public class MdToHtmlAndContentsFactory : IMdToHtmlAndContentsFactory
     {
         protected HttpClient client;
+        private const string url = "https://api.github.com/markdown/raw";
 
         public MdToHtmlAndContentsFactory()
         {
@@ -21,13 +22,14 @@ namespace DataAccess.APIAccess
         }
 
         public IHtmlAndContents GetHtmlAndContents(string markDown)
-
         {
             if (markDown == null)
                 return null;
 
-            HtmlAndContents RESULT = new HtmlAndContents();
-            RESULT.PageHTML = GetHtmlAsync(markDown).Result;
+            HtmlAndContents RESULT = new HtmlAndContents
+            {
+                PageHTML = GetHtmlAsync(markDown).Result
+            };
             RESULT.Contents = AParser(RESULT.PageHTML);
             return RESULT;
         }
@@ -43,7 +45,7 @@ namespace DataAccess.APIAccess
 
             var content = new StringContent(markDown, Encoding.UTF8, "text/plain");
             
-            HttpResponseMessage _response = await client.PostAsync("https://api.github.com/markdown/raw", content);
+            HttpResponseMessage _response = await client.PostAsync(url, content);
             if((int)_response.StatusCode != 200)
                 throw new HttpRequestException();
 
@@ -65,10 +67,12 @@ namespace DataAccess.APIAccess
                 if (id != null)
                     id_count++;
 
-                var C = new Contents();
-                C.Id = id?.Id;
-                C.Content = h.InnerText.Trim('\n');
-                switch(h.Name.ToLower())
+                var C = new Contents
+                {
+                    Id = id?.Id,
+                    Content = h.InnerText.Trim('\n')
+                };
+                switch (h.Name.ToLower())
                 {
                     case "h1":
                         C.Level = 1;
@@ -79,15 +83,10 @@ namespace DataAccess.APIAccess
                     case "h3":
                         C.Level = 3;
                         break;
-                    //default:                                //TODO delete after testing
-                        //throw new NotImplementedException();
                 }
                 
                 list.Add(C);
             }
-
-            if (headers.Length != id_count)
-                return null;
 
             return list;
         }

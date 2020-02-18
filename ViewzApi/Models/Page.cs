@@ -10,8 +10,5 @@ namespace ViewzApi.Models
         public string Content { get; set; }
         public IEnumerable<DataAccess.Storing.Contents> Contents { get; set; }
         public IEnumerable<DataAccess.Storing.PageDetails> Details { get; set; }
-
-        //public IEnumerable<Contents> Contents { get; set; }
-        //public IEnumerable<PageDetails> Details { get; set; }
     }
 }
