@@ -9,11 +9,11 @@ export class PageHistoryService {
   favoritePages: FavoritePageHead[] = [];
   historyPages: FavoritePageHead[] = [];
   constructor() {
-    let favs = window.sessionStorage['wikiPageFavorites'];
+    let favs = window.localStorage['wikiPageFavorites'];
     if(favs){
       this.favoritePages = JSON.parse(favs);
     }
-    let hist = window.sessionStorage['wikiPageHistory'];
+    let hist = window.localStorage['wikiPageHistory'];
     if(hist){
       this.historyPages = JSON.parse(hist);
     }
@@ -29,7 +29,7 @@ export class PageHistoryService {
       if(this.historyPages.length>10){
         this.historyPages.pop();
       }
-      window.sessionStorage['wikiPageHistory'] = JSON.stringify(this.historyPages);
+      window.localStorage['wikiPageHistory'] = JSON.stringify(this.historyPages);
     }
   }
   addFavorite(page: PageHead){
@@ -39,7 +39,8 @@ export class PageHistoryService {
       favorite: true
     });
     this.historyPages = this.historyPages.filter(p => p.page.pageUrl != page.pageUrl);
-    window.sessionStorage['wikiPageFavorites'] = JSON.stringify(this.favoritePages);
+    window.localStorage['wikiPageFavorites'] = JSON.stringify(this.favoritePages);
+    window.localStorage['wikiPageHistory'] = JSON.stringify(this.historyPages);
   }
   removeFavorite(page: PageHead){
     this.favoritePages = this.favoritePages.filter(p => p.page.pageUrl != page.pageUrl);
@@ -48,6 +49,7 @@ export class PageHistoryService {
       page: page,
       favorite: false
     });
-    window.sessionStorage['wikiPageFavorites'] = JSON.stringify(this.favoritePages);
+    window.localStorage['wikiPageFavorites'] = JSON.stringify(this.favoritePages);
+    window.localStorage['wikiPageHistory'] = JSON.stringify(this.historyPages);
   }
 }

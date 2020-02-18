@@ -24,4 +24,8 @@ export class WikiConnectorService {
   getPage(wikiPageURL: string){
     return this.http.get(`${this.pageUrl}/${wikiPageURL}?html=Html`);
   }
+  
+  getPageMD(wikiPageURL: string){
+    return this.http.get(`${this.pageUrl}/${wikiPageURL}?html=Md`);
+  }
 }
