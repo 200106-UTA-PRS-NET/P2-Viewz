@@ -1,12 +1,16 @@
-<div *ngIf="history.favoritePages.length" id="favoritePages">
+
+<div class="side" *ngIf="history.favoritePages.length" id="favoritePages">
     <h3>Favorite Pages</h3>
-    <ul>
+    <ul class="list">
         <li *ngFor="let page of history.favoritePages"><a routerLink="{{page.page.pageUrl}}">{{page.page.pageName}}</a><input type="checkbox" [(ngModel)]="page.favorite"></li>
     </ul>
 </div>
-<div>
+<div class="side" style="background-color:rgb(235, 235, 235);">
     <h3>History</h3>
-    <ul>
-        <li *ngFor="let page of history.historyPages"><a routerLink="{{page.page.pageUrl}}">{{page.page.pageName}}</a><input type="checkbox" [(ngModel)]="page.favorite"></li>
+    <ul class="list">
+        <li *ngFor="let page of history.historyPages">
+            <a routerLink="{{page.page.pageUrl}}">{{page.page.pageName}}</a>
+            <input type="checkbox" class="star" [(ngModel)]="page.favorite"/>
+        </li>
     </ul>
 </div>
