@@ -1,5 +1,4 @@
 <div *ngIf="!editMode" class="page">
-
   <header>
     <table>
       <tbody>
@@ -48,7 +47,6 @@
       </tr>
     </tbody>
   </table> -->
-
 </div>
 
 <div *ngIf="editMode">
@@ -57,8 +55,8 @@
   <textarea id="mainInput" title="Edit the page content" rows="50" cols="100" [(ngModel)]="page.content" placeholder="Page Markdown"></textarea>
   <br/>
   <div *ngFor="let detail of page.details">
-    <input type="text" [(ngModel)]="detail.DetKey" placeholder="Detail Key" />
-    <input type="text" [(ngModel)]="detail.DetVal" placeholder="Detail Value" />
+    <input type="text" [(ngModel)]="detail.detKey" placeholder="Detail Key" />
+    <input type="text" [(ngModel)]="detail.detValue" placeholder="Detail Value" />
     <button (click)="RemoveDetail(detail)">X</button>
   </div>
   <br/>

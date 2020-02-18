@@ -1,4 +1,4 @@
 export interface DetailEntry {
-    DetKey: string;
-    DetVal: string;
+    detKey: string;
+    detValue: string;
   }

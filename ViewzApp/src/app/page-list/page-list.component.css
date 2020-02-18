@@ -35,9 +35,10 @@
 {
     color:goldenrod;
     transition:0.2s color;
+
 }
-/*use this before original checked*/
-.star:checked:before
+
+.star:hover:before
 {
     content: "⭐";
     font-size:15px;
