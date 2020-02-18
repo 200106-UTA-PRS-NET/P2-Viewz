@@ -5,22 +5,25 @@
             <tbody>
                 <tr>
                     <td style="width:100%;"><h1>{{title}}</h1></td>
-                    <td><button (click)="Edit()">Edit</button></td>
+                    <td><button class="button" (click)="Edit()">Edit Wiki</button></td>
                 </tr>
             </tbody>
         </table>
     </header>
 
-    <table id="popularPages">
-        <thead>
-            <h3>Popular Pages</h3>
-        </thead>
-        <tbody>
-            <tr *ngFor="let page of popularPages">
-                <td><a routerLink="{{page.pageUrl}}">{{page.pageName}}</a></td>
-            </tr>
-        </tbody>
-    </table>
+    <section *ngIf="popularPages.length">
+        <table id="popularPages">
+            <thead>
+                <h3>Popular Pages</h3>
+            </thead>
+            <tbody>
+                <tr *ngFor="let page of popularPages">
+                    <td><a routerLink="{{page.pageUrl}}">{{page.pageName}}</a></td>
+                </tr>
+                <br/>
+            </tbody>
+        </table>
+    </section>
 
     <div id="wikiDescription"></div>
 

@@ -5,7 +5,7 @@
       <tbody>
         <tr>
           <td style="width:100%;"><h1 [innerHTML]="page.pageHeader.pageName"></h1></td>
-          <td><button style="width:80px;height:40px;" (click)="Edit()">Edit Page</button></td>
+          <td><button class="button" (click)="Edit()">Edit Page</button></td>
         </tr>
       </tbody>
     </table>
@@ -20,6 +20,7 @@
         <tr *ngFor="let contentEl of page.contents">
           <td><a href="#{{contentEl.id}}" (click)="scrollToElement(contentEl.id)" [innerHTML]="contentEl.content"></a></td>
         </tr>
+        <br/>
       </tbody>
     </table>
   </section>
