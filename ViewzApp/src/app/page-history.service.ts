@@ -8,37 +8,46 @@ import { FavoritePageHead } from './favoritePageHead';
 export class PageHistoryService {
   favoritePages: FavoritePageHead[] = [];
   historyPages: FavoritePageHead[] = [];
-  constructor() { }
+  constructor() {
+    let favs = window.sessionStorage['wikiPageFavorites'];
+    if(favs){
+      this.favoritePages = JSON.parse(favs);
+    }
+    let hist = window.sessionStorage['wikiPageHistory'];
+    if(hist){
+      this.historyPages = JSON.parse(hist);
+    }
+  }
 
   add(page: PageHead) {
-    if (!this.favoritePages.includes({
-      page: page,
-      favorite: true
-    })) {
-      let unfavoritedPage = {
+    if (this.favoritePages.filter(p => p.page.pageUrl == page.pageUrl).length==0) {
+      this.historyPages = this.historyPages.filter(p => p.page.pageUrl != page.pageUrl);
+      this.historyPages.unshift({
         page: page,
         favorite: false
+      });
+      if(this.historyPages.length>10){
+        this.historyPages.pop();
       }
-      let idx;
-      while ((idx = this.historyPages.indexOf(unfavoritedPage)) > -1) {
-        this.historyPages.splice(idx, 1);
-      }
-      this.historyPages.unshift(unfavoritedPage);
       window.sessionStorage['wikiPageHistory'] = JSON.stringify(this.historyPages);
     }
   }
   addFavorite(page: PageHead){
-    let idx;
-    let favoritedPage = {
+    this.favoritePages = this.favoritePages.filter(p => p.page.pageUrl != page.pageUrl);
+    this.favoritePages.unshift({
       page: page,
       favorite: true
-    }
-    while ((idx = this.favoritePages.indexOf(favoritedPage)) > -1) {
-      this.favoritePages.splice(idx, 1);
-    }
-    this.favoritePages.unshift(favoritedPage);
-    while ((idx = this.historyPages.indexOf(favoritedPage)) > -1) {
-      this.historyPages.splice(idx, 1);
-    }
+    });
+    this.historyPages = this.historyPages.filter(p => p.page.pageUrl != page.pageUrl);
+    window.sessionStorage['wikiPageFavorites'] = JSON.stringify(this.favoritePages);
+  }
+  removeFavorite(page: PageHead){
+    this.favoritePages = this.favoritePages.filter(p => p.page.pageUrl != page.pageUrl);
+    this.historyPages = this.historyPages.filter(p => p.page.pageUrl != page.pageUrl);
+    this.historyPages.unshift({
+      page: page,
+      favorite: false
+    });
+    window.sessionStorage['wikiPageFavorites'] = JSON.stringify(this.favoritePages);
   }
 }
