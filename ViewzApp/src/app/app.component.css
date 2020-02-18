@@ -9,12 +9,13 @@ html
   display:inline-block;
   padding:10px;
   width:300px;
-  background-color:lightblue;
+  margin-left:10px;
+  background-color:white;
 }
 
 #router-outlet-right-side{
   position:absolute;
-  left:330px;
+  margin-left:340px;
   padding:10px;
   border:2px;
   border-style:solid;
