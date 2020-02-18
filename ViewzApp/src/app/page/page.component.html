@@ -1,3 +1,4 @@
+<div *ngIf="!editMode">
 <h1 [innerHTML]="page.pageHeader.pageName"></h1>
 <table>
   <tbody id="contents">
@@ -14,5 +15,21 @@
     </tr>
   </tbody>
 </table>
-
+<button (click)="Edit()">Edit</button>
 <div id="pageContent"></div>
+</div>
+<div *ngIf="editMode">
+  <input type="text" [(ngModel)]="page.pageHeader.pageName" placeholder="Page title" />
+  <br>
+  <textarea id="mainInput" [(ngModel)]="page.content" placeholder="Page Markdown"></textarea>
+  <br>
+  <div *ngFor="let detail of page.details">
+    <input type="text" [(ngModel)]="detail.DetKey" placeholder="Detail Key" />
+    <input type="text" [(ngModel)]="detail.DetVal" placeholder="Detail Value" />
+    <button (click)="RemoveDetail(detail)">X</button>
+  </div>
+  <button (click)="AddDetail()">Add Detail</button>
+  <br>
+  <button (click)="Save()">Save</button>
+  <button (click)="Cancel()">Cancel</button>
+</div>

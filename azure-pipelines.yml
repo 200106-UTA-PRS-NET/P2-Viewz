@@ -95,7 +95,7 @@ jobs:
 - job: DeployAngularApp
   pool:
     vmImage: 'ubuntu-latest'
-  condition: and(always(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/front-end')), ne(variables['Build.Reason'], 'PullRequest'))
+  condition: and(always(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/front-end'), startsWith(variables['Build.SourceBranch'], 'refs/heads/branch-')), ne(variables['Build.Reason'], 'PullRequest'))
   steps:
   - task: Docker@2
     inputs:
