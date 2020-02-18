@@ -25,10 +25,8 @@ namespace ViewzApi.Controllers
             _logger = logger;
         }
 
-        //get popular wikis
+        //get popular wikis with url: api/wiki
         [HttpGet(Name = "GetPopular")]
-        //[HttpGet]
-        //api/wiki
         public IActionResult Get([FromQuery]uint count = 1, [FromQuery]bool description = false)
         {
             try
@@ -44,7 +42,7 @@ namespace ViewzApi.Controllers
             }
         }
 
-        //get one wiki
+        //get one wiki with url: api/wiki/some-wiki
         [HttpGet("{WikiURL}", Name = "GetWiki")]
         public IActionResult Get([FromRoute]string WikiURL, bool html = true)
         {
@@ -77,7 +75,7 @@ namespace ViewzApi.Controllers
             }
         }
 
-
+        //post new wiki with url: api/wiki/some-new-wiki and passing wiki object in body
         [HttpPost("{WikiURL}")]
         public IActionResult Post([FromRoute] string WikiUrl, [FromBody]Wiki wiki)
         {
@@ -102,7 +100,7 @@ namespace ViewzApi.Controllers
             }
         }
 
-
+        //patch pre-existing wiki with url: api/wiki/some-wiki and passing wiki object in body
         [HttpPatch("{WikiURL}")]
         public IActionResult Patch([FromRoute] string WikiUrl, [FromBody]Wiki wiki)
         {
