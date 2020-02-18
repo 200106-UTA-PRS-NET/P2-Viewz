@@ -49,6 +49,9 @@ export class PageHistoryService {
       page: page,
       favorite: false
     });
+    if(this.historyPages.length>10){
+      this.historyPages.pop();
+    }
     window.localStorage['wikiPageFavorites'] = JSON.stringify(this.favoritePages);
     window.localStorage['wikiPageHistory'] = JSON.stringify(this.historyPages);
   }
