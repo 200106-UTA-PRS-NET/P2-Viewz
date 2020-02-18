@@ -92,10 +92,10 @@ export class PageComponent implements OnInit {
   }
 
   AddDetail(){
-    if(this.page.details==null||this.page.details.length==0||this.page.details[this.page.details.length-1].DetKey!=''){
+    if(this.page.details==null||this.page.details.length==0||this.page.details[this.page.details.length-1].detKey!=''){
     this.page.details.push({
-      DetKey: '',
-      DetVal: ''
+      detKey: '',
+      detValue: ''
     });
   }
   }
