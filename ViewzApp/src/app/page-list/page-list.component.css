@@ -1,7 +1,3 @@
-.container
-{
-
-}
 .side
 {
     display:inline-block;
@@ -23,24 +19,27 @@
 .star
 {
     visibility:hidden;
-    font-size:30px;
     cursor:pointer;
 }
 /*use this before original*/
 .star:before
 {
-    content: "\2606";
+    content: "★";
+    font-size:20px;
     color:black;
     visibility:visible;
+    border-radius:50%;
+}
+
+.star:hover:before
+{
+    color:yellow;
+    transition:0.2s color;
 }
 /*use this before original checked*/
 .star:checked:before
 {
-    content: "\2605";
+    content: "⭐";
+    font-size:15px;
     color:yellow;
-}
-
-a
-{
-    text-decoration:none;
 }

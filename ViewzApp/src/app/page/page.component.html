@@ -1,35 +1,69 @@
-<div *ngIf="!editMode">
-<h1 [innerHTML]="page.pageHeader.pageName"></h1>
-<table>
-  <tbody id="contents">
-    <tr *ngFor="let contentEl of page.contents">
-      <td><a href="#{{contentEl.id}}" (click)="scrollToElement(contentEl.id)" [innerHTML]="contentEl.content"></a></td>
-    </tr>
-  </tbody>
-</table>
+<div *ngIf="!editMode" class="page">
 
-<table>
-  <tbody id="details">
-    <tr *ngFor="let detail of page.details">
-      <td><strong>{{detail.DetKey}}:</strong> {{detail.DetVal}}</td>
-    </tr>
-  </tbody>
-</table>
-<button (click)="Edit()">Edit</button>
-<div id="pageContent"></div>
+  <header>
+    <table>
+      <tbody>
+        <tr>
+          <td style="width:100%;"><h1 [innerHTML]="page.pageHeader.pageName"></h1></td>
+          <td><button (click)="Edit()">Edit</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </header>
+
+  <!-- <table>
+    <tbody>
+      <tr>
+        <td> -->
+          <section class="container" id="contents">
+            <table>
+              <thead>
+                <h3>Contents</h3>
+              </thead>
+              <tbody>
+                <tr *ngFor="let contentEl of page.contents">
+                  <td><a href="#{{contentEl.id}}" (click)="scrollToElement(contentEl.id)" [innerHTML]="contentEl.content"></a></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        <!-- </td>
+        <td> -->
+          <div id="pageContent"></div>
+        <!-- </td>
+        <td> -->
+          <section class="container" id="details">
+            <table>
+              <thead>
+                <h3>Details</h3>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detail of page.details">
+                  <td><strong>{{detail.DetKey}}:</strong> {{detail.DetVal}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        <!-- </td>
+      </tr>
+    </tbody>
+  </table> -->
+
 </div>
+
 <div *ngIf="editMode">
-  <input type="text" [(ngModel)]="page.pageHeader.pageName" placeholder="Page title" />
-  <br>
-  <textarea id="mainInput" [(ngModel)]="page.content" placeholder="Page Markdown"></textarea>
-  <br>
+  <input type="text" title="Edit the page name" [(ngModel)]="page.pageHeader.pageName" placeholder="Page title" />
+  <hr/>
+  <textarea id="mainInput" title="Edit the page content" rows="50" cols="100" [(ngModel)]="page.content" placeholder="Page Markdown"></textarea>
+  <br/>
   <div *ngFor="let detail of page.details">
     <input type="text" [(ngModel)]="detail.DetKey" placeholder="Detail Key" />
     <input type="text" [(ngModel)]="detail.DetVal" placeholder="Detail Value" />
     <button (click)="RemoveDetail(detail)">X</button>
   </div>
+  <br/>
   <button (click)="AddDetail()">Add Detail</button>
-  <br>
+  <br/><br/>
   <button (click)="Save()">Save</button>
   <button (click)="Cancel()">Cancel</button>
 </div>
