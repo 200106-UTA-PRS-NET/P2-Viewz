@@ -3,6 +3,14 @@
     padding:10px 25px 10px 50px;
     display:inline-block;
 }
+#favorite
+{
+    background-color:lightgreen;
+}
+#history
+{
+    background-color:rgb(235, 235, 235);
+}
 
 .list
 {
