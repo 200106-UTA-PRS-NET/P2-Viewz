@@ -11,7 +11,7 @@
 <table>
   <tbody id="details">
     <tr *ngFor="let detail of page.details">
-      <td><strong>{{detail.DetKey}}:</strong> {{detail.DetVal}}</td>
+      <td><strong>{{detail.detKey}}:</strong> {{detail.detValue}}</td>
     </tr>
   </tbody>
 </table>
@@ -24,8 +24,8 @@
   <textarea id="mainInput" [(ngModel)]="page.content" placeholder="Page Markdown"></textarea>
   <br>
   <div *ngFor="let detail of page.details">
-    <input type="text" [(ngModel)]="detail.DetKey" placeholder="Detail Key" />
-    <input type="text" [(ngModel)]="detail.DetVal" placeholder="Detail Value" />
+    <input type="text" [(ngModel)]="detail.detKey" placeholder="Detail Key" />
+    <input type="text" [(ngModel)]="detail.detValue" placeholder="Detail Value" />
     <button (click)="RemoveDetail(detail)">X</button>
   </div>
   <button (click)="AddDetail()">Add Detail</button>
