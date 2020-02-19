@@ -61,7 +61,7 @@ jobs:
       scannerMode: 'MSBuild'
       projectKey: 'jdf.viewz'
       extraProperties: |
-          sonar.exclusions=**/wwwroot/lib/**/*,**/DataAccess/Models/**/*,**/ViewzApi/Startup.cs,**/ViewzApi/Program.cs
+          sonar.exclusions=**/wwwroot/lib/**/*,**/DataAccess/Models/**/*,**/ViewzApi/Startup.cs,**/ViewzApi/Program.cs,**/DataAccess/Exceptions/**/*
           sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/**/*opencover.xml"
           sonar.cs.vstest.reportsPaths="$(Build.ArtifactStagingDirectory)/test/**/*.trx"
   - script: dotnet build --configuration $(buildConfiguration)
