@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
-    public class WikiRepositoryRetrieving : WikiRepository, IWikiRepository
+    public class WikiRepositoryRetrieving : WikiRepository
     {
         protected readonly IMdToHtmlAndContentsFactory _factory;
 

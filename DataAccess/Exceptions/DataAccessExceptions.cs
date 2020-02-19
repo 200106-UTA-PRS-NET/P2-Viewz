@@ -1,37 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.Serialization;
 
 namespace DataAccess.Exceptions
 {
+    [Serializable]
     public class DataAccessException: Exception
     {
         public DataAccessException(): base() { }
         public DataAccessException(string message) : base(message) { }
         public DataAccessException(string message, Exception innerException): base(message, innerException) { }
+        protected DataAccessException(SerializationInfo info, StreamingContext context): base(info, context) { }
     }
-    public class WikiNotFound : DataAccessException
+    [Serializable]
+    public class WikiNotFoundException : DataAccessException
     {
-        public WikiNotFound() : base() { }
-        public WikiNotFound(string message) : base(message) { }
-        public WikiNotFound(string message, Exception innerException) : base(message, innerException) { }
+        public WikiNotFoundException() : base() { }
+        public WikiNotFoundException(string message) : base(message) { }
+        public WikiNotFoundException(string message, Exception innerException) : base(message, innerException) { }
+        protected WikiNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
-    public class PageNotFound : DataAccessException
+    [Serializable]
+    public class PageNotFoundException : DataAccessException
     {
-        public PageNotFound() : base() { }
-        public PageNotFound(string message) : base(message) { }
-        public PageNotFound(string message, Exception innerException) : base(message, innerException) { }
+        public PageNotFoundException() : base() { }
+        public PageNotFoundException(string message) : base(message) { }
+        public PageNotFoundException(string message, Exception innerException) : base(message, innerException) { }
+        protected PageNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
-    public class WikiExists : DataAccessException
+    [Serializable]
+    public class WikiExistsException : DataAccessException
     {
-        public WikiExists() : base() { }
-        public WikiExists(string message) : base(message) { }
-        public WikiExists(string message, Exception innerException) : base(message, innerException) { }
+        public WikiExistsException() : base() { }
+        public WikiExistsException(string message) : base(message) { }
+        public WikiExistsException(string message, Exception innerException) : base(message, innerException) { }
+        protected WikiExistsException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
-    public class PageExists : DataAccessException
+    [Serializable]
+    public class PageExistsException : DataAccessException
     {
-        public PageExists() : base() { }
-        public PageExists(string message) : base(message) { }
-        public PageExists(string message, Exception innerException) : base(message, innerException) { }
+        public PageExistsException() : base() { }
+        public PageExistsException(string message) : base(message) { }
+        public PageExistsException(string message, Exception innerException) : base(message, innerException) { }
+        protected PageExistsException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }

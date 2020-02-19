@@ -18,8 +18,6 @@ namespace ViewzApi.Controllers
         private readonly IPageRepository _repository;
         private readonly ILogger _logger;
 
-        //public WikiController(IWikiRepository wikiRepository) { }
-
         public WikiController(IWikiRepository wikiRepository, IPageRepository repository, ILogger<WikiController> logger)
         {
             _wikiRepository = wikiRepository;
@@ -115,7 +113,7 @@ namespace ViewzApi.Controllers
                     await _wikiRepository.SetMDAsync(WikiUrl, wiki.Description);
                 }
             }
-            catch (WikiNotFound e)
+            catch (WikiNotFoundException e)
             {
                 _logger.LogError(e.Message);
                 return NotFound();

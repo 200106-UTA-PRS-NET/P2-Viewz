@@ -194,7 +194,7 @@ namespace Tests
             else
             {
                 // It should return Conflict, but because there is no unique constraints in in-memory db, it will throw a not found
-                await Assert.ThrowsAsync<PageNotFound>(() => page_controller.PostAsync(wikiURL, pageURL, model));
+                await Assert.ThrowsAsync<PageNotFoundException>(() => page_controller.PostAsync(wikiURL, pageURL, model));
                 //Assert.IsType<ConflictObjectResult>(page_controller.Post(wikiURL, pageURL, model));
             }
         }

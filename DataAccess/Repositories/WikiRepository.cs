@@ -26,7 +26,7 @@ namespace DataAccess.Repositories
             }
             catch (InvalidOperationException e)
             {
-                throw new WikiNotFound($"{wikiURL} not found", e);
+                throw new WikiNotFoundException($"{wikiURL} not found", e);
             }
         }
         public async Task<string> GetHTMLAsync(string wikiURL)
