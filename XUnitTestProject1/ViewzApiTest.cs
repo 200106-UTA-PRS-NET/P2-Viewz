@@ -9,7 +9,7 @@ using System.Net.Http;
 using System;
 using DataAccess.Interfaces;
 
-namespace XUnitTestProject1
+namespace Tests
 {
     public class ViewzApiTest
     {

@@ -14,6 +14,10 @@
 {
     background-color:rgb(235, 235, 235);
 }
+#Up
+{
+    background-color:rgb(216, 186, 216);
+}
 
 /*hide original checkbox icon*/
 .star
@@ -35,10 +39,9 @@
 {
     color:goldenrod;
     transition:0.2s color;
-
 }
 
-.star:hover:before
+.star:checked:before
 {
     content: "⭐";
     font-size:15px;
