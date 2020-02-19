@@ -13,6 +13,7 @@ namespace DataAccess.APIAccess
     public class MdToHtmlAndContentsFactory : IMdToHtmlAndContentsFactory
     {
         protected HttpClient client;
+        private const string url = "https://api.github.com/markdown/raw";
 
         public MdToHtmlAndContentsFactory()
         {
@@ -20,30 +21,27 @@ namespace DataAccess.APIAccess
             client.DefaultRequestHeaders.Add("User-Agent", "P2-Viewz");
         }
 
-        public IHtmlAndContents GetHtmlAndContents(string markDown)
-
+        public async Task<IHtmlAndContents> GetHtmlAndContents(string markDown)
         {
             if (markDown == null)
                 return null;
 
-            HtmlAndContents RESULT = new HtmlAndContents();
-            RESULT.PageHTML = GetHtmlAsync(markDown).Result;
+            HtmlAndContents RESULT = new HtmlAndContents
+            {
+                PageHTML = await GetHtml(markDown)
+            };
             RESULT.Contents = AParser(RESULT.PageHTML);
             return RESULT;
         }
 
-        public string GetHtml(string markDown)
-        {
-            return GetHtmlAsync(markDown).Result;
-        }
-        async Task<string> GetHtmlAsync(string markDown)
+        public async Task<string> GetHtml(string markDown)
         {
             if (markDown == null)
                 return null;
 
             var content = new StringContent(markDown, Encoding.UTF8, "text/plain");
             
-            HttpResponseMessage _response = await client.PostAsync("https://api.github.com/markdown/raw", content);
+            HttpResponseMessage _response = await client.PostAsync(url, content);
             if((int)_response.StatusCode != 200)
                 throw new HttpRequestException();
 
@@ -57,7 +55,11 @@ namespace DataAccess.APIAccess
 
             HtmlDoc.LoadHtml(pagehtml);
             var xpath = "//*[self::h1 or self::h2 or self::h3]";
-            HtmlNode[] headers = HtmlDoc.DocumentNode.SelectNodes(xpath).ToArray();
+            HtmlNode[] headers = HtmlDoc.DocumentNode.SelectNodes(xpath)?.ToArray();
+            if(headers == null)
+            {
+                return list;
+            }
             int id_count = 0;
             foreach(var h in headers)
             {
@@ -65,10 +67,12 @@ namespace DataAccess.APIAccess
                 if (id != null)
                     id_count++;
 
-                var C = new Contents();
-                C.Id = id.Id;
-                C.Content = h.InnerText.Trim('\n');
-                switch(h.Name.ToLower())
+                var C = new Contents
+                {
+                    Id = id?.Id,
+                    Content = h.InnerText.Trim('\n')
+                };
+                switch (h.Name.ToLower())
                 {
                     case "h1":
                         C.Level = 1;
@@ -79,15 +83,10 @@ namespace DataAccess.APIAccess
                     case "h3":
                         C.Level = 3;
                         break;
-                    //default:                                //TODO delete after testing
-                        //throw new NotImplementedException();
                 }
                 
                 list.Add(C);
             }
-
-            if (headers.Length != id_count)
-                return null;
 
             return list;
         }

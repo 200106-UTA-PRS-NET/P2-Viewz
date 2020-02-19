@@ -1,25 +1,26 @@
 ﻿using DataAccess.Interfaces;
 using DataAccess.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
+//using System.Collections.Generic;
+//using System.Text;
 
 namespace DataAccess.Repositories
 {
-    public class PageRepositoryStoring : PageRepositoryRetrieving, IPageRepository
+    //SMELL#38: Same as #35 (inheritance of IPageRepository unnecessary)
+    public class PageRepositoryStoring : PageRepositoryRetrieving
     {
         public PageRepositoryStoring(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db, factory)
         {
         }
 
-        protected override void SetMD(long pageID, string content)
+        protected override async System.Threading.Tasks.Task SetMDAsync(long pageID, string content)
         {
-            base.SetMD(pageID, content);
+            await base.SetMDAsync(pageID, content);
             try
             {
-                IHtmlAndContents result = _factory.GetHtmlAndContents(content);
-                base.SetHTML(pageID, result?.PageHTML);
-                base.SetContents(pageID, result?.Contents);
+                IHtmlAndContents result = await _factory.GetHtmlAndContents(content);
+                await base.SetHTMLAsync(pageID, result?.PageHTML);
+                await base.SetContentsAsync(pageID, result?.Contents);
             } catch (Exception e)
             {
                 Console.WriteLine(e.ToString());

@@ -1,0 +1,12 @@
+<div>
+<table>
+    <thead>
+        <h3>Popular Wikis</h3>
+    </thead>
+    <tbody>
+        <tr *ngFor="let popularWiki of popularWikis">
+            <td><a routerLink="{{popularWiki.pageUrl}}">{{popularWiki.pageName}}</a></td>
+        </tr>
+    </tbody>
+</table>
+</div>

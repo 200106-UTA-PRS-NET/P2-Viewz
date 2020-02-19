@@ -1,21 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DataAccess.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ViewzApi.Models;
+using System.Linq;
+using DataAccess.Exceptions;
+using System.Threading.Tasks;
 
 namespace ViewzApi.Controllers
-{ 
+{
+    public enum PageContent
+    {
+        Md,
+        Html,
+        NoContent
+    }
     [Route("api/Wiki/{WikiUrl}/{PageUrl}")]
     [ApiController]
     public class PageController : ControllerBase
     { 
         private readonly IPageRepository _repository;
         private readonly ILogger _logger;
+      
 
         public PageController(IPageRepository repository, ILogger<PageController> logger)
         { 
@@ -23,89 +29,111 @@ namespace ViewzApi.Controllers
             _logger = logger;
         }
 
-        //url from db
-        //api/wiki/training-code/readme/?html=false
         [HttpGet]
-        public IActionResult Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
-                        bool details = true, bool html = true, bool content = true)
+        public async Task<IActionResult> GetAsync([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
+                      PageContent html=PageContent.NoContent, bool details = true, bool content=true)
         {
             try
             {
-                var repoPage = (html) ? _repository.GetPageWithHTML(WikiUrl,PageUrl) : _repository.GetPageWithMD(WikiUrl, PageUrl);
+                DataAccess.Storing.Page repoPage;
+                Page page = new Page();
+
+                if (html == PageContent.Html)
+                {
+                    repoPage = await _repository.GetPageWithHTMLAsync(WikiUrl, PageUrl);
+                    page.Content = repoPage.HtmlContent; 
+                }
+                else if (html==PageContent.Md)
+                {
+                    repoPage = await _repository.GetPageWithMDAsync(WikiUrl, PageUrl);
+                    page.Content = repoPage.MdContent;
+                }
+                else {
+                    repoPage = await _repository.GetPageAsync(WikiUrl, PageUrl);
+                    page.Content = null;
+                }
                  
-                Page page = new Page() {
-                    Content = (html) ? repoPage.HtmlContent : repoPage.MdContent,
-                    Details = (details) ? repoPage.Details : null,
-                    Contents = (content) ? repoPage.Contents:null,
-                    WikiUrl = WikiUrl,
-                    Url = PageUrl,
-                    PageName = repoPage.PageName ?? PageUrl
-                }; 
-                 
+                page.Details = (details) ? repoPage.Details : null;
+                page.Contents = (content) ? repoPage.Contents : null; 
+                page.Url = repoPage.Url ?? PageUrl;
+                page.PageName = repoPage.PageName ?? PageUrl;
+            
                 return Ok(page);
             }
             catch (Exception e)
-            {  
+            {
                 _logger.LogError(e.Message);
-                return BadRequest();
+                return NotFound("page could not be found");
             }
-
         }
-
+         
         [HttpPost]
-        public IActionResult Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
+        public async Task<IActionResult> PostAsync([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
         {
             try
             {
                 if (page.PageName != null)
                 {
-                    _repository.NewPage(WikiUrl, PageUrl, page.PageName, page.Content);
+                    await _repository.NewPageAsync(WikiUrl, PageUrl, page.PageName, page.Content);
+                   
                 }
                 else
                 {
-                    _repository.NewPage(WikiUrl, PageUrl, page.Content);
+                    await _repository.NewPageAsync(WikiUrl, PageUrl, page.Content);
                 }
-                
-                return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl, PageUrl }, value: null);
+
+                await _repository.SetPageDetailsAsync(WikiUrl, PageUrl,page.Details);
+
+                return CreatedAtAction(actionName: nameof(GetAsync), routeValues: new { WikiUrl, PageUrl }, value: null);
             }
-            catch (Exception e)
+            catch(WikiNotFound e)
             {
-                //base.Content($"<h3>{e.Message}</h3>", "text/html");
                 _logger.LogError(e.Message);
-                return BadRequest();
+                return NotFound($"{WikiUrl} not found");
+            }
+            catch (PageExists e)
+            { 
+                _logger.LogError(e.Message);
+                //if request is duplicated 
+                return Conflict("Post request must be unique");
             }
         }
 
         
         [HttpPatch]
-        public IActionResult Patch([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
+        public async Task<IActionResult> PatchAsync([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
         {
             try
             {
                 if (page.Content == null && page.PageName == null && page.Details == null)
                 { 
-                    return BadRequest();
+                    return BadRequest("page values cannot all be null");
                 }
 
                 if (page.PageName != null)
                 {
-                    _repository.SetName(WikiUrl, PageUrl, page.PageName);
+                    await _repository.SetNameAsync(WikiUrl, PageUrl, page.PageName);
                 }
 
                 if (page.Content != null)
                 {
-                    _repository.SetMD(WikiUrl, PageUrl, page.Content);
+                    await _repository.SetMDAsync(WikiUrl, PageUrl, page.Content);
 
                 }
 
                 if (page.Details != null)
                 {
-                    _repository.SetPageDetails(WikiUrl, PageUrl, page.Details);
+                    await _repository.SetPageDetailsAsync(WikiUrl, PageUrl, page.Details);
                 }
             }
-            catch (Exception e) {
+            catch (WikiNotFound e) {
                 _logger.LogError(e.Message);
-               // base.Content($"<h3>{e.Message}</h3>", "text/html");
+                return NotFound($"{WikiUrl} not found");
+            }
+            catch (PageNotFound e)
+            {
+                _logger.LogError(e.Message);
+                return NotFound($"{WikiUrl}/{PageUrl} not found");
             }
 
             return NoContent();

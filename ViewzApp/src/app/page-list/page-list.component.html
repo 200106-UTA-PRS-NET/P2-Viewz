@@ -1,0 +1,31 @@
+<div class="side" id="Up" *ngIf="history.upPage">
+    <h2>Parent</h2>
+    <br/>
+    <a [routerLink]="history.upPage.pageUrl">{{history.upPage.pageName}}</a>
+</div>
+
+<div id="favoriteHistory">
+<section class="side" id="favorite">
+    <h2>Favorite Pages</h2>
+    <table>
+        <tbody class="list">
+            <tr *ngFor="let page of history.favoritePages">
+                <td><a routerLink="{{page.page.pageUrl}}">{{page.page.pageName}}</a></td>
+                <td><input (change)="UpdateFavorite(page)" class="star" type="checkbox" [(ngModel)]="page.favorite"></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="side" id="history">
+    <h2>History</h2>
+    <table>
+        <tbody class="list">
+            <tr *ngFor="let page of history.historyPages">
+                <td><a routerLink="{{page.page.pageUrl}}">{{page.page.pageName}}</a></td>
+                <td><input type="checkbox" (change)="UpdateFavorite(page)" class="star" [(ngModel)]="page.favorite"/></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+</div>

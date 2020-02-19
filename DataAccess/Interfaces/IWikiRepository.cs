@@ -1,24 +1,25 @@
 ﻿using DataAccess.Storing;
-using System;
+//using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
+//using System.Text;
 
 namespace DataAccess.Interfaces
 {
     public interface IWikiRepository
     {
         // Getters
-        string GetMD(string wikiURL);
-        string GetHTML(string wikiURL);
-        Wiki GetWiki(string wikiURL);
-        Wiki GetWikiWithMD(string wikiURL);
-        Wiki GetWikiWithHTML(string wikiURL);
-        IEnumerable<Wiki> GetPopularWikis(uint count, bool description = false);
-
+        Task<string> GetMDAsync(string wikiURL);
+        Task<string> GetHTMLAsync(string wikiURL);
+        Task<Wiki> GetWikiAsync(string wikiURL);
+        Task<Wiki> GetWikiWithMDAsync(string wikiURL);
+        Task<Wiki> GetWikiWithHTMLAsync(string wikiURL);
+        Task<IEnumerable<Wiki>> GetPopularWikisAsync(uint count, bool description = false);
+        
         // Setters
-        void SetMD(string wikiURL, string content);
-        void SetName(string wikiURL, string newName);
-        void NewWiki(string wikiURL, string pageName, string content);
-        void NewWiki(string wikiURL, string content);
+        Task SetMDAsync(string wikiURL, string content);
+        Task SetNameAsync(string wikiURL, string newName);
+        Task NewWikiAsync(string wikiURL, string pageName, string content);
+        Task NewWikiAsync(string wikiURL, string content);
     }
 }

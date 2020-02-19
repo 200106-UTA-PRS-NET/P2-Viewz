@@ -27,12 +27,6 @@ jobs:
     inputs:
       azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
       appType: 'webAppLinux'
-      appName: 'viewz'
-      package: '$(System.DefaultWorkingDirectory)/ViewzApp/**/*.zip'
-  - task: AzureWebApp@1
-    inputs:
-      azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
-      appType: 'webAppLinux'
       appName: 'viewzapi'
       package: '$(System.DefaultWorkingDirectory)/ViewzApi/**/*.zip'
 
@@ -57,7 +51,8 @@ jobs:
       package: '$(System.DefaultWorkingDirectory)/ViewzApi/**/*.zip'
 
 - job: Analysis
-  condition: always()
+  # Run job if a PR into master or long term branch or CI anywhere
+  condition: and(always(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/branch-')))
   steps:
   - task: SonarCloudPrepare@1
     inputs:
@@ -81,20 +76,39 @@ jobs:
       /p:CoverletOutput="$(Build.ArtifactStagingDirectory)/coverage/"
     displayName: 'Dotnet test and coverage'
   - task: SonarCloudAnalyze@1
-    condition: always()
+    condition: succeededOrFailed()
   - task: SonarCloudPublish@1
-    condition: always()
+    condition: succeededOrFailed()
     inputs:
       pollingTimeoutSec: '300'
   - task: PublishTestResults@2
-    condition: always()
+    condition: succeededOrFailed()
     inputs:
       testResultsFormat: 'VSTest'
       testResultsFiles: '**/*.trx'
       searchFolder: '$(Build.ArtifactStagingDirectory)/test/'
   - task: PublishCodeCoverageResults@1
-    condition: always()
+    condition: succeededOrFailed()
     inputs:
       codeCoverageTool: 'Cobertura'
       summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverage/**/*cobertura.xml'
-  
+- job: DeployAngularApp
+  pool:
+    vmImage: 'ubuntu-latest'
+  condition: and(always(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/front-end'), startsWith(variables['Build.SourceBranch'], 'refs/heads/branch-')), ne(variables['Build.Reason'], 'PullRequest'))
+  steps:
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'Docker'
+      repository: 'jacobdf/viewz'
+      command: 'buildAndPush'
+      Dockerfile: '$(System.DefaultWorkingDirectory)/ViewzApp/Dockerfile'
+      buildContext: '$(System.DefaultWorkingDirectory)/ViewzApp'
+      tags: |
+        $(Build.BuildId)
+        latest
+  - task: AzureWebAppContainer@1
+    inputs:
+      azureSubscription: 'Azure subscription 1(54320e88-cfc4-4aec-90cf-a5c188c75dd0)'
+      appName: 'viewz'
+      containers: 'jacobdf/viewz'

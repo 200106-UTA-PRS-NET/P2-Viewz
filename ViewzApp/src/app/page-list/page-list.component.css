@@ -1,0 +1,49 @@
+.side
+{
+    display:inline-block;
+    padding:10px 25px 10px 50px;
+    width:210px;
+    margin-left:10px;
+}
+
+#favorite
+{
+    background-color:lightgreen;
+}
+#history
+{
+    background-color:rgb(235, 235, 235);
+}
+#Up
+{
+    background-color:rgb(216, 186, 216);
+}
+
+/*hide original checkbox icon*/
+.star
+{
+    visibility:hidden;
+    cursor:pointer;
+}
+/*use this before original*/
+.star:before
+{
+    content: "★";
+    font-size:20px;
+    color:black;
+    visibility:visible;
+    border-radius:50%;
+}
+
+.star:hover:before
+{
+    color:goldenrod;
+    transition:0.2s color;
+}
+
+.star:checked:before
+{
+    content: "⭐";
+    font-size:15px;
+    color:yellow;
+}
