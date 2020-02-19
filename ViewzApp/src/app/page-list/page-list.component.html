@@ -1,6 +1,12 @@
-<div class="container">
-<div class="side" id="favorite">
-    <h3>Favorite Pages</h3>
+<div class="side" id="Up" *ngIf="history.upPage">
+    <h2>Parent</h2>
+    <br/>
+    <a [routerLink]="history.upPage.pageUrl">{{history.upPage.pageName}}</a>
+</div>
+
+<div id="favoriteHistory">
+<section class="side" id="favorite">
+    <h2>Favorite Pages</h2>
     <table>
         <tbody class="list">
             <tr *ngFor="let page of history.favoritePages">
@@ -9,10 +15,10 @@
             </tr>
         </tbody>
     </table>
-</div>
-<hr>
-<div class="side" id="history">
-    <h3>History</h3>
+</section>
+
+<section class="side" id="history">
+    <h2>History</h2>
     <table>
         <tbody class="list">
             <tr *ngFor="let page of history.historyPages">
@@ -21,5 +27,5 @@
             </tr>
         </tbody>
     </table>
-</div>
+</section>
 </div>

@@ -13,14 +13,14 @@ namespace DataAccess.Repositories
         {
         }
 
-        protected override void SetMD(long pageID, string content)
+        protected override async System.Threading.Tasks.Task SetMDAsync(long pageID, string content)
         {
-            base.SetMD(pageID, content);
+            await base.SetMDAsync(pageID, content);
             try
             {
-                IHtmlAndContents result = _factory.GetHtmlAndContents(content);
-                base.SetHTML(pageID, result?.PageHTML);
-                base.SetContents(pageID, result?.Contents);
+                IHtmlAndContents result = await _factory.GetHtmlAndContents(content);
+                await base.SetHTMLAsync(pageID, result?.PageHTML);
+                await base.SetContentsAsync(pageID, result?.Contents);
             } catch (Exception e)
             {
                 Console.WriteLine(e.ToString());

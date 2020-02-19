@@ -42,3 +42,4 @@ appsettings.*.json
 appsettings.json
 azure-pipelines.yml
 PullRequestPipeline.yml
+coverage.json

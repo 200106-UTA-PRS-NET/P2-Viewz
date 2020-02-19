@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment'
 import { WikiObj } from './wiki-obj';
 import { PageAndContents } from './pageAndContents';
-import { stringify } from 'querystring';
 
 @Injectable({
   providedIn: 'root'

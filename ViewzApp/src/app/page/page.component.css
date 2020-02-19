@@ -1,0 +1,46 @@
+section
+{
+    position:sticky;
+    top:0;
+    float: left;
+    position:-webkit-sticky;
+    position:-moz-sticky;
+    border:2px;
+    border-style:solid;
+    border-color:silver;
+    border-radius:2px;
+    margin:10px;
+    margin-top: 0px;
+    padding:10px;
+    width:10%
+}
+
+#pageContent
+{
+    padding:10px;
+    float:left;
+    width:60%;
+}
+
+.page
+{
+    display:inline-block;
+}
+
+.button
+{
+    width:80px;
+    height:40px;
+}
+
+header
+{
+    background-color:ghostwhite;
+    padding:20px;
+    margin:10px;
+}
+
+thead h3
+{
+    text-align:center;
+}

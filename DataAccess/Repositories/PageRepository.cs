@@ -5,6 +5,9 @@ using System.Collections.Generic;
 //using System.Text;
 using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using DataAccess.Exceptions;
+using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
@@ -15,59 +18,70 @@ namespace DataAccess.Repositories
         {
             _db = db;
         }
-        public string GetHTML(string wikiURL, string pageURL)
+        public async Task<string> GetHTMLAsync(string wikiURL, string pageURL)
         {
-            return GetHTML(GetID(wikiURL, pageURL));
+            return await GetHTMLAsync(await GetIDAsync(wikiURL, pageURL));
         }
 
-        protected virtual string GetHTML(long pageID)
+        protected async virtual Task<string> GetHTMLAsync(long pageID)
         {
-            return (from contents in _db.PageHtmlContent
+            return await (from contents in _db.PageHtmlContent
                     where contents.PageId == pageID
-                    select contents.HtmlContent).Single();
+                    select contents.HtmlContent).SingleAsync();
         }
 
-        long GetID(string wikiURL, string pageURL)
+        async Task<long> GetIDAsync(string wikiURL, string pageURL)
         {
-            return (from page in _db.Page
-            join wikiId in from wiki in _db.Wiki
-                           where wikiURL == wiki.Url
-                           select wiki.Id
-                         on page.WikiId equals wikiId
-            where page.Url == pageURL
-            select page.PageId).Single();
+            try
+            {
+                return await (from page in _db.Page
+                        join wikiId in from wiki in _db.Wiki
+                                       where wikiURL == wiki.Url
+                                       select wiki.Id
+                                     on page.WikiId equals wikiId
+                        where page.Url == pageURL
+                        select page.PageId).SingleAsync();
+            } catch (InvalidOperationException e)
+            {
+                throw new PageNotFound($"{wikiURL}/{pageURL} not found", e);
+            }
         }
 
-        int GetID(string wikiURL)
+        async Task<int> GetIDAsync(string wikiURL)
         {
-            return (from wiki in _db.Wiki
+            try {
+            return await (from wiki in _db.Wiki
                     where wiki.Url == wikiURL
-                    select wiki.Id).Single();
+                    select wiki.Id).SingleAsync();
+            } catch (InvalidOperationException e)
+            {
+                throw new WikiNotFound($"{wikiURL} was not found.", e);
+            }
         }
 
-        public string GetMD(string wikiURL, string pageURL)
+        public async Task<string> GetMDAsync(string wikiURL, string pageURL)
         {
-            return GetMD(GetID(wikiURL, pageURL));
+            return await GetMDAsync(await GetIDAsync(wikiURL, pageURL));
         }
 
-        protected string GetMD(long pageID)
+        protected async Task<string> GetMDAsync(long pageID)
         {
-            return (from contents in _db.PageMdContent
+            return await (from contents in _db.PageMdContent
                     where contents.PageId == pageID
-                    select contents.MdContent).Single();
+                    select contents.MdContent).SingleAsync();
         }
 
-        protected void SetHTML(string wikiURL, string pageURL, string content)
+        protected async Task SetHTMLAsync(string wikiURL, string pageURL, string content)
         {
-            SetHTML(GetID(wikiURL, pageURL), content);
+            await SetHTMLAsync(await GetIDAsync(wikiURL, pageURL), content);
         }
 
-        protected void SetHTML(long pageID, string content)
+        protected async Task SetHTMLAsync(long pageID, string content)
         {
             //!!! put in table split classes
-            var pageHtml = (from contents in _db.PageHtmlContent
+            var pageHtml = await (from contents in _db.PageHtmlContent
                           where contents.PageId == pageID
-                          select contents).SingleOrDefault();
+                          select contents).SingleOrDefaultAsync();
 
             if (pageHtml != null)
             {
@@ -81,20 +95,20 @@ namespace DataAccess.Repositories
                     HtmlContent = content
                 });
             }
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public void SetMD(string wikiURL, string pageURL, string content)
+        public async Task SetMDAsync(string wikiURL, string pageURL, string content)
         {
-            SetMD(GetID(wikiURL, pageURL), content);
+            await SetMDAsync(await GetIDAsync(wikiURL, pageURL), content);
         }
 
-        protected virtual void SetMD(long pageID, string content)
+        protected virtual async Task SetMDAsync(long pageID, string content)
         {
             //!!! put in table split classes
-            var pageMD = (from contents in _db.PageMdContent
+            var pageMD = await (from contents in _db.PageMdContent
                           where contents.PageId == pageID
-                          select contents).SingleOrDefault();
+                          select contents).SingleOrDefaultAsync();
             if (pageMD != null)
             {
                 pageMD.MdContent = content;
@@ -107,75 +121,81 @@ namespace DataAccess.Repositories
                     MdContent = content
                 });
             }
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        private protected void SetContents(long pageID, IEnumerable<DataAccess.Storing.Contents> contents)
+        private protected async Task SetContentsAsync(long pageID, IEnumerable<DataAccess.Storing.Contents> contents)
         {
-            (from innerPage in _db.Page
+            (await (from innerPage in _db.Page
                         where innerPage.PageId == pageID
                         select innerPage)
-                        .Include(o => o.Contents).Single()
+                        .Include(o => o.Contents).SingleAsync())
                         .Contents = Storing.Mapper.Map(contents);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public void NewPage(string wikiURL, string pageURL, string content)
+        public async Task NewPageAsync(string wikiURL, string pageURL, string content)
         {
-            NewPage(wikiURL, pageURL, pageURL, content);
+            await NewPageAsync(wikiURL, pageURL, pageURL, content);
         }
 
-        public void NewPage(string wikiURL, string pageURL, string pageName, string content)
+        public async Task NewPageAsync(string wikiURL, string pageURL, string pageName, string content)
         {
-            int wikiId = GetID(wikiURL);
-            _db.Page.Add(new Models.Page()
+            int wikiId = await GetIDAsync(wikiURL);
+            try
             {
-                WikiId = wikiId,
-                Url = pageURL,
-                PageName = pageName
-            });
-            _db.SaveChanges();
-            SetMD(wikiURL, pageURL, content);
+                _db.Page.Add(new Models.Page()
+                {
+                    WikiId = wikiId,
+                    Url = pageURL,
+                    PageName = pageName
+                });
+                await _db.SaveChangesAsync();
+            } catch(Exception e)
+            {
+                throw new PageExists($"{wikiURL}/{pageURL} already exists", e);
+            }
+            await SetMDAsync(wikiURL, pageURL, content);
         }
 
-        public Storing.Page GetPage(string wikiURL, string pageURL)
+        public async Task<Storing.Page> GetPageAsync(string wikiURL, string pageURL)
         {
-            return GetPage(GetID(wikiURL, pageURL));
+            return await GetPageAsync(await GetIDAsync(wikiURL, pageURL));
         }
-        protected Storing.Page GetPage(long pageID)
+        protected async Task<Storing.Page> GetPageAsync(long pageID)
         {
-            var page = (from innerPage in _db.Page
+            var page = await (from innerPage in _db.Page
                         where innerPage.PageId == pageID
                         select innerPage)
                         .Include(o => o.PageDetails)
-                        .Include(o => o.Contents).Single();
+                        .Include(o => o.Contents).SingleAsync();
             page.HitCount += 1;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return Storing.Mapper.Map(page);
         }
 
-        public Storing.Page GetPageWithMD(string wikiURL, string pageURL)
+        public async Task<Storing.Page> GetPageWithMDAsync(string wikiURL, string pageURL)
         {
-            return GetPageWithMD(GetID(wikiURL, pageURL));
+            return await GetPageWithMDAsync(await GetIDAsync(wikiURL, pageURL));
         }
-        protected Storing.Page GetPageWithMD(long pageID)
+        protected async Task<Storing.Page> GetPageWithMDAsync(long pageID)
         {
-            var page = (from innerPage in _db.Page
+            var page = await (from innerPage in _db.Page
                         where innerPage.PageId == pageID
                         select innerPage)
                         .Include(o => o.PageDetails)
                         .Include(o => o.Contents)
-                        .Include(o => o.PageMdContent).Single();
+                        .Include(o => o.PageMdContent).SingleAsync();
             page.HitCount += 1;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return Storing.Mapper.Map(page);
         }
 
-        public Storing.Page GetPageWithHTML(string wikiURL, string pageURL)
+        public async Task<Storing.Page> GetPageWithHTMLAsync(string wikiURL, string pageURL)
         {
-            return GetPageWithHTML(GetID(wikiURL, pageURL));
+            return await GetPageWithHTMLAsync(await GetIDAsync(wikiURL, pageURL));
         }
-        protected Storing.Page GetPageWithHTML(long pageID)
+        protected async Task<Storing.Page> GetPageWithHTMLAsync(long pageID)
         {
             var modelsPage = (from innerPage in _db.Page
                         where innerPage.PageId == pageID
@@ -187,70 +207,70 @@ namespace DataAccess.Repositories
             var dbSave = _db.SaveChangesAsync();
             Storing.Page page = Storing.Mapper.Map(modelsPage);
             if (page.HtmlContent == null) { 
-            page.HtmlContent = GetHTML(pageID);
+            page.HtmlContent = await GetHTMLAsync(pageID);
             page.Contents = (from content in _db.Contents
                              where content.PageId == pageID
                              orderby content.Order ascending
                              select Storing.Mapper.Map(content)).Skip(1);
             }
-            dbSave.Wait();
+            await dbSave;
             return page;
         }
 
-        public IEnumerable<Storing.Page> GetPopularPages(string wikiURL, uint count = 5)
+        public async Task<IEnumerable<Storing.Page>> GetPopularPagesAsync(string wikiURL, uint count = 5)
         {
-            return GetPopularPages(GetID(wikiURL), count);
+            return await GetPopularPagesAsync(await GetIDAsync(wikiURL), count);
         }
-        protected IEnumerable<Storing.Page> GetPopularPages(int wikiID, uint count = 5)
+        protected async Task<IEnumerable<Storing.Page>> GetPopularPagesAsync(int wikiID, uint count = 5)
         {
-            IEnumerable<Models.Page> pages = (from page in _db.Page
+            IEnumerable<Models.Page> pages = await (from page in _db.Page
                     where page.WikiId == wikiID
                     orderby page.HitCount descending
                     select page)
                     .Include(o => o.PageDetails)
                     .Include(o => o.Contents)
-                    .Take((int)count).ToList();
+                    .Take((int)count).ToListAsync();
             foreach(var page in pages)
             {
                 //SMELL#31,32: replaced page.Contents.Count == 0 with !page.Contents.Any()
                 if (!page.Contents.Any())
                 {
-                    GetHTML(page.PageId); // Will either create the page or just load html from db
-                    page.Contents = (from content in _db.Contents
+                    await GetHTMLAsync(page.PageId); // Will either create the page or just load html from db
+                    page.Contents = await (from content in _db.Contents
                                      where content.PageId == page.PageId
                                      orderby content.Order ascending
-                                     select content).ToList();
+                                     select content).Skip(1).ToListAsync();
                 }
             }
             return from page in pages
                    select Storing.Mapper.Map(page);
         }
 
-        public void SetName(string wikiURL, string pageURL, string newName)
+        public async Task SetNameAsync(string wikiURL, string pageURL, string newName)
         {
-            SetName(GetID(wikiURL, pageURL), newName);
+            await SetNameAsync(await GetIDAsync(wikiURL, pageURL), newName);
         }
-        protected void SetName(long pageID, string newName)
+        protected async Task SetNameAsync(long pageID, string newName)
         {
-            Models.Page page = (from innerPage in _db.Page
+            Models.Page page = await (from innerPage in _db.Page
                                                     where innerPage.PageId == pageID
-                                                    select innerPage).Single();
+                                                    select innerPage).SingleAsync();
             page.PageName = newName;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public void SetPageDetails(string wikiURL, string pageURL, IEnumerable<Storing.PageDetails> details)
+        public async Task SetPageDetailsAsync(string wikiURL, string pageURL, IEnumerable<Storing.PageDetails> details)
         {
-            SetPageDetails(GetID(wikiURL, pageURL), details);
+            await SetPageDetailsAsync(await GetIDAsync(wikiURL, pageURL), details);
         }
-        protected void SetPageDetails(long pageID, IEnumerable<Storing.PageDetails> details)
+        protected async Task SetPageDetailsAsync(long pageID, IEnumerable<Storing.PageDetails> details)
         {
-            (from innerPage in _db.Page
+            (await (from innerPage in _db.Page
              where innerPage.PageId == pageID
              select innerPage)
-                        .Include(o => o.PageDetails).Single()
+                        .Include(o => o.PageDetails).SingleAsync())
                         .PageDetails = Storing.Mapper.Map(details);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
     }
 }

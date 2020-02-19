@@ -6,6 +6,7 @@ import { FavoritePageHead } from './favoritePageHead';
   providedIn: 'root'
 })
 export class PageHistoryService {
+  upPage: PageHead = null;
   favoritePages: FavoritePageHead[] = [];
   historyPages: FavoritePageHead[] = [];
   constructor() {
@@ -17,6 +18,10 @@ export class PageHistoryService {
     if(hist){
       this.historyPages = JSON.parse(hist);
     }
+  }
+
+  setUpPage(page: PageHead){
+    this.upPage = page;
   }
 
   add(page: PageHead) {

@@ -21,24 +21,20 @@ namespace DataAccess.APIAccess
             client.DefaultRequestHeaders.Add("User-Agent", "P2-Viewz");
         }
 
-        public IHtmlAndContents GetHtmlAndContents(string markDown)
+        public async Task<IHtmlAndContents> GetHtmlAndContents(string markDown)
         {
             if (markDown == null)
                 return null;
 
             HtmlAndContents RESULT = new HtmlAndContents
             {
-                PageHTML = GetHtmlAsync(markDown).Result
+                PageHTML = await GetHtml(markDown)
             };
             RESULT.Contents = AParser(RESULT.PageHTML);
             return RESULT;
         }
 
-        public string GetHtml(string markDown)
-        {
-            return GetHtmlAsync(markDown).Result;
-        }
-        async Task<string> GetHtmlAsync(string markDown)
+        public async Task<string> GetHtml(string markDown)
         {
             if (markDown == null)
                 return null;

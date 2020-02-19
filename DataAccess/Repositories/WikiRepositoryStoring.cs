@@ -1,6 +1,8 @@
 using DataAccess.Interfaces;
 using DataAccess.Models;
 using System;
+using System.Threading.Tasks;
+
 namespace DataAccess.Repositories
 {
     public class WikiRepositoryStoring: WikiRepositoryRetrieving, IWikiRepository
@@ -8,13 +10,13 @@ namespace DataAccess.Repositories
         public WikiRepositoryStoring(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db, factory)
         {
         }
-        protected override void SetMD(int wikiId, string content)
+        protected async override Task SetMDAsync(int wikiId, string content)
         {
-            base.SetMD(wikiId, content);
+            await base.SetMDAsync(wikiId, content);
             try
             {
-                string result = _factory.GetHtml(content);
-                base.SetHTML(wikiId, result);
+                string result = await _factory.GetHtml(content);
+                await base.SetHTMLAsync(wikiId, result);
             }
             catch (Exception e)
             {

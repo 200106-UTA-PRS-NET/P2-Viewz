@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ViewzApi.Models; 
 using System.Linq;
+using DataAccess.Exceptions;
+using System.Threading.Tasks;
 
 namespace ViewzApi.Controllers
 {
@@ -27,35 +29,27 @@ namespace ViewzApi.Controllers
 
         //get popular wikis with url: api/wiki
         [HttpGet(Name = "GetPopular")]
-        public IActionResult Get([FromQuery]uint count = 1, [FromQuery]bool description = false)
+        //[HttpGet]
+        //api/wiki
+        public async Task<IActionResult> GetAsync([FromQuery]uint count = 1, [FromQuery]bool description = false)
         {
-            try
-            {
-               
-                return Ok(_wikiRepository.GetPopularWikis(count, description));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-
-                return NotFound();
-            }
+            return Ok(await _wikiRepository.GetPopularWikisAsync(count, description));
         }
 
         //get one wiki with url: api/wiki/some-wiki
         [HttpGet("{WikiURL}", Name = "GetWiki")]
-        public IActionResult Get([FromRoute]string WikiURL, bool html = true)
+        public async Task<IActionResult> GetAsync([FromRoute]string WikiURL, bool html = true)
         {
             try
             {
-                var repoWiki = (html) ? _wikiRepository.GetWikiWithHTML(WikiURL) : _wikiRepository.GetWikiWithMD(WikiURL);
+                var repoWiki = await ((html) ? _wikiRepository.GetWikiWithHTMLAsync(WikiURL) : _wikiRepository.GetWikiWithMDAsync(WikiURL));
 
                 Wiki wiki = new Wiki()
                 {
                     Url = repoWiki.Url,
                     PageName = repoWiki.PageName ?? WikiURL,
                     Description = (html) ? repoWiki.HtmlDescription : repoWiki.MdDescription,
-                    PopularPages = (from repoPage in _repository.GetPopularPages(WikiURL, 5)
+                    PopularPages = (from repoPage in await _repository.GetPopularPagesAsync(WikiURL, 5)
                                     select new Page()
                                     { 
                                         Content = (html) ? repoPage.HtmlContent : repoPage.MdContent,
@@ -77,20 +71,20 @@ namespace ViewzApi.Controllers
 
         //post new wiki with url: api/wiki/some-new-wiki and passing wiki object in body
         [HttpPost("{WikiURL}")]
-        public IActionResult Post([FromRoute] string WikiUrl, [FromBody]Wiki wiki)
+        public async Task<IActionResult> PostAsync([FromRoute] string WikiUrl, [FromBody]Wiki wiki)
         {
             try
             {
                 if (wiki.PageName != null)
                 {
-                    _wikiRepository.NewWiki(WikiUrl, wiki.PageName, wiki.Description);
+                    await _wikiRepository.NewWikiAsync(WikiUrl, wiki.PageName, wiki.Description);
                 }
                 else
                 {
-                    _wikiRepository.NewWiki(WikiUrl, wiki.Description);
+                    await _wikiRepository.NewWikiAsync(WikiUrl, wiki.Description);
                 }
 
-                return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl }, value: null);
+                return CreatedAtAction(actionName: nameof(GetAsync), routeValues: new { WikiUrl }, value: null);
             }
             catch (Exception e)
             {
@@ -102,7 +96,7 @@ namespace ViewzApi.Controllers
 
         //patch pre-existing wiki with url: api/wiki/some-wiki and passing wiki object in body
         [HttpPatch("{WikiURL}")]
-        public IActionResult Patch([FromRoute] string WikiUrl, [FromBody]Wiki wiki)
+        public async Task<IActionResult> PatchAsync([FromRoute] string WikiUrl, [FromBody]Wiki wiki)
         {
             try
             {
@@ -113,17 +107,18 @@ namespace ViewzApi.Controllers
 
                 if (wiki.PageName != null)
                 {
-                    _wikiRepository.SetName(WikiUrl, wiki.PageName);
+                    await _wikiRepository.SetNameAsync(WikiUrl, wiki.PageName);
                 }
 
                 if (wiki.Description != null)
                 {
-                    _wikiRepository.SetMD(WikiUrl, wiki.Description);
+                    await _wikiRepository.SetMDAsync(WikiUrl, wiki.Description);
                 }
             }
-            catch (Exception e)
+            catch (WikiNotFound e)
             {
                 _logger.LogError(e.Message);
+                return NotFound();
             }
 
             return NoContent();

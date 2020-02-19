@@ -1,6 +1,7 @@
 using DataAccess.Interfaces;
 using DataAccess.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
@@ -12,14 +13,14 @@ namespace DataAccess.Repositories
         {
             _factory = factory;
         }
-        protected override string GetHTML(int wikiId)
+        protected async override Task<string> GetHTMLAsync(int wikiId)
         {
             try {
-                return base.GetHTML(wikiId);
+                return await base.GetHTMLAsync(wikiId);
             } catch (InvalidOperationException)
             {
-                string result = _factory.GetHtml(base.GetMD(wikiId));
-                base.SetHTML(wikiId, result);
+                string result = await _factory.GetHtml(await base.GetMDAsync(wikiId));
+                await base.SetHTMLAsync(wikiId, result);
                 return result;
             }
         }

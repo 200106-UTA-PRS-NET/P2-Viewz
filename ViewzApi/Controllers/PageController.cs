@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ViewzApi.Models;
 using System.Linq;
+using DataAccess.Exceptions;
+using System.Threading.Tasks;
 
 namespace ViewzApi.Controllers
 {
-
     public enum PageContent
     {
         Md,
@@ -29,25 +30,26 @@ namespace ViewzApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
+        public async Task<IActionResult> GetAsync([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
                       PageContent html=PageContent.NoContent, bool details = true, bool content=true)
         {
             try
-            { 
-                var repoPage = _repository.GetPage(WikiUrl, PageUrl);
+            {
+                DataAccess.Storing.Page repoPage;
                 Page page = new Page();
 
                 if (html == PageContent.Html)
                 {
-                    repoPage = _repository.GetPageWithHTML(WikiUrl, PageUrl);
+                    repoPage = await _repository.GetPageWithHTMLAsync(WikiUrl, PageUrl);
                     page.Content = repoPage.HtmlContent; 
                 }
                 else if (html==PageContent.Md)
                 {
-                    repoPage = _repository.GetPageWithMD(WikiUrl, PageUrl);
+                    repoPage = await _repository.GetPageWithMDAsync(WikiUrl, PageUrl);
                     page.Content = repoPage.MdContent;
                 }
-                else { 
+                else {
+                    repoPage = await _repository.GetPageAsync(WikiUrl, PageUrl);
                     page.Content = null;
                 }
                  
@@ -66,25 +68,30 @@ namespace ViewzApi.Controllers
         }
          
         [HttpPost]
-        public IActionResult Post([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
+        public async Task<IActionResult> PostAsync([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
         {
             try
             {
                 if (page.PageName != null)
                 {
-                    _repository.NewPage(WikiUrl, PageUrl, page.PageName, page.Content);
+                    await _repository.NewPageAsync(WikiUrl, PageUrl, page.PageName, page.Content);
                    
                 }
                 else
                 {
-                    _repository.NewPage(WikiUrl, PageUrl, page.Content);
+                    await _repository.NewPageAsync(WikiUrl, PageUrl, page.Content);
                 }
 
-                _repository.SetPageDetails(WikiUrl, PageUrl,page.Details);
+                await _repository.SetPageDetailsAsync(WikiUrl, PageUrl,page.Details);
 
-                return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl, PageUrl }, value: null);
+                return CreatedAtAction(actionName: nameof(GetAsync), routeValues: new { WikiUrl, PageUrl }, value: null);
             }
-            catch (Exception e)
+            catch(WikiNotFound e)
+            {
+                _logger.LogError(e.Message);
+                return NotFound($"{WikiUrl} not found");
+            }
+            catch (PageExists e)
             { 
                 _logger.LogError(e.Message);
                 //if request is duplicated 
@@ -94,7 +101,7 @@ namespace ViewzApi.Controllers
 
         
         [HttpPatch]
-        public IActionResult Patch([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
+        public async Task<IActionResult> PatchAsync([FromRoute] string WikiUrl, [FromRoute] string PageUrl, [FromBody]Page page)
         {
             try
             {
@@ -105,22 +112,28 @@ namespace ViewzApi.Controllers
 
                 if (page.PageName != null)
                 {
-                    _repository.SetName(WikiUrl, PageUrl, page.PageName);
+                    await _repository.SetNameAsync(WikiUrl, PageUrl, page.PageName);
                 }
 
                 if (page.Content != null)
                 {
-                    _repository.SetMD(WikiUrl, PageUrl, page.Content);
+                    await _repository.SetMDAsync(WikiUrl, PageUrl, page.Content);
 
                 }
 
                 if (page.Details != null)
                 {
-                    _repository.SetPageDetails(WikiUrl, PageUrl, page.Details);
+                    await _repository.SetPageDetailsAsync(WikiUrl, PageUrl, page.Details);
                 }
             }
-            catch (Exception e) {
-                _logger.LogError(e.Message); 
+            catch (WikiNotFound e) {
+                _logger.LogError(e.Message);
+                return NotFound($"{WikiUrl} not found");
+            }
+            catch (PageNotFound e)
+            {
+                _logger.LogError(e.Message);
+                return NotFound($"{WikiUrl}/{PageUrl} not found");
             }
 
             return NoContent();
