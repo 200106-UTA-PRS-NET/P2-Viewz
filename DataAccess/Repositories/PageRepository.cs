@@ -5,6 +5,8 @@ using System.Collections.Generic;
 //using System.Text;
 using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using DataAccess.Exceptions;
 
 namespace DataAccess.Repositories
 {
@@ -29,20 +31,31 @@ namespace DataAccess.Repositories
 
         long GetID(string wikiURL, string pageURL)
         {
-            return (from page in _db.Page
-            join wikiId in from wiki in _db.Wiki
-                           where wikiURL == wiki.Url
-                           select wiki.Id
-                         on page.WikiId equals wikiId
-            where page.Url == pageURL
-            select page.PageId).Single();
+            try
+            {
+                return (from page in _db.Page
+                        join wikiId in from wiki in _db.Wiki
+                                       where wikiURL == wiki.Url
+                                       select wiki.Id
+                                     on page.WikiId equals wikiId
+                        where page.Url == pageURL
+                        select page.PageId).Single();
+            } catch (InvalidOperationException e)
+            {
+                throw new PageNotFound($"{wikiURL}/{pageURL} not found", e);
+            }
         }
 
         int GetID(string wikiURL)
         {
+            try {
             return (from wiki in _db.Wiki
                     where wiki.Url == wikiURL
                     select wiki.Id).Single();
+            } catch (InvalidOperationException e)
+            {
+                throw new WikiNotFound($"{wikiURL} was not found.", e);
+            }
         }
 
         public string GetMD(string wikiURL, string pageURL)
@@ -128,13 +141,19 @@ namespace DataAccess.Repositories
         public void NewPage(string wikiURL, string pageURL, string pageName, string content)
         {
             int wikiId = GetID(wikiURL);
-            _db.Page.Add(new Models.Page()
+            try
             {
-                WikiId = wikiId,
-                Url = pageURL,
-                PageName = pageName
-            });
-            _db.SaveChanges();
+                _db.Page.Add(new Models.Page()
+                {
+                    WikiId = wikiId,
+                    Url = pageURL,
+                    PageName = pageName
+                });
+                _db.SaveChanges();
+            } catch(Exception e)
+            {
+                throw new PageExists($"{wikiURL}/{pageURL} already exists", e);
+            }
             SetMD(wikiURL, pageURL, content);
         }
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ViewzApi.Models; 
 using System.Linq;
+using DataAccess.Exceptions;
 
 namespace ViewzApi.Controllers
 {
@@ -31,17 +32,7 @@ namespace ViewzApi.Controllers
         //api/wiki
         public IActionResult Get([FromQuery]uint count = 1, [FromQuery]bool description = false)
         {
-            try
-            {
-               
-                return Ok(_wikiRepository.GetPopularWikis(count, description));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-
-                return NotFound();
-            }
+            return Ok(_wikiRepository.GetPopularWikis(count, description));
         }
 
         //get one wiki
@@ -123,9 +114,10 @@ namespace ViewzApi.Controllers
                     _wikiRepository.SetMD(WikiUrl, wiki.Description);
                 }
             }
-            catch (Exception e)
+            catch (WikiNotFound e)
             {
                 _logger.LogError(e.Message);
+                return NotFound();
             }
 
             return NoContent();

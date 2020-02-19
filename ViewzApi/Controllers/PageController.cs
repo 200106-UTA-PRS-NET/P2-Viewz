@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ViewzApi.Models;
 using System.Linq;
+using DataAccess.Exceptions;
 
 namespace ViewzApi.Controllers
 {
@@ -86,7 +87,12 @@ namespace ViewzApi.Controllers
 
                 return CreatedAtAction(actionName: nameof(Get), routeValues: new { WikiUrl, PageUrl }, value: null);
             }
-            catch (Exception e)
+            catch(WikiNotFound e)
+            {
+                _logger.LogError(e.Message);
+                return NotFound($"{WikiUrl} not found");
+            }
+            catch (PageExists e)
             { 
                 _logger.LogError(e.Message);
                 //if request is duplicated 
@@ -121,8 +127,14 @@ namespace ViewzApi.Controllers
                     _repository.SetPageDetails(WikiUrl, PageUrl, page.Details);
                 }
             }
-            catch (Exception e) {
-                _logger.LogError(e.Message); 
+            catch (WikiNotFound e) {
+                _logger.LogError(e.Message);
+                return NotFound($"{WikiUrl} not found");
+            }
+            catch (PageNotFound e)
+            {
+                _logger.LogError(e.Message);
+                return NotFound($"{WikiUrl}/{PageUrl} not found");
             }
 
             return NoContent();

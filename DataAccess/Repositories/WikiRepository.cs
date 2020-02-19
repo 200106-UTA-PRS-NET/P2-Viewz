@@ -4,6 +4,8 @@ using DataAccess.Models;
 using DataAccess.Storing;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System;
+using DataAccess.Exceptions;
 
 namespace DataAccess.Repositories
 {
@@ -16,9 +18,15 @@ namespace DataAccess.Repositories
         }
         int GetId(string wikiURL)
         {
+            try {
             return (from wiki in _db.Wiki
                     where wiki.Url == wikiURL
                     select wiki.Id).Single();
+            }
+            catch (InvalidOperationException e)
+            {
+                throw new WikiNotFound($"{wikiURL} not found", e);
+            }
         }
         public string GetHTML(string wikiURL)
         {
