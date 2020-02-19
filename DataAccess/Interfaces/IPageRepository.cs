@@ -1,8 +1,6 @@
 ﻿using DataAccess.Storing;
-//using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-//using System.Text;
 
 namespace DataAccess.Interfaces
 {
@@ -14,7 +12,7 @@ namespace DataAccess.Interfaces
         public Task<Page> GetPageAsync(string wikiURL, string pageURL);
         public Task<Page> GetPageWithMDAsync(string wikiURL, string pageURL);
         public Task<Page> GetPageWithHTMLAsync(string wikiURL, string pageURL);
-        public Task<IEnumerable<Page>> GetPopularPagesAsync(string wikiURL, uint count);
+        public Task<IEnumerable<Page>> GetPopularPagesAsync(string wikiURL, uint count = 5);
 
       
         // Setters

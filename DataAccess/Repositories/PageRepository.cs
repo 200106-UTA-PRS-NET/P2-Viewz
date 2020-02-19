@@ -1,8 +1,6 @@
 ﻿using DataAccess.Interfaces;
-//using System;
 using System.Linq;
 using System.Collections.Generic;
-//using System.Text;
 using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -43,7 +41,7 @@ namespace DataAccess.Repositories
                         select page.PageId).SingleAsync();
             } catch (InvalidOperationException e)
             {
-                throw new PageNotFound($"{wikiURL}/{pageURL} not found", e);
+                throw new PageNotFoundException($"{wikiURL}/{pageURL} not found", e);
             }
         }
 
@@ -55,7 +53,7 @@ namespace DataAccess.Repositories
                     select wiki.Id).SingleAsync();
             } catch (InvalidOperationException e)
             {
-                throw new WikiNotFound($"{wikiURL} was not found.", e);
+                throw new WikiNotFoundException($"{wikiURL} was not found.", e);
             }
         }
 
@@ -153,7 +151,7 @@ namespace DataAccess.Repositories
                 await _db.SaveChangesAsync();
             } catch(Exception e)
             {
-                throw new PageExists($"{wikiURL}/{pageURL} already exists", e);
+                throw new PageExistsException($"{wikiURL}/{pageURL} already exists", e);
             }
             await SetMDAsync(wikiURL, pageURL, content);
         }

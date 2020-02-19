@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
-    public class WikiRepositoryStoring: WikiRepositoryRetrieving, IWikiRepository
+    public class WikiRepositoryStoring: WikiRepositoryRetrieving
     {
         public WikiRepositoryStoring(ViewzDbContext db, IMdToHtmlAndContentsFactory factory) : base(db, factory)
         {
