@@ -13,6 +13,7 @@ using System.Linq;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using DataAccess.Exceptions;
+using System.Threading.Tasks;
 
 namespace Tests
 {
@@ -46,33 +47,34 @@ namespace Tests
         [InlineData("training-code", "squiddy")]
         [InlineData("bad-wiki", "readme")]
         [InlineData("training-code", "bad-page")]
-        public void GetPageTest(string wikiURL, string pageURL)
+        public async Task GetPageTestAsync(string wikiURL, string pageURL)
         {
             string dbString = Guid.NewGuid().ToString();
             //ARRANGE
-            using (var context = InMEM(dbString))
+            using var context = InMEM(dbString);
+            IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+            var repo = new PageRepositoryStoring(context, factory);
+            var page_controller = new PageController(repo, p_logger);
+
+            Wiki wiki = await context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefaultAsync();
+            Page page;
+            if (wiki != null)
             {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var repo = new PageRepositoryStoring(context, factory);
-                var page_controller = new PageController(repo, p_logger);
+                page = await context.Page.Where(p => (p.WikiId == wiki.Id && p.Url == pageURL)).SingleOrDefaultAsync();
+            }
+            else
+            {
+                page = null;
+            }
 
-                Wiki wiki = context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefault();
-                Page page;
-                if (wiki != null) {
-                    page = context.Page.Where(p => (p.WikiId == wiki.Id && p.Url == pageURL)).SingleOrDefault();
-                } else
-                {
-                    page = null;
-                }
-
-                var status = page_controller.Get(wikiURL, pageURL, ViewzApi.Controllers.PageContent.Html);
-                if(page != null)
-                {
-                    Assert.IsType<OkObjectResult>(status);
-                } else
-                {
-                    Assert.IsType<NotFoundObjectResult>(status);
-                }
+            var status = await page_controller.GetAsync(wikiURL, pageURL, ViewzApi.Controllers.PageContent.Html);
+            if (page != null)
+            {
+                Assert.IsType<OkObjectResult>(status);
+            }
+            else
+            {
+                Assert.IsType<NotFoundObjectResult>(status);
             }
         }
 
@@ -82,36 +84,34 @@ namespace Tests
         [InlineData("training-code", "squiddy")]
         [InlineData("bad-wiki", "readme")]
         [InlineData("training-code", "bad-page")]
-        public void GetPageNoContentTest(string wikiURL, string pageURL)
+        public async Task GetPageNoContentTestAsync(string wikiURL, string pageURL)
         {
             string dbString = Guid.NewGuid().ToString();
             //ARRANGE
-            using (var context = InMEM(dbString))
+            using var context = InMEM(dbString);
+            IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+            var repo = new PageRepositoryStoring(context, factory);
+            var page_controller = new PageController(repo, p_logger);
+
+            Wiki wiki = await context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefaultAsync();
+            Page page;
+            if (wiki != null)
             {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var repo = new PageRepositoryStoring(context, factory);
-                var page_controller = new PageController(repo, p_logger);
+                page = await context.Page.Where(p => (p.WikiId == wiki.Id && p.Url == pageURL)).SingleOrDefaultAsync();
+            }
+            else
+            {
+                page = null;
+            }
 
-                Wiki wiki = context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefault();
-                Page page;
-                if (wiki != null)
-                {
-                    page = context.Page.Where(p => (p.WikiId == wiki.Id && p.Url == pageURL)).SingleOrDefault();
-                }
-                else
-                {
-                    page = null;
-                }
-
-                var status = page_controller.Get(wikiURL, pageURL, ViewzApi.Controllers.PageContent.NoContent);
-                if (page != null)
-                {
-                    Assert.IsType<OkObjectResult>(status);
-                }
-                else
-                {
-                    Assert.IsType<NotFoundObjectResult>(status);
-                }
+            var status = await page_controller.GetAsync(wikiURL, pageURL, ViewzApi.Controllers.PageContent.NoContent);
+            if (page != null)
+            {
+                Assert.IsType<OkObjectResult>(status);
+            }
+            else
+            {
+                Assert.IsType<NotFoundObjectResult>(status);
             }
         }
 
@@ -121,36 +121,34 @@ namespace Tests
         [InlineData("training-code", "squiddy")]
         [InlineData("bad-wiki", "readme")]
         [InlineData("training-code", "bad-page")]
-        public void GetPageMDTest(string wikiURL, string pageURL)
+        public async Task GetPageMDTestAsync(string wikiURL, string pageURL)
         {
             string dbString = Guid.NewGuid().ToString();
             //ARRANGE
-            using (var context = InMEM(dbString))
+            using var context = InMEM(dbString);
+            IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+            var repo = new PageRepositoryStoring(context, factory);
+            var page_controller = new PageController(repo, p_logger);
+
+            Wiki wiki = await context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefaultAsync();
+            Page page;
+            if (wiki != null)
             {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var repo = new PageRepositoryStoring(context, factory);
-                var page_controller = new PageController(repo, p_logger);
+                page = await context.Page.Where(p => (p.WikiId == wiki.Id && p.Url == pageURL)).SingleOrDefaultAsync();
+            }
+            else
+            {
+                page = null;
+            }
 
-                Wiki wiki = context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefault();
-                Page page;
-                if (wiki != null)
-                {
-                    page = context.Page.Where(p => (p.WikiId == wiki.Id && p.Url == pageURL)).SingleOrDefault();
-                }
-                else
-                {
-                    page = null;
-                }
-
-                var status = page_controller.Get(wikiURL, pageURL, ViewzApi.Controllers.PageContent.Md);
-                if (page != null)
-                {
-                    Assert.IsType<OkObjectResult>(status);
-                }
-                else
-                {
-                    Assert.IsType<NotFoundObjectResult>(status);
-                }
+            var status = await page_controller.GetAsync(wikiURL, pageURL, ViewzApi.Controllers.PageContent.Md);
+            if (page != null)
+            {
+                Assert.IsType<OkObjectResult>(status);
+            }
+            else
+            {
+                Assert.IsType<NotFoundObjectResult>(status);
             }
         }
 
@@ -158,46 +156,46 @@ namespace Tests
         [InlineData("training-code", "new-page")]
         [InlineData("training-code", "readme")]
         [InlineData("bad-wiki", "new-page")]
-        public void PostPageTest(string wikiURL, string pageURL)
+        public async Task PostPageTestAsync(string wikiURL, string pageURL)
         {
             string dbString = Guid.NewGuid().ToString();
             //ARRANGE
-            using (var context = InMEM(dbString))
+            using var context = InMEM(dbString);
+            IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+            var repo = new PageRepositoryStoring(context, factory);
+            var page_controller = new PageController(repo, p_logger);
+
+            Wiki wiki = await context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefaultAsync();
+            Page page;
+            if (wiki != null)
             {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var repo = new PageRepositoryStoring(context, factory);
-                var page_controller = new PageController(repo, p_logger);
+                page = await context.Page.Where(p => (p.WikiId == wiki.Id && p.Url == pageURL)).SingleOrDefaultAsync();
+            }
+            else
+            {
+                page = null;
+            }
+            var model = new ViewzApi.Models.Page()
+            {
+                Content = "# Header 1",
+                Details = new List<DataAccess.Storing.PageDetails>(),
+                PageName = pageURL,
+                Url = pageURL
+            };
 
-                Wiki wiki = context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefault();
-                Page page;
-                if (wiki != null)
-                {
-                    page = context.Page.Where(p => (p.WikiId == wiki.Id && p.Url == pageURL)).SingleOrDefault();
-                }
-                else
-                {
-                    page = null;
-                }
-                var model = new ViewzApi.Models.Page()
-                {
-                    Content = "# Header 1",
-                    Details = new List<DataAccess.Storing.PageDetails>(),
-                    PageName = pageURL,
-                    Url = pageURL
-                };
-
-                if (wiki != null && page == null)
-                {
-                    Assert.IsType<CreatedAtActionResult>(page_controller.Post(wikiURL, pageURL, model));
-                } else if(wiki == null)
-                {
-                    Assert.IsType<NotFoundObjectResult>(page_controller.Post(wikiURL, pageURL, model));
-                } else
-                {
-                    // It should return Conflict, but because there is no unique constraints in in-memory db, it will throw a not found
-                    Assert.Throws<PageNotFound>(() => page_controller.Post(wikiURL, pageURL, model));
-                    //Assert.IsType<ConflictObjectResult>(page_controller.Post(wikiURL, pageURL, model));
-                }
+            if (wiki != null && page == null)
+            {
+                Assert.IsType<CreatedAtActionResult>(await page_controller.PostAsync(wikiURL, pageURL, model));
+            }
+            else if (wiki == null)
+            {
+                Assert.IsType<NotFoundObjectResult>(await page_controller.PostAsync(wikiURL, pageURL, model));
+            }
+            else
+            {
+                // It should return Conflict, but because there is no unique constraints in in-memory db, it will throw a not found
+                await Assert.ThrowsAsync<PageNotFound>(() => page_controller.PostAsync(wikiURL, pageURL, model));
+                //Assert.IsType<ConflictObjectResult>(page_controller.Post(wikiURL, pageURL, model));
             }
         }
 
@@ -205,43 +203,43 @@ namespace Tests
         [InlineData("training-code", "new-page")]
         [InlineData("training-code", "readme")]
         [InlineData("bad-wiki", "readme")]
-        public void GoodPatchPageTest(string wikiURL, string pageURL)
+        public async Task GoodPatchPageTestAsync(string wikiURL, string pageURL)
         {
             string dbString = Guid.NewGuid().ToString();
             //ARRANGE
-            using (var context = InMEM(dbString))
+            using var context = InMEM(dbString);
+            IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+            var repo = new PageRepositoryStoring(context, factory);
+            var page_controller = new PageController(repo, p_logger);
+
+            Wiki wiki = await context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefaultAsync();
+            Page page;
+            if (wiki != null)
             {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var repo = new PageRepositoryStoring(context, factory);
-                var page_controller = new PageController(repo, p_logger);
+                page = await context.Page.Where(p => (p.WikiId == wiki.Id && p.Url == pageURL)).SingleOrDefaultAsync();
+            }
+            else
+            {
+                page = null;
+            }
+            var model = new ViewzApi.Models.Page()
+            {
+                Content = "# Header 1",
+                Details = new List<DataAccess.Storing.PageDetails>(),
+                PageName = pageURL,
+                Url = pageURL
+            };
 
-                Wiki wiki = context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefault();
-                Page page;
-                if (wiki != null)
-                {
-                    page = context.Page.Where(p => (p.WikiId == wiki.Id && p.Url == pageURL)).SingleOrDefault();
-                }
-                else
-                {
-                    page = null;
-                }
-                var model = new ViewzApi.Models.Page()
-                {
-                    Content = "# Header 1",
-                    Details = new List<DataAccess.Storing.PageDetails>(),
-                    PageName = pageURL,
-                    Url = pageURL
-                };
-
-                //ACT
-                var status = page_controller.Patch(wikiURL, pageURL, model);
-                if (wiki == null || page == null)
-                {
-                    Assert.IsType<NotFoundObjectResult>(status);
-                }else {
-                    //ASSERT - status 204 (No Content)
-                    Assert.IsType<NoContentResult>(status);
-                }
+            //ACT
+            var status = await page_controller.PatchAsync(wikiURL, pageURL, model);
+            if (wiki == null || page == null)
+            {
+                Assert.IsType<NotFoundObjectResult>(status);
+            }
+            else
+            {
+                //ASSERT - status 204 (No Content)
+                Assert.IsType<NoContentResult>(status);
             }
         }
 
@@ -249,178 +247,169 @@ namespace Tests
         [InlineData("training-code", "new-page")]
         [InlineData("training-code", "readme")]
         [InlineData("bad-wiki", "readme")]
-        public void PatchPage400Test(string wikiURL, string pageURL)
+        public async Task PatchPage400TestAsync(string wikiURL, string pageURL)
         {
             string dbString = Guid.NewGuid().ToString();
             //ARRANGE
-            using (var context = InMEM(dbString))
+            using var context = InMEM(dbString);
+            IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+            var repo = new PageRepositoryStoring(context, factory);
+            var page_controller = new PageController(repo, p_logger);
+
+            Wiki wiki = await context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefaultAsync();
+            Page page;
+            if (wiki != null)
             {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var repo = new PageRepositoryStoring(context, factory);
-                var page_controller = new PageController(repo, p_logger);
-
-                Wiki wiki = context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefault();
-                Page page;
-                if (wiki != null)
-                {
-                    page = context.Page.Where(p => (p.WikiId == wiki.Id && p.Url == pageURL)).SingleOrDefault();
-                }
-                else
-                {
-                    page = null;
-                }
-                //ACT
-                var status = page_controller.Patch(wikiURL, pageURL, new ViewzApi.Models.Page());
-
-                //ASSERT - status 400 (Bad Request)
-                Assert.IsType<BadRequestObjectResult>(status);
+                page = await context.Page.Where(p => (p.WikiId == wiki.Id && p.Url == pageURL)).SingleOrDefaultAsync();
             }
+            else
+            {
+                page = null;
+            }
+            //ACT
+            var status = await page_controller.PatchAsync(wikiURL, pageURL, new ViewzApi.Models.Page());
+
+            //ASSERT - status 400 (Bad Request)
+            Assert.IsType<BadRequestObjectResult>(status);
         }
 
         [Fact]
-        public void GetPopWiki200Test()
+        public async Task GetPopWiki200TestAsync()
         {
             //ARRANGE
             string dbString = Guid.NewGuid().ToString();
             //ARRANGE
-            using (var context = InMEM(dbString))
-            {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var prepo = new PageRepositoryStoring(context, factory);
-                var wrepo = new WikiRepositoryStoring(context, factory);
-                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+            using var context = InMEM(dbString);
+            IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+            var prepo = new PageRepositoryStoring(context, factory);
+            var wrepo = new WikiRepositoryStoring(context, factory);
+            var wiki_controller = new WikiController(wrepo, prepo, w_logger);
 
-                var status = wiki_controller.Get(5);
-                    //ACT
-                    //ASSERT
-                    Assert.IsType<OkObjectResult>(status);
+            var status = await wiki_controller.GetAsync(5);
+            //ACT
+            //ASSERT
+            Assert.IsType<OkObjectResult>(status);
+        }
+
+        [Theory]
+        [InlineData("training-code")]
+        [InlineData("bad-wiki")]
+        public async Task GetWikiTestAsync(string wikiURL)
+        {
+            string dbString = Guid.NewGuid().ToString();
+            //ARRANGE
+            using var context = InMEM(dbString);
+            IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+            var wrepo = new WikiRepositoryStoring(context, factory);
+            var prepo = new PageRepositoryStoring(context, factory);
+            var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+
+            var wiki = await context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefaultAsync();
+            //ACT
+            var status = await wiki_controller.GetAsync(wikiURL);
+            if (wiki != null)
+            {
+                //ASSERT - status 200 (OK)
+                Assert.IsType<OkObjectResult>(status);
+            }
+            else
+            {
+                //ASSERT - status 404 (OK)
+                Assert.IsType<NotFoundResult>(status);
             }
         }
 
         [Theory]
         [InlineData("training-code")]
         [InlineData("bad-wiki")]
-        public void GetWikiTest(string wikiURL)
+        public async Task PostWikiTestAsync(string wikiURL)
         {
             string dbString = Guid.NewGuid().ToString();
             //ARRANGE
-            using (var context = InMEM(dbString))
-            {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var wrepo = new WikiRepositoryStoring(context, factory);
-                var prepo = new PageRepositoryStoring(context, factory);
-                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+            using var context = InMEM(dbString);
+            IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+            var prepo = new PageRepositoryStoring(context, factory);
+            var wrepo = new WikiRepositoryStoring(context, factory);
+            var wiki_controller = new WikiController(wrepo, prepo, w_logger);
 
-                var wiki = context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefault();
-                //ACT
-                var status = wiki_controller.Get(wikiURL);
-                if (wiki != null)
-                {
-                    //ASSERT - status 200 (OK)
-                    Assert.IsType<OkObjectResult>(status);
-                } else
-                {
-                    //ASSERT - status 404 (OK)
-                    Assert.IsType<NotFoundResult>(status);
-                }
+            var wiki = await context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefaultAsync();
+            var content = new PageHtmlContent();
+            var W = new ViewzApi.Models.Wiki()
+            {
+                Url = wikiURL,
+                Description = "",
+                PageName = wikiURL
+            };
+
+            var status = await wiki_controller.PostAsync(wikiURL, W);
+
+            if (wiki == null)
+            {
+                //ASSERT
+                Assert.IsType<CreatedAtActionResult>(status);
+            }
+            else
+            {
+                Assert.IsType<ConflictObjectResult>(status);
             }
         }
 
         [Theory]
         [InlineData("training-code")]
         [InlineData("bad-wiki")]
-        public void PostWikiTest(string wikiURL)
+        public async Task PatchWiki204TestAsync(string wikiURL)
         {
             string dbString = Guid.NewGuid().ToString();
             //ARRANGE
-            using (var context = InMEM(dbString))
+            using var context = InMEM(dbString);
+            IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+            var wrepo = new WikiRepositoryStoring(context, factory);
+            var prepo = new PageRepositoryStoring(context, factory);
+            var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+            var wiki = new ViewzApi.Models.Wiki()
             {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var prepo = new PageRepositoryStoring(context, factory);
-                var wrepo = new WikiRepositoryStoring(context, factory);
-                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+                PageName = "I'm Hungry"
+            };
 
-                var wiki = context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefault();
-                var content = new PageHtmlContent();
-                var W = new ViewzApi.Models.Wiki()
-                {
-                    Url = wikiURL,
-                    Description = "",
-                    PageName = wikiURL
-                };
-
-                var status = wiki_controller.Post(wikiURL, W);
-
-                if (wiki == null)
-                {
-                    //ASSERT
-                    Assert.IsType<CreatedAtActionResult>(status);
-                }
-                else
-                {
-                    Assert.IsType<ConflictObjectResult>(status);
-                }
+            var WIKI = await context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefaultAsync();
+            //ACT
+            var status = await wiki_controller.PatchAsync(wikiURL, wiki);
+            if (WIKI != null)
+            {
+                //ASSERT
+                Assert.IsType<NoContentResult>(status);
+            }
+            else
+            {
+                Assert.IsType<NotFoundResult>(status);
             }
         }
 
         [Theory]
         [InlineData("training-code")]
         [InlineData("bad-wiki")]
-        public void PatchWiki204Test(string wikiURL)
+        public async Task PatchWiki400TestAsync(string wikiURL)
         {
             string dbString = Guid.NewGuid().ToString();
             //ARRANGE
-            using (var context = InMEM(dbString))
-            {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var wrepo = new WikiRepositoryStoring(context, factory);
-                var prepo = new PageRepositoryStoring(context, factory);
-                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
-                var wiki = new ViewzApi.Models.Wiki()
-                {
-                    PageName = "I'm Hungry"
-                };
+            using var context = InMEM(dbString);
+            IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+            var wrepo = new WikiRepositoryStoring(context, factory);
+            var prepo = new PageRepositoryStoring(context, factory);
+            var wiki_controller = new WikiController(wrepo, prepo, w_logger);
 
-                var WIKI = context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefault();
-                //ACT
-                var status = wiki_controller.Patch(wikiURL, wiki);
-                if (WIKI != null)
-                {
-                    //ASSERT
-                    Assert.IsType<NoContentResult>(status);
-                } else
-                {
-                    Assert.IsType<NotFoundResult>(status);
-                }
+            var WIKI = await context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefaultAsync();
+            //ACT
+            var status = await wiki_controller.PatchAsync(wikiURL, new ViewzApi.Models.Wiki());
+            if (WIKI != null)
+            {
+                //ASSERT
+                Assert.IsType<BadRequestObjectResult>(status);
             }
-        }
-
-        [Theory]
-        [InlineData("training-code")]
-        [InlineData("bad-wiki")]
-        public void PatchWiki400Test(string wikiURL)
-        {
-            string dbString = Guid.NewGuid().ToString();
-            //ARRANGE
-            using (var context = InMEM(dbString))
+            else
             {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var wrepo = new WikiRepositoryStoring(context, factory);
-                var prepo = new PageRepositoryStoring(context, factory);
-                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
-
-                var WIKI = context.Wiki.Where(w => w.Url == wikiURL).SingleOrDefault();
-                //ACT
-                var status = wiki_controller.Patch(wikiURL, new ViewzApi.Models.Wiki());
-                if (WIKI != null)
-                {
-                    //ASSERT
-                    Assert.IsType<BadRequestObjectResult>(status);
-                } else
-                {
-                    //ASSERT
-                    Assert.IsType<BadRequestObjectResult>(status);
-                }
+                //ASSERT
+                Assert.IsType<BadRequestObjectResult>(status);
             }
         }
 

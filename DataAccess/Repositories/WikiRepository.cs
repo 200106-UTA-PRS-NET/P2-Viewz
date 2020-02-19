@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System;
 using DataAccess.Exceptions;
+using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
@@ -16,136 +17,138 @@ namespace DataAccess.Repositories
         {
             _db = db;
         }
-        int GetId(string wikiURL)
+        async Task<int> GetIdAsync(string wikiURL)
         {
             try {
-            return (from wiki in _db.Wiki
+            return await (from wiki in _db.Wiki
                     where wiki.Url == wikiURL
-                    select wiki.Id).Single();
+                    select wiki.Id).SingleAsync();
             }
             catch (InvalidOperationException e)
             {
                 throw new WikiNotFound($"{wikiURL} not found", e);
             }
         }
-        public string GetHTML(string wikiURL)
+        public async Task<string> GetHTMLAsync(string wikiURL)
         {
-            return GetHTML(GetId(wikiURL));
+            return await GetHTMLAsync(await GetIdAsync(wikiURL));
         }
 
-        protected virtual string GetHTML(int wikiId)
+        protected async virtual Task<string> GetHTMLAsync(int wikiId)
         {
-            return (from content in _db.WikiHtmlDescription
+            return await (from content in _db.WikiHtmlDescription
                     where content.WikiId == wikiId
-                    select content.HtmlDescription).First();
+                    select content.HtmlDescription).FirstAsync();
         }
 
-        public string GetMD(string wikiURL)
+        public async Task<string> GetMDAsync(string wikiURL)
         {
-            return GetMD(GetId(wikiURL));
+            return await GetMDAsync(await GetIdAsync(wikiURL));
         }
 
-        protected string GetMD(int wikiId)
+        protected async Task<string> GetMDAsync(int wikiId)
         {
-            return (from content in _db.WikiMdDescription
+            return await (from content in _db.WikiMdDescription
                     where content.WikiId == wikiId
-                    select content.MdDescription).Single();
+                    select content.MdDescription).SingleAsync();
         }
 
-        public IEnumerable<Storing.Wiki> GetPopularWikis(uint count, bool description = false)
+        public async Task<IEnumerable<Storing.Wiki>> GetPopularWikisAsync(uint count, bool description = false)
         {
-            IEnumerable<Models.Wiki> wikis = (from wiki in _db.Wiki
+            IEnumerable<Models.Wiki> wikis = await (from wiki in _db.Wiki
                          orderby wiki.HitCount descending
                          select wiki)
-                        .Take((int)count).ToList();
-            return wikis.Select(w => {
+                        .Take((int)count).ToListAsync();
+            return await Task.WhenAll(wikis.Select(async w =>
+            {
                 Storing.Wiki wiki = Mapper.Map(w);
-                wiki.HtmlDescription = (description) ? GetHTML(w.Id) : null;
-                return wiki; });
+                wiki.HtmlDescription = (description) ? await GetHTMLAsync(w.Id) : null;
+                return wiki;
+            }));
 
         }
 
-        public Storing.Wiki GetWiki(string wikiURL)
+        public async Task<Storing.Wiki> GetWikiAsync(string wikiURL)
         {
-            return GetWiki(GetId(wikiURL));
+            return await GetWikiAsync(await GetIdAsync(wikiURL));
         }
 
-        private Storing.Wiki GetWiki(int wikiId)
+        private async Task<Storing.Wiki> GetWikiAsync(int wikiId)
         {
-            var wiki = (from inWiki in _db.Wiki
+            var wiki = await (from inWiki in _db.Wiki
                                where inWiki.Id == wikiId
-                               select inWiki).Single();
+                               select inWiki).SingleAsync();
             wiki.HitCount += 1;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return Mapper.Map(wiki);
         }
 
-        public Storing.Wiki GetWikiWithHTML(string wikiURL)
+        public async Task<Storing.Wiki> GetWikiWithHTMLAsync(string wikiURL)
         {
-            return GetWikiWithHTML(GetId(wikiURL));
+            return await GetWikiWithHTMLAsync(await GetIdAsync(wikiURL));
         }
 
-        private Storing.Wiki GetWikiWithHTML(int wikiId)
+        private async Task<Storing.Wiki> GetWikiWithHTMLAsync(int wikiId)
         {
-            var modelsWiki = (from inwiki in _db.Wiki
+            var modelsWiki = await (from inwiki in _db.Wiki
                               where inwiki.Id == wikiId
                               select inwiki)
                               .Include(o => o.WikiHtmlDescription)
-                              .Single();
+                              .SingleAsync();
             modelsWiki.HitCount += 1;
             var dbSave = _db.SaveChangesAsync();
             Storing.Wiki wiki = Mapper.Map(modelsWiki);
             if (wiki.HtmlDescription == null)
             {
-                wiki.HtmlDescription = GetHTML(wikiId);
+                wiki.HtmlDescription = await GetHTMLAsync(wikiId);
             }
-            dbSave.Wait();
+            await dbSave;
             return wiki;
         }
 
-        public Storing.Wiki GetWikiWithMD(string wikiURL)
+        public async Task<Storing.Wiki> GetWikiWithMDAsync(string wikiURL)
         {
-            return GetWikiWithMD(GetId(wikiURL));
+            return await GetWikiWithMDAsync(await GetIdAsync(wikiURL));
         }
 
-        private Storing.Wiki GetWikiWithMD(int wikiId)
+        private async Task<Storing.Wiki> GetWikiWithMDAsync(int wikiId)
         {
-            var wiki = (from inWiki in _db.Wiki
+            var wiki = await (from inWiki in _db.Wiki
                         where inWiki.Id == wikiId
                         select inWiki)
                         .Include(o => o.WikiMdDescription)
-                        .Single();
+                        .SingleAsync();
             wiki.HitCount += 1;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return Mapper.Map(wiki);
         }
 
-        public void NewWiki(string wikiURL, string pageName, string content)
+        public async Task NewWikiAsync(string wikiURL, string pageName, string content)
         {
             _db.Wiki.Add(new Models.Wiki()
             {
                 PageName = pageName,
                 Url = wikiURL
             });
-            _db.SaveChanges();
-            SetMD(wikiURL, content);
+            await _db.SaveChangesAsync();
+            await SetMDAsync(wikiURL, content);
         }
 
-        public void NewWiki(string wikiURL, string content)
+        public async Task NewWikiAsync(string wikiURL, string content)
         {
-            NewWiki(wikiURL, wikiURL, content);
+            await NewWikiAsync(wikiURL, wikiURL, content);
         }
 
-        public void SetMD(string wikiURL, string content)
+        public async Task SetMDAsync(string wikiURL, string content)
         {
-            SetMD(GetId(wikiURL), content);
+            await SetMDAsync(await GetIdAsync(wikiURL), content);
         }
 
-        protected virtual void SetMD(int wikiId, string content)
+        protected async virtual Task SetMDAsync(int wikiId, string content)
         {
-            var wikiMD = (from desc in _db.WikiMdDescription
+            var wikiMD = await (from desc in _db.WikiMdDescription
                           where desc.WikiId == wikiId
-                          select desc).SingleOrDefault();
+                          select desc).SingleOrDefaultAsync();
             if (wikiMD != null)
             {
                 wikiMD.MdDescription = content;
@@ -157,33 +160,33 @@ namespace DataAccess.Repositories
                     MdDescription = content
                 });
             }
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public void SetName(string wikiURL, string newName)
+        public async Task SetNameAsync(string wikiURL, string newName)
         {
-            SetName(GetId(wikiURL), newName);
+            await SetNameAsync(await GetIdAsync(wikiURL), newName);
         }
 
-        private void SetName(int wikiId, string newName)
+        private async Task SetNameAsync(int wikiId, string newName)
         {
-            Models.Wiki wiki = (from inWiki in _db.Wiki
+            Models.Wiki wiki = await (from inWiki in _db.Wiki
                                 where inWiki.Id == wikiId
-                                select inWiki).Single();
+                                select inWiki).SingleAsync();
             wiki.PageName = newName;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        protected void SetHTML(string wikiURL, string content)
+        protected async Task SetHTMLAsync(string wikiURL, string content)
         {
-            SetHTML(GetId(wikiURL), content);
+            await SetHTMLAsync(await GetIdAsync(wikiURL), content);
         }
 
-        protected void SetHTML(int wikiId, string content)
+        protected async Task SetHTMLAsync(int wikiId, string content)
         {
-            var pageHtml = (from contents in _db.WikiHtmlDescription
+            var pageHtml = await (from contents in _db.WikiHtmlDescription
                             where contents.WikiId == wikiId
-                            select contents).SingleOrDefault();
+                            select contents).SingleOrDefaultAsync();
             if (pageHtml != null)
             {
                 pageHtml.HtmlDescription = content;
@@ -196,7 +199,7 @@ namespace DataAccess.Repositories
                     HtmlDescription = content
                 });
             }
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
     }
 }
