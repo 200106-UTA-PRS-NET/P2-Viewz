@@ -11,7 +11,7 @@
         </table>
     </header>
 
-    <section *ngIf="popularPages.length">
+    <section *ngIf="!popularPages||popularPages.length">
         <table id="popularPages">
             <thead>
                 <h3>Popular Pages</h3>

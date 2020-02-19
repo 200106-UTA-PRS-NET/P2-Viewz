@@ -27,7 +27,7 @@
 
   <div id="pageContent"></div>
 
-  <section id="details" *ngIf="page.details.length">
+  <section id="details" *ngIf="!page||!page.details||page.details.length">
     <table>
       <thead>
         <h3>Details</h3>
