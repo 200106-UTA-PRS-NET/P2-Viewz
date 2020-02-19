@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
+using DataAccess.Exceptions;
 
 namespace Tests
 {
@@ -194,7 +195,7 @@ namespace Tests
                 } else
                 {
                     // It should return Conflict, but because there is no unique constraints in in-memory db, it will throw a not found
-                    Assert.IsType<NotFoundObjectResult>(page_controller.Post(wikiURL, pageURL, model));
+                    Assert.Throws<PageNotFound>(() => page_controller.Post(wikiURL, pageURL, model));
                     //Assert.IsType<ConflictObjectResult>(page_controller.Post(wikiURL, pageURL, model));
                 }
             }
