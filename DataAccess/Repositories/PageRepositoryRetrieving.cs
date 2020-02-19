@@ -15,17 +15,17 @@ namespace DataAccess.Repositories
         {
             _factory = factory;
         }
-        protected override string GetHTML(long pageID)
+        protected override async System.Threading.Tasks.Task<string> GetHTMLAsync(long pageID)
         {
             try
             {
-                return base.GetHTML(pageID);
+                return await base.GetHTMLAsync(pageID);
             }
             catch (InvalidOperationException)
             {
-                IHtmlAndContents result = _factory.GetHtmlAndContents(base.GetMD(pageID));
-                base.SetHTML(pageID, result?.PageHTML);
-                base.SetContents(pageID, result?.Contents);
+                IHtmlAndContents result = await _factory.GetHtmlAndContents(await base.GetMDAsync(pageID));
+                await base.SetHTMLAsync(pageID, result?.PageHTML);
+                await base.SetContentsAsync(pageID, result?.Contents);
                 return result?.PageHTML;
             }
         }
