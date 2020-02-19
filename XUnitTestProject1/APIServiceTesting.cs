@@ -6,9 +6,11 @@ using DataAccess.Models;
 using DataAccess.Interfaces;
 using DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using DataAccess.APIAccess;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using Xunit;
 
 namespace Tests
 {
@@ -16,94 +18,446 @@ namespace Tests
     ///one page that has mdcontent but not htmlcontent
     ///one page that has both
     ///both null
-    class APIServiceTesting
+    public class APIServiceTesting
     {
-        private readonly ILogger<ViewzApi.Controllers.PageController> _logger;
+        private readonly ILogger<ViewzApi.Controllers.PageController> p_logger;
+        private readonly ILogger<ViewzApi.Controllers.WikiController> w_logger;
 
-        void GetPageTestAllNull()
-        {
-            using(var context = inMEM("GetPTestAllNull"))
-            {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var repo = new PageRepositoryStoring(context, factory);
-                var page_controller = new PageController(repo, _logger);
-                //page_controller.Get()
-            }
-        }
-
-        void GetPageTestNull()
-        {
-            using (var context = inMEM("GetPTestNull"))
-            {
-                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var repo = new PageRepositoryStoring(context, factory);
-                var page_controller = new PageController(repo, _logger);
-                //page_controller.Get()
-            }
-        }
-
+        [Fact]
         void GetPageTest()
         {
+            //ARRANGE
             using (var context = inMEM("GetPTest"))
             {
                 IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
                 var repo = new PageRepositoryStoring(context, factory);
-                var page_controller = new PageController(repo, _logger);
-                //page_controller.Get()
+                var page_controller = new PageController(repo, p_logger);
+
+                var wiki = new Wiki();
+                var page = new Page();
+                var content = new PageHtmlContent();
+
+                if((wiki = context.Wiki.Where(w=>w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    if((page = context.Page.Where(p=>p.PageId == 1).SingleOrDefault()) != null)
+                    {
+                        //ACT - proceed with a Get method call from PageController
+                        var status = page_controller.Get(wiki.Url, page.Url, ViewzApi.Controllers.PageContent.Html);
+
+                        //ASSERT - status 200 (success)
+                        Assert.Equal(StatusCodes.Status200OK.ToString(), status.ToString());
+                    }
+                }
             }
         }
 
-        void PostPageTest()
+        [Fact]
+        void GetPageTestNull()
         {
+            //ARRANGE
+            using (var context = inMEM("GetPTestNull"))
+            {
+                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+                var repo = new PageRepositoryStoring(context, factory);
+                var page_controller = new PageController(repo, p_logger);
+
+                var wiki = new Wiki();
+                var page = new Page();
+                var content = new PageHtmlContent();
+
+                if ((wiki = context.Wiki.Where(w => w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    if ((page = context.Page.Where(p => p.PageId == 2).SingleOrDefault()) != null)
+                    {
+                        //ACT - proceed with a Get method call from PageController
+                        var status = page_controller.Get(wiki.Url, page.Url, ViewzApi.Controllers.PageContent.Html);
+
+                        //ASSERT - status 404 (Not Found)
+                        Assert.Equal(StatusCodes.Status404NotFound.ToString(), status.ToString());
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        void GetPageTestAllNull()
+        {
+            //ASSIGN
+            using (var context = inMEM("GetPTestAllNull"))
+            {
+                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+                var repo = new PageRepositoryStoring(context, factory);
+                var page_controller = new PageController(repo, p_logger);
+
+                var wiki = new Wiki();
+                var page = new Page();
+                var content = new PageHtmlContent();
+
+                if ((wiki = context.Wiki.Where(w => w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    if ((page = context.Page.Where(p => p.PageId == 3).SingleOrDefault()) != null)
+                    {
+                        //ACT - proceed with a Get method call from PageController
+                        var status = page_controller.Get(wiki.Url, page.Url, ViewzApi.Controllers.PageContent.Html);
+
+                        //ASSERT - status 404 (Not Found)
+                        Assert.Equal(StatusCodes.Status404NotFound.ToString(), status.ToString());
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        void PostPage201Test()
+        {
+            //ARRANGE
             using(var context = inMEM("PostPTest"))
             {
                 IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
                 var repo = new PageRepositoryStoring(context, factory);
+                var page_controller = new PageController(repo, p_logger);
+
+                var wiki = new Wiki();
+                var page = new Page();
+                var content = new PageHtmlContent();
+                var model = new ViewzApi.Models.Page();
+
+                if ((wiki = context.Wiki.Where(w => w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    if ((page = context.Page.Where(p => p.PageId == 1).SingleOrDefault()) != null)
+                    {
+                        //ACT
+                        var status = page_controller.Post(wiki.Url, page.Url, model);
+
+                        //ASSERT - status 201 (Created)
+                        Assert.Equal(StatusCodes.Status201Created.ToString(), status.ToString());
+                    }
+                }
             }
         }
 
-        void PatchPageTest()
+        [Fact]
+        void PostPage409Test()
         {
+            //ARRANGE
+            using (var context = inMEM("PostPTest"))
+            {
+                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+                var repo = new PageRepositoryStoring(context, factory);
+                var page_controller = new PageController(repo, p_logger);
+
+                var wiki = new Wiki();
+                var page = new Page();
+                var content = new PageHtmlContent();
+                var model = new ViewzApi.Models.Page();
+
+                if ((wiki = context.Wiki.Where(w => w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    if ((page = context.Page.Where(p => p.PageId == 1).SingleOrDefault()) != null)
+                    {
+                        model.Content = page.PageMdContent.MdContent;
+                        model.PageName = page.PageName;
+                        model.Url = page.Url;
+
+                        var details = new List<DataAccess.Storing.PageDetails>();
+                        foreach(var pd in page.PageDetails)
+                        {
+                            var d = new DataAccess.Storing.PageDetails();
+                            d.DetKey = pd.DetKey;
+                            d.DetValue = pd.DetValue;
+                            details.Add(d);
+                        }
+                        model.Details = details;
+
+                        var contents = new List<DataAccess.Storing.Contents>();
+                        foreach(var pc in page.Contents)
+                        {
+                            var c = new DataAccess.Storing.Contents();
+                            c.Content = pc.Content;
+                            c.Id = pc.Id;
+                            c.Level = pc.Level;
+                            contents.Add(c);
+                        }
+                        model.Contents = contents;
+
+                        //ACT
+                        var status = page_controller.Post(wiki.Url, page.Url, model);
+
+                        //ASSERT - status 409 (Conflict)
+                        Assert.Equal(StatusCodes.Status409Conflict.ToString(), status.ToString());
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        void PatchPage204Test()
+        {
+            //ARRANGE
             using (var context = inMEM("PatchPTest"))
             {
                 IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
                 var repo = new PageRepositoryStoring(context, factory);
+                var page_controller = new PageController(repo, p_logger);
+
+                var wiki = new Wiki();
+                var page = new Page();
+                var content = new PageHtmlContent();
+                var model = new ViewzApi.Models.Page();
+
+                if ((wiki = context.Wiki.Where(w => w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    if ((page = context.Page.Where(p => p.PageId == 1).SingleOrDefault()) != null)
+                    {
+                        model.PageName = page.PageName;
+
+                        //ACT
+                        var status = page_controller.Patch(wiki.Url, page.Url, model);
+
+                        //ASSERT - status 204 (No Content)
+                        Assert.Equal(StatusCodes.Status204NoContent.ToString(), status.ToString());
+                    }
+                }
             }
         }
 
-        void GetPopWikiTest()
+        [Fact]
+        void PatchPage400Test()
         {
+            //ARRANGE
+            using (var context = inMEM("PatchPTest"))
+            {
+                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+                var repo = new PageRepositoryStoring(context, factory);
+                var page_controller = new PageController(repo, p_logger);
+
+                var wiki = new Wiki();
+                var page = new Page();
+                var content = new PageHtmlContent();
+
+                if ((wiki = context.Wiki.Where(w => w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    if ((page = context.Page.Where(p => p.PageId == 1).SingleOrDefault()) != null)
+                    {
+                        //ACT
+                        var status = page_controller.Patch(wiki.Url, page.Url, null);
+
+                        //ASSERT - status 400 (Bad Request)
+                        Assert.Equal(StatusCodes.Status400BadRequest.ToString(), status.ToString());
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        void GetPopWiki200Test()
+        {
+            //ARRANGE
             using (var context = inMEM("GetPopWTest"))
             {
                 IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var repo = new PageRepositoryStoring(context, factory);
+                var wrepo = new WikiRepositoryStoring(context, factory);
+                var prepo = new PageRepositoryStoring(context, factory);
+                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+
+                var wiki = new Wiki();
+                if ((wiki = context.Wiki.Where(w => w.HitCount == 9).FirstOrDefault()) != null)
+                {
+                    //ACT
+                    var status = wiki_controller.Get((uint)wiki.HitCount);
+
+                    //ASSERT - status 404 (Not Found)
+                    Assert.Equal(StatusCodes.Status200OK.ToString(), status.ToString());
+                }
             }
         }
-
-        void GetWikiTest()
+        
+        
+        [Fact]
+        void GetPopWiki404Test()
         {
+            //ARRANGE
+            using (var context = inMEM("GetPopWTest"))
+            {
+                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+                var wrepo = new WikiRepositoryStoring(context, factory);
+                var prepo = new PageRepositoryStoring(context, factory);
+                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+
+                var wiki = new Wiki();
+                if((wiki = context.Wiki.Where(w=>w.HitCount == 5).FirstOrDefault()) != null)
+                {
+                    //ACT
+                    var status = wiki_controller.Get((uint)wiki.HitCount);
+
+                    //ASSERT - status 404 (Not Found)
+                    Assert.Equal(StatusCodes.Status404NotFound.ToString(), status.ToString());
+                }
+            }
+        }
+        
+        [Fact]
+        void GetWiki200Test()
+        {
+            //ARRANGE
             using (var context = inMEM("GetWTest"))
             {
                 IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var repo = new PageRepositoryStoring(context, factory);
+                var wrepo = new WikiRepositoryStoring(context, factory);
+                var prepo = new PageRepositoryStoring(context, factory);
+                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+
+                var wiki = new Wiki();
+                if ((wiki = context.Wiki.Where(w => w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    //ACT
+                    var status = wiki_controller.Get(wiki.Url);
+
+                    //ASSERT - status 200 (OK)
+                    Assert.Equal(StatusCodes.Status200OK.ToString(), status.ToString());
+                }
             }
         }
+        
 
-        void PostWikiTest()
+        [Fact]
+        void GetWiki404Test()
         {
-            using (var context = inMEM("PostWTest"))
+            //ARRANGE
+            using (var context = inMEM("GetWTest"))
             {
                 IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var repo = new PageRepositoryStoring(context, factory);
+                var wrepo = new WikiRepositoryStoring(context, factory);
+                var prepo = new PageRepositoryStoring(context, factory);
+                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+
+                var wiki = new Wiki();
+                if ((wiki = context.Wiki.Where(w => w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    //ACT
+                    var status = wiki_controller.Get("this is not a url");
+
+                    //ASSERT - status 404 (OK)
+                    Assert.Equal(StatusCodes.Status404NotFound.ToString(), status.ToString());
+                }   
             }
         }
 
-        void PatchWikiTest()
+        [Fact]
+        void PostWiki201Test()
         {
+            //ARRANGE
+            using (var context = inMEM("PostPTest"))
+            {
+                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+                var prepo = new PageRepositoryStoring(context, factory);
+                var wrepo = new WikiRepositoryStoring(context, factory);
+                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+
+                var wiki = new Wiki();
+                var page = new Page();
+                var content = new PageHtmlContent();
+                var model = new ViewzApi.Models.Page();
+
+                if ((wiki = context.Wiki.Where(w => w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    var W = new ViewzApi.Models.Wiki()
+                    {
+                        Url = wiki.Url,
+                        Description = wiki.WikiMdDescription.MdDescription,
+                        PageName = wiki.PageName
+                    };
+                    
+                    //ACT
+                    var status = wiki_controller.Post(wiki.Url, W);
+
+                    //ASSERT
+                    Assert.Equal(StatusCodes.Status201Created.ToString(), status.ToString());
+                }
+            }
+        }
+
+        [Fact]
+        void PostWiki409Test()
+        {
+            //ARRANGE
+            using (var context = inMEM("PostPTest"))
+            {
+                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+                var prepo = new PageRepositoryStoring(context, factory);
+                var wrepo = new WikiRepositoryStoring(context, factory);
+                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+
+                var wiki = new Wiki();
+                var page = new Page();
+                var content = new PageHtmlContent();
+                var model = new ViewzApi.Models.Page();
+
+                if ((wiki = context.Wiki.Where(w => w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    var W = new ViewzApi.Models.Wiki()
+                    {
+                        Url = wiki.Url,
+                        Description = wiki.WikiHtmlDescription.HtmlDescription,
+                        PageName = wiki.PageName
+                    };
+
+                    //ACT
+                    var status = wiki_controller.Post(wiki.Url, W);
+
+                    //ASSERT
+                    Assert.Equal(StatusCodes.Status409Conflict.ToString(), status.ToString());
+                }
+            }
+        }
+
+        [Fact]
+        void PatchWiki204Test()
+        {
+            //ARRANGE
             using (var context = inMEM("PatchWTest"))
             {
                 IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
-                var repo = new PageRepositoryStoring(context, factory);
+                var wrepo = new WikiRepositoryStoring(context, factory);
+                var prepo = new PageRepositoryStoring(context, factory);
+                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+                var wiki = new ViewzApi.Models.Wiki()
+                {
+                    PageName = "I'm Hungry"
+                };
+
+                var WIKI = new Wiki();
+                if ((WIKI = context.Wiki.Where(w => w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    //ACT
+                    var status = wiki_controller.Patch(WIKI.Url, wiki);
+
+                    //ASSERT
+                    Assert.Equal(StatusCodes.Status204NoContent.ToString(), status.ToString());
+                }
+            }
+        }
+
+        [Fact]
+        void PatchWiki400Test()
+        {
+            //ARRANGE
+            using (var context = inMEM("PatchWTest"))
+            {
+                IMdToHtmlAndContentsFactory factory = new MdToHtmlAndContentsFactory();
+                var wrepo = new WikiRepositoryStoring(context, factory);
+                var prepo = new PageRepositoryStoring(context, factory);
+                var wiki_controller = new WikiController(wrepo, prepo, w_logger);
+
+                var WIKI = new Wiki();
+                if ((WIKI = context.Wiki.Where(w => w.Url == "training-code").SingleOrDefault()) != null)
+                {
+                    //ACT
+                    var status = wiki_controller.Patch(WIKI.Url, null);
+
+                    //ASSERT
+                    Assert.Equal(StatusCodes.Status400BadRequest.ToString(), status.ToString());
+                }
             }
         }
 
@@ -118,7 +472,7 @@ namespace Tests
                 Id = 1,
                 Url = "training-code",
                 PageName = "Training Code",
-                HitCount = 0,
+                HitCount = 100,
                 Page = new List<Page>(),
                 WikiHtmlDescription = new WikiHtmlDescription(),
                 WikiMdDescription = new WikiMdDescription()
