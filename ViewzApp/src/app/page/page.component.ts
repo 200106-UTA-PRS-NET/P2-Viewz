@@ -8,7 +8,6 @@ import { merge } from 'rxjs';
 import { Location } from '@angular/common';
 import { DetailEntry } from '../detail-entry';
 
-
 @Component({
   selector: 'app-page',
   templateUrl: './page.component.html',

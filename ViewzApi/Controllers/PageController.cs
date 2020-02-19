@@ -29,9 +29,6 @@ namespace ViewzApi.Controllers
             _logger = logger;
         }
 
-        //url from db
-        //api/wiki/training-code/readme/?html=false
-
         [HttpGet]
         public async Task<IActionResult> GetAsync([FromRoute] string WikiUrl, [FromRoute] string PageUrl,
                       PageContent html=PageContent.NoContent, bool details = true, bool content=true)
@@ -66,7 +63,7 @@ namespace ViewzApi.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-                return NotFound("404 resource can not be found");
+                return NotFound("page could not be found");
             }
         }
          

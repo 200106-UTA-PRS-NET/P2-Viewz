@@ -27,7 +27,7 @@ namespace ViewzApi.Controllers
             _logger = logger;
         }
 
-        //get popular wikis
+        //get popular wikis with url: api/wiki
         [HttpGet(Name = "GetPopular")]
         //[HttpGet]
         //api/wiki
@@ -36,7 +36,7 @@ namespace ViewzApi.Controllers
             return Ok(await _wikiRepository.GetPopularWikisAsync(count, description));
         }
 
-        //get one wiki
+        //get one wiki with url: api/wiki/some-wiki
         [HttpGet("{WikiURL}", Name = "GetWiki")]
         public async Task<IActionResult> GetAsync([FromRoute]string WikiURL, bool html = true)
         {
@@ -69,7 +69,7 @@ namespace ViewzApi.Controllers
             }
         }
 
-
+        //post new wiki with url: api/wiki/some-new-wiki and passing wiki object in body
         [HttpPost("{WikiURL}")]
         public async Task<IActionResult> PostAsync([FromRoute] string WikiUrl, [FromBody]Wiki wiki)
         {
@@ -94,7 +94,7 @@ namespace ViewzApi.Controllers
             }
         }
 
-
+        //patch pre-existing wiki with url: api/wiki/some-wiki and passing wiki object in body
         [HttpPatch("{WikiURL}")]
         public async Task<IActionResult> PatchAsync([FromRoute] string WikiUrl, [FromBody]Wiki wiki)
         {
